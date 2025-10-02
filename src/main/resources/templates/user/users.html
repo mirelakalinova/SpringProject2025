@@ -1,0 +1,40 @@
+<div class="container" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="row" th:each="user : ${users}">
+        <div class="col-xs-12">
+            <span th:text="${user.id}"></span>
+        </div>
+        <div class="col-xs-12">
+            <span th:text="${user.email}"></span>
+        </div>
+        <div class="col-xs-12">
+            <span th:text="${user.username}"></span>
+        </div>
+        <div class="col-xs-12">
+            <span th:text="${user.role}"></span>
+        </div>
+        <div class="col-xs-12">
+            <span th:text="${user.role}"></span>
+        </div>
+        <div class="col-xs-12">
+        <form th:action="@{/edit-user/{id}(id=${user.id})}">
+
+            <button type="submit"  class="edit-btn">
+                Редакция
+            </button>
+        </form>
+        </div>
+
+        <div class="col-xs-12">
+
+        <!--            todo -->
+            <form th:action="@{/edit-user/{id}(id=${user.id})}">
+
+                <button type="submit"  class="edit-btn">
+                    Изтриване
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+</div>
