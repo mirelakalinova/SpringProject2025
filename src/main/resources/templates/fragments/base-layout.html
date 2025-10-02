@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+  <th:block th:insert="~{fragments/head}"></th:block>
+</head>
+<body>
+
+<th:block th:insert="~{fragments/menu}"></th:block>
+
+
+<th:block th:insert="~{${view}}"></th:block>
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<!-- Добави SweetAlert CDN линкове в секцията <head> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/static/js/js.js"></script>
+<script src="/static/js/select.js"></script>
+<div class="modal-fade" id="modalContainer" style="display: none;">
+  <div class="modal-content">
+    <span id="closeModal">&times;</span>
+
+  </div>
+</div>
+</body>
+</html>
