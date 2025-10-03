@@ -1,6 +1,7 @@
 package com.example.mkalinova.app.user.service;
 
 import com.example.mkalinova.app.user.data.dto.AddUserDto;
+import com.example.mkalinova.app.user.data.dto.EditUserDto;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.data.entity.UsersRole;
 import com.example.mkalinova.app.user.repo.UserRepository;
@@ -12,6 +13,7 @@ import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class UserService {
@@ -42,7 +44,8 @@ public class UserService {
         user.setRole(UsersRole.valueOf(addUserDto.getRole().toUpperCase()));
         userRepository.save(user);
         result.addFirst("success");
-        result.add("Успешно добавен потребител с username: " + addUserDto.getUsername() + " и email: " + addUserDto.getEmail());
+        result.add("Успешно добавен потребител!\n" +
+                "Username: \n" + addUserDto.getUsername() + "Email: " + addUserDto.getEmail());
 
 
         return result;
@@ -56,7 +59,17 @@ public class UserService {
         return userRepository.findByUsernameOrEmail(username, email).isPresent();
     }
 
-    public List<User> getAll() {
-       return this.userRepository.findAll();
+    public <T> List<T> getAll(Class<T> clazz) {
+        List<User> users = this.userRepository.findAll();
+        List<T> dtoList = new ArrayList<>();
+        for (User user: users){
+            T dtoUser = modelMapper.map(user, clazz);
+            String role = user.getRole().label;
+
+            dtoList.add(dtoUser);
+        }
+       return dtoList;
     }
+
+
 }

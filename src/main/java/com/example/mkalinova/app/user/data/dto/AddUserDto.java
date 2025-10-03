@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
@@ -26,6 +27,7 @@ public class AddUserDto {
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9])\\S{8,}$", message = "Паролата трябва да е най-малко 8 символа и да съдържа поне 1 цифра, поне 1 символ и поне 1 голяма буква!")
     private String password;
     @NotNull(message = "Изберете роля!")
+    @NotBlank(message = "Изберете роля!")
     private String role;
 
     public AddUserDto() {

@@ -3,6 +3,7 @@ package com.example.mkalinova.app.user.controller;
 import com.example.mkalinova.app.Land.Controller.BaseController;
 import com.example.mkalinova.app.user.data.dto.AddUserDto;
 import com.example.mkalinova.app.user.data.dto.EditUserDto;
+import com.example.mkalinova.app.user.data.dto.UserListDto;
 import com.example.mkalinova.app.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -76,7 +77,7 @@ public class UserController extends BaseController {
     @GetMapping("/users")
     public ModelAndView userList(){
         ModelAndView modelAndView = super.view("user/users");
-        modelAndView.addObject("users", userService.getAll());
+        modelAndView.addObject("users", userService.getAll(UserListDto.class));
         return modelAndView;
     }
 }
