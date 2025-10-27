@@ -9,4 +9,13 @@ public enum UsersRole {
     private UsersRole(String label) {
         this.label = label;
     }
+
+    public static UsersRole findRole(String label) {
+        for (UsersRole role : UsersRole.values()) {
+            if (role.label.equalsIgnoreCase(label)) {
+                return role;
+            }
+        }
+        throw new IllegalArgumentException("Няма роля с етикет: " + label);
+    }
 }

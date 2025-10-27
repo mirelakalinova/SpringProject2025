@@ -74,7 +74,7 @@ a.nav-link:hover {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    margin: 10px 0 0 0;
+    margin: 15px 0 0 0;
 }
 
 select#role {
@@ -151,4 +151,25 @@ button.user-btn {
 .user-delete-btn:hover {
     background-color: #dc3545bd;
     transition: 0.5s;
+}
+
+/* error pages */
+
+.error-status h1 {
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 900;
+}
+.error-status {
+    padding: 20px 40px;
+}
+
+.error-status img {
+    max-width: 500px;
+    margin: 0 auto;
+    display: block;
+}
+
+.error-status p {
+    text-align: center;
 }

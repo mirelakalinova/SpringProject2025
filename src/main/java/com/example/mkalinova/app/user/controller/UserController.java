@@ -7,6 +7,7 @@ import com.example.mkalinova.app.user.data.dto.UserListDto;
 import com.example.mkalinova.app.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
+import java.nio.file.AccessDeniedException;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -36,6 +38,12 @@ public class UserController extends BaseController {
         return super.view("user/login");
     }
 
+    @GetMapping("/users")
+    public ModelAndView userList() {
+        ModelAndView modelAndView = super.view("user/users");
+        modelAndView.addObject("users", userService.getAll(UserListDto.class));
+        return modelAndView;
+    }
 
     @GetMapping("/add-user")
     public ModelAndView addUser() {
@@ -43,7 +51,7 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("/add-user")
-    public String createUser(@Valid AddUserDto addUserDto, BindingResult bindingResult, RedirectAttributes attributes) {
+    public String createUser(@Valid AddUserDto addUserDto, BindingResult bindingResult, RedirectAttributes attributes) throws AccessDeniedException {
         if (bindingResult.hasErrors()) {
             attributes.addFlashAttribute("addUserDto", addUserDto);
             attributes.addFlashAttribute("org.springframework.validation.BindingResult.addUserDto", bindingResult);
@@ -66,18 +74,42 @@ public class UserController extends BaseController {
 
 
     @GetMapping("/edit-user/{id}")
-    public ModelAndView editUser(@PathVariable Long id,
-                           EditUserDto editUserDto,
-                           RedirectAttributes attributes) {
+    public ModelAndView editUser(@PathVariable Long id, Model model) {
+        ModelAndView modelAndView = super.view("user/edit-user");
+        if (!model.containsAttribute("editUserDto")) {
+            modelAndView.addObject("editUserDto", userService.getById(id, EditUserDto.class));
+        }
 
-
-        return super.view("user/edit-user/{id}");
+        return modelAndView;
     }
 
-    @GetMapping("/users")
-    public ModelAndView userList(){
-        ModelAndView modelAndView = super.view("user/users");
-        modelAndView.addObject("users", userService.getAll(UserListDto.class));
-        return modelAndView;
+    @PostMapping("edit-user/{id}")
+    public String editUser(@Valid EditUserDto editUserDto, BindingResult bindingResult, RedirectAttributes attributes) throws AccessDeniedException {
+
+        if (bindingResult.hasErrors()) {
+            attributes.addFlashAttribute("editUserDto", editUserDto);
+            attributes.addFlashAttribute("org.springframework.validation.BindingResult.editUserDto", bindingResult);
+            return "redirect:/edit-user/" + editUserDto.getId();
+        }
+        HashMap<String, String> result = userService.editUser(editUserDto.getId(), editUserDto);
+
+
+        attributes.addFlashAttribute("message", result.get("message"));
+        attributes.addFlashAttribute("status", result.get("status"));
+        return "redirect:/users";
+    }
+
+
+
+    @PostMapping("/delete/{id}")
+    public String deleteUser(@PathVariable Long id,
+                             RedirectAttributes attributes) throws AccessDeniedException {
+
+       HashMap<String,String> result =  userService.deleteUser(id);
+       attributes.addFlashAttribute("message", result.get("message"));
+       attributes.addFlashAttribute("status", result.get("status"));
+
+
+        return "redirect:/users";
     }
 }
