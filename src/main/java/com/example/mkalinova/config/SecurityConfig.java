@@ -25,7 +25,7 @@ public class SecurityConfig {
         http
                 // какво е публично
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
+                                .requestMatchers(
                                 "/css/**", "/js/**", "/images/**"   // статични ресурси
                         ).permitAll()
                         .requestMatchers("login").permitAll()

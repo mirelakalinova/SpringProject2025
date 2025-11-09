@@ -8,7 +8,7 @@
         <div class="row row-view">
             <div class="col-lg-6 elements">
                 <div class="group">
-                    <label for="firstName">Име:</label><br>
+                    <label for="firstName">Име:</label>
                     <input th:field="*{firstName}" class="form-control" type="text" id="firstName" name="firstName"
                            required>
                     <div class="error-message" th:if="${#fields.hasErrors('firstName')}">
@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div class="group">
-                    <label for="lastName">Фамилия:</label><br>
+                    <label for="lastName">Фамилия:</label>
                     <input th:field="*{lastName}" class="form-control" type="text" id="lastName" name="lastName"
                            required>
                     <div class="error-message" th:if="${#fields.hasErrors('lastName')}">
@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="group">
-                    <label for="username">Username:</label><br>
+                    <label for="username">Username:</label>
                     <input th:field="*{username}" class="form-control" type="text" id="username" name="username"
                            required>
                     <div class="error-message" th:if="${#fields.hasErrors('username')}">
@@ -33,14 +33,14 @@
                     </div>
                 </div>
                 <div class="group">
-                    <label for="email">Email:</label><br>
+                    <label for="email">Email:</label>
                     <input th:field="*{email}" class="form-control" type="email" id="email" name="email" required>
                     <div class="error-message" th:if="${#fields.hasErrors('email')}">
                         <span th:text="${#fields.errors('email').get(0)}"></span>
                     </div>
                 </div>
                 <div class="group">
-                    <label for="password">Парола:</label><br>
+                    <label for="password">Парола:</label>
                     <input th:field="*{password}" class="form-control" type="password" id="password" name="password"
                            required>
                     <div class="error-message" th:if="${#fields.hasErrors('password')}">
@@ -50,7 +50,7 @@
                 <div class="group">
                     <label for="role" id="label-role">Роля</label>
                     <select th:field="*{role}" id="role" name="role">
-                        <option value="" selected disabled>Избери</option>
+                        <option value="" selected>Избери</option>
                         <option id="admin" name="admin" value="admin">Администратор</option>
                         <option id="editor" name="editor" value="editor">Редактор</option>
                     </select>
