@@ -14,6 +14,7 @@ public class GlobalExceptionHandler extends BaseController {
 
     public static final String ERROR_VIEW = "errors/error";
     public static final String ERROR_403 = "../../images/errors/403.jpg";
+    public static final String NO_SUCH_RESOURCE = "../../images/errors/no-such-resource.jpg";
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
@@ -21,7 +22,18 @@ public class GlobalExceptionHandler extends BaseController {
         ModelAndView modelAndView = super.view(ERROR_VIEW);
         modelAndView.addObject("heading","Достъпът е отказан!");
         modelAndView.addObject("message", ex.getMessage());
-//        modelAndView.addObject("image", ERROR_403);
+        modelAndView.addObject("image", ERROR_403);
+        return modelAndView;
+    }
+
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ModelAndView handleNullPointerException(NullPointerException ex) {
+        ModelAndView modelAndView = super.view(ERROR_VIEW);
+        modelAndView.addObject("heading","Няма намерен такъв ресуср!");
+        modelAndView.addObject("message", ex.getMessage());
+        modelAndView.addObject("image", ERROR_403);
         return modelAndView;
     }
 }

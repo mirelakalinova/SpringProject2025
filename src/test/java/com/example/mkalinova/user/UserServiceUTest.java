@@ -5,7 +5,7 @@ import com.example.mkalinova.app.user.data.dto.EditUserDto;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.data.entity.UsersRole;
 import com.example.mkalinova.app.user.repo.UserRepository;
-import com.example.mkalinova.app.user.service.UserService;
+import com.example.mkalinova.app.user.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +42,7 @@ public class UserServiceUTest {
     private AddUserDto newUser;
     private User newUserRepo;
     @InjectMocks
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @BeforeEach
     void setUp() {

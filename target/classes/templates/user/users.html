@@ -32,9 +32,9 @@
                 </form>
             </td>
             <td>
-                <form th:action="@{/delete/{id}(id=${user.id})}" th:method="post">
+                <form th:action="@{/delete/{id}(id=${user.id})}" th:method="post" >
 
-                    <button type="submit" class="user-delete-btn user-btn">
+                    <button type="submit" class="user-delete-btn user-btn"  th:attr="data-name=${user.username}">
                         Изтриване
                     </button>
                 </form>

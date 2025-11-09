@@ -152,6 +152,152 @@ button.user-btn {
     background-color: #dc3545bd;
     transition: 0.5s;
 }
+        /* home */
+
+.home-login {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 50px;
+    align-items: center;
+}
+
+.home-login a {
+    color: #fff;
+    padding: 10px 37px;
+    background-color: #d42d2f;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 600;
+    transition:0.2s;
+}
+.home-login a:hover {
+  opacity:0.9;
+}
+
+
+.home-logged {
+    display: flex;
+    flex-direction: row;
+    gap: 60px;
+    padding: 50px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.home-logged a {
+    color: #fff;
+    padding: 40px 50px;
+    background-color: #353a47;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+.home-logged a:hover {
+    opacity:0.9;
+}
+
+        /* Dropdown for makes and models*/
+
+ul.dropdown-menu {
+    display: block;
+    overflow-y: scroll;
+    max-height: 300px;
+    /* min-width: 200px; */
+    width: 636px;
+    z-index:1000;
+    margin-top: -4px;
+    border-radius: 0;
+    border: 1px solid #e7e7e7;
+
+}
+
+.dropdown-menu li {
+    font-size: 16px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.dropdown-menu li:hover {
+
+    background-color: #e7e7e7;
+}
+
+/* selected -> car/add */
+
+span.select2-selection.select2-selection--single {
+    position: absolute;
+    cursor: pointer;
+}
+
+input.select2-search__field {
+    width: 636px;
+    margin-top: -2px;
+    border: 1px solid #dee2e6;
+    height: 35px;
+}
+span.select2{
+    width:636px
+    display:block;
+}
+
+ul#select2-client-results {
+    list-style: none;
+    padding: 5px 0;
+    background: #f8f9fa;
+
+}
+
+li.select2-results__option {
+    border-bottom: 1px solid #dee2e6;
+    padding-left: 10px;
+    cursor: pointer;
+}
+span.selection {
+    display: block;
+    width: 100%;
+    border: 1px solid #dee2e6;
+    height: 38px;
+    border-radius: 5px;
+}
+
+
+span#select2-client-container {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 636px;
+}
+
+/* edit car */
+.car-make-model {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    padding: 20px 0;
+    align-items: center;
+}
+span.change-span {
+    background: #d42d2f;
+    padding: 5px 8px;
+    border-radius: 5px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+span.span-info {
+    font-weight: 600;
+    color: #d42d2f;
+    border-bottom: 1px solid;
+    padding: 0 5px;
+
+}
+
+
 
 /* error pages */
 
@@ -172,4 +318,9 @@ button.user-btn {
 
 .error-status p {
     text-align: center;
+}
+
+.error-message {
+    font-size: 20px;
+    font-weight: 600;
 }

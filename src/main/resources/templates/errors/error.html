@@ -1,6 +1,6 @@
 <div class="error-status" xmlns:th="http://www.w3.org/1999/xhtml">
 <h1 th:text="*{heading}" ></h1>
-    <img src="/images/errors/403.jpg" class="img-fluid">
-<p th:text="*{message}"></p>
+    <p th:text="*{message}" class="error-message"></p>
+    <img th:src="${image}" class="img-fluid">
 
 </div>

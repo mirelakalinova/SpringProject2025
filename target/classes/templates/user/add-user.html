@@ -3,7 +3,7 @@
     <h1>Добави потребител</h1>
     <div th:if="${error}" class="error"><span th:text="${error}" ></span></div>
     <div th:if="${success}"  class="success"><span th:text="${success}" ></span></div>
-    <form  th:action="@{/add-user}" th:method="post"         th:object="${addUserDto}">
+    <form  th:action="@{/add-user}" th:method="post"  th:object="${addUserDto}">
 
         <div class="row row-view">
             <div class="col-lg-6 elements">
