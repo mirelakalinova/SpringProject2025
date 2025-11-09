@@ -4,7 +4,7 @@ import com.example.mkalinova.app.Land.Controller.BaseController;
 import com.example.mkalinova.app.user.data.dto.AddUserDto;
 import com.example.mkalinova.app.user.data.dto.EditUserDto;
 import com.example.mkalinova.app.user.data.dto.UserListDto;
-import com.example.mkalinova.app.user.service.UserService;
+import com.example.mkalinova.app.user.service.UserServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,9 +22,9 @@ import java.util.List;
 
 @Controller
 public class UserController extends BaseController {
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
-    public UserController(UserService userService) {
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
@@ -36,6 +36,11 @@ public class UserController extends BaseController {
     @GetMapping("/login")
     public ModelAndView login() {
         return super.view("user/login");
+    }
+
+    @PostMapping("/logout")
+    public ModelAndView logout() {
+        return super.view("/");
     }
 
     @GetMapping("/users")
@@ -112,4 +117,6 @@ public class UserController extends BaseController {
 
         return "redirect:/users";
     }
+
+
 }

@@ -1,0 +1,107 @@
+package com.example.mkalinova.app.company.data.entity;
+
+import com.example.mkalinova.app.client.data.entity.Client;
+import com.example.mkalinova.app.repair.data.entity.Repair;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Table(name = "companies")
+@Entity
+public class Company {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String name;
+
+    @Column(unique = true)
+    private int uic;
+    @Column(name = "vat_number", nullable = false)
+    private String vatNumber;
+    @Column(nullable = false)
+    private String address;
+
+    @Column(name = "accountable_person", nullable = false)
+    private String accountablePerson;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id") // Един клиент има много фирми
+    private Client client;
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Company() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getUic() {
+        return uic;
+    }
+
+    public void setUic(int uic) {
+        this.uic = uic;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getAccountablePerson() {
+        return accountablePerson;
+    }
+
+    public void setAccountablePerson(String accountablePerson) {
+        this.accountablePerson = accountablePerson;
+    }
+
+    public String getVatNumber() {
+        return vatNumber;
+    }
+
+    public void setVatNumber(String vatNumber) {
+        this.vatNumber = vatNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Фирма \n" +
+                "================ \n" +
+                "Име: '" + name + '\n'
+                + "ЕИК: '" + uic + '\n'
+                + "ДДС номер:  '" + vatNumber + '\n' +
+                "Адрес: " + address + '\n' +
+                "Мол: '" + accountablePerson + '\n';
+    }
+}

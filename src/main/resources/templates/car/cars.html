@@ -1,0 +1,49 @@
+<div class="container" xmlns:th="http://www.w3.org/1999/xhtml">
+	<h1>Списък с коли</h1>
+	<div th:if="${message}" th:class="success">
+		<span th:text="${message}"></span>
+	</div>
+	<div class="add-user-btn">
+		<a th:href="@{/car/add}">Добави кола</a>
+	</div>
+	<table class="table table-striped table-hover" th:object="${cars}">
+		<thead class="thead-light">
+		<tr>
+			<td>#</td>
+			<td>Рег. №</td>
+			<td>Марка</td>
+			<td>Модел</td>
+			<td>Шаси</td>
+			<td>Редакция</td>
+			<td>Изтриване</td>
+		</tr>
+		</thead>
+		<tbody>
+		<tr th:each="car : ${cars}">
+			<td th:text="${car.id}">#</td>
+			<td th:text="${car.registrationNumber}">Регистрационен номер</td>
+			<td th:text="${car.make}">Марка</td>
+			<td th:text="${car.model}">Модел</td>
+			<td th:text="${car.vin}">Шаси</td>
+			<td>
+				<form th:action="@{/car/edit/{id}(id=${car.id})}" th:method="get">
+
+					<button type="submit" class="user-edit-btn user-btn">
+
+						Редакция
+					</button>
+				</form>
+			</td>
+			<td>
+				<form th:action="@{/car/delete/{id}(id=${car.id})}" th:method="post">
+
+					<button type="submit"
+							class="user-delete-btn user-btn" th:attr="data-name=${car.registrationNumber}">
+						Изтриване
+					</button>
+				</form>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>

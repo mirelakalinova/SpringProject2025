@@ -1,0 +1,148 @@
+<div class="container align-content-center home"
+     xmlns:th="http://www.w3.org/1999/xhtml">
+    <h1>Добави автомобил</h1>
+    <!--  <h1 th:if="${heading == 'edit'}">Редакция автомобил</h1>-->
+
+    <div class="row row-view">
+        <div class="col-lg-6 elements">
+            <div class="car-form">
+
+            </div>
+            <!--Данни за колата-->
+            <div th:fragment="form-car" xmlns:th="http://www.w3.org/1999/xhtml">
+
+
+                <div th:if="${message}" th:text="${message}" th:class="${status}"></div>
+                <form th:method="POST"
+                      th:action="@{/car/add}"
+                      th:object="${addCarDto}">
+                    <div class="form-group">
+                        <div class="row">
+
+                        </div>
+                        <label for="registrationNumber">Регистрационен номер</label>
+                        <input class="form-control" th:field="*{registrationNumber}" type="text" id="registrationNumber"
+                               name="registrationNumber">
+                        <div class="error-message" th:if="${#fields.hasErrors('registrationNumber')}">
+                            <span th:text="${#fields.errors('registrationNumber').get(0)}"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div id="app">
+
+                                <label for="make">Марка <span th:if="${formType == 'edit'}" th:field="*{make}"
+                                                              th:text="*{make}" class="span-info"> </span></label>
+                                <span th:if="${formType == 'edit'}" class="change-span">Променете: </span>
+
+
+                                <input name="make" id="make" type="text" v-model="searchMake" @input="searchMakes"
+                                       class="form-control" placeholder="Започнете да пишете марката...">
+
+                                <!-- Падащо меню за марки -->
+                                <ul v-if="filteredMakes.length > 0 && searchMake"
+                                    class="dropdown-menu">
+                                    <li v-for="make in filteredMakes" :key="make.id" @click="selectMake(make)">
+                                        {{ make.name }}
+                                    </li>
+                                </ul>
+
+
+                                <div class="error-message" th:if="${#fields.hasErrors('make')}">
+                                    <span th:text="${#fields.errors('make').get(0)}"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="model">Модел <span th:if="${formType == 'edit'}" th:field="*{model}"
+                                                                   th:text="*{model}" class="span-info"> </span></label>
+
+                                    <span th:if="${formType == 'edit'}" class="change-span">Променете: </span>
+
+
+                                    <!-- Поле за търсене на модели -->
+                                    <input th:field="*{model}" id="model" name="model" type="text" v-model="searchModel"
+                                           @input="searchModels" class="form-control"
+                                           placeholder="Започнете да пишете за модела...">
+
+                                    <!-- Падащо меню за модели (ще се показва винаги, без да е нужно да се въвеждат букви) -->
+                                    <ul v-if="filteredModels.length > 0" class="dropdown-menu" id="model-list">
+                                        <li v-for="model in filteredModels" :key="model.id" @click="selectModel(model)">
+                                            {{ model.name }}
+                                        </li>
+                                    </ul>
+
+
+                                    <div class="error-message" th:if="${#fields.hasErrors('model')}">
+                                        <span th:text="${#fields.errors('model').get(0)}"></span>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="year">Година на производство</label>
+                        <input class="form-control" type="text" th:field="*{year}" id="year" name="year">
+                        <div class="error-message" th:if="${#fields.hasErrors('year')}">
+                            <span th:text="${#fields.errors('year').get(0)}"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="cube">Куб.</label>
+                        <input class="form-control" type="text" th:field="*{cube}" id="cube" name="cube">
+                        <div class="error-message" th:if="${#fields.hasErrors('cube')}">
+                            <span th:text="${#fields.errors('cube').get(0)}"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kw">Kw</label>
+                        <input class="form-control" th:field="*{kw}" type="text" id="kw" name="kw">
+                        <div class="error-message" th:if="${#fields.hasErrors('kw')}">
+                            <span th:text="${#fields.errors('kw').get(0)}"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="hp">к.с</label>
+                        <input class="form-control" th:field="*{hp}" type="text" id="hp" name="hp">
+                        <div class="error-message" th:if="${#fields.hasErrors('hp')}">
+                            <span th:text="${#fields.errors('hp').get(0)}"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="vin">Шаси</label>
+                        <input class="form-control" th:field="*{vin}" type="text" id="vin" name="vin">
+                        <div class="error-message" th:if="${#fields.hasErrors('vin')}">
+                            <span th:text="${#fields.errors('vin').get(0)}"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="client">Клиент</label><br/>
+                        <select th:field="*{client}" class="d-none form-select select2" id="client" name="client"
+                                onblur="selectSearch()" >
+                            <option value="">Избери</option>
+                            <option th:if="${clients.empty}" disabled th:value="null">Няма налични клиенти</option>
+                         <option th:each="client : ${clients}"
+                                    th:text="${client.firstName} + ' - ' + ${client.phone} "
+                                    th:value="${client.id}"></option>
+                        </select>
+
+                    </div>
+                    <div class="form-group">
+                        <button type="submit">Запиши</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+</div>
