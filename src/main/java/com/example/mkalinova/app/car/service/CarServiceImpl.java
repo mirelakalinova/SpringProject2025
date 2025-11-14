@@ -26,7 +26,6 @@ public class CarServiceImpl implements CarService {
     private final UserServiceImpl userService;
 
 
-
     public CarServiceImpl(CarRepository carRepository, ModelMapper modelMapper, ApiService apiService, UserServiceImpl userService) {
         this.carRepository = carRepository;
         this.modelMapper = modelMapper;
@@ -49,12 +48,24 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Map<String, String> addCarAndReturnMessage(AddCarDto addCarDto) throws AccessDeniedException {
+    public <T> List<T> allCarsWithoutUser(Class<T> clazz) {
+        List<T> list = new ArrayList<>();
+
+        carRepository.findByClientIsNull().forEach(car -> {
+            T carToAdd = modelMapper.map(car, clazz);
+                 list.add(carToAdd);
+        });
+
+        return list;
+    }
+
+    @Override
+    public HashMap<String, String> addCarAndReturnMessage(AddCarDto addCarDto) throws AccessDeniedException {
         Optional<User> user = userService.getLoggedInUser();
-        if(user.isEmpty()){
+        if (user.isEmpty()) {
             throw new AccessDeniedException("Нямате права да изпълните тази операция!");
         }
-        Map<String, String> result = new HashMap<>();
+        HashMap<String, String> result = new HashMap<>();
         if (carRepository.getByRegistrationNumber(addCarDto.getRegistrationNumber()).isPresent()) {
             result.put("status", "error");
             result.put("message", "Автомобил с рег. номер: " + addCarDto.getRegistrationNumber() + " вече съществува");
@@ -71,11 +82,10 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Car findCar(String registrationNumber) {
-        return
-                carRepository
-                        .findByRegistrationNumber(registrationNumber)
-                        .orElseThrow(() -> new NullPointerException("Кола с подадения регистрационен номер не е налична: " + registrationNumber));
+    public Optional<Car> findCar(String registrationNumber) {
+
+
+        return  carRepository.findByRegistrationNumber(registrationNumber);
     }
 
     @Override
@@ -103,7 +113,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<CarDto> getAll() {
-        List<Car> cars = carRepository.findAll();
+        List<Car> cars = carRepository.findAllByDeletedAtNull();
 
         List<CarDto> carList = new ArrayList<>();
 
@@ -135,7 +145,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public HashMap<String, String> deleteCarById(Long id) throws AccessDeniedException {
         Optional<User> loggedInUser = userService.getLoggedInUser();
-        if (loggedInUser.isEmpty() || !userService.isAdmin(loggedInUser.get()) ) {
+        if (loggedInUser.isEmpty() || !userService.isAdmin(loggedInUser.get())) {
             throw new AccessDeniedException("Нямата права да изтриете автомобил!");
         } else {
             HashMap<String, String> result = new HashMap<>();
@@ -144,8 +154,8 @@ public class CarServiceImpl implements CarService {
                 String registrationNumber = carToDelete.get().getRegistrationNumber();
 
                 carRepository.deleteById(id);
-                result.put("status","success");
-                result.put("message","Успешно изтрита кола с рег.#: " + registrationNumber);
+                result.put("status", "success");
+                result.put("message", "Успешно изтрита кола с рег.#: " + registrationNumber);
                 return result;
             } else {
 
@@ -176,9 +186,8 @@ public class CarServiceImpl implements CarService {
 
         Car carToUpdate = modelMapper.map(editCarDto, Car.class);
         carToUpdate.setId(car.get().getId());
-        if(!car.get().getMake().equals(editCarDto.getMake()) && !car.get().getModel().equals(editCarDto.getModel()))
-        {
-          apiService.saveMakeAndModel(new SaveMakeModelDto(carToUpdate.getMake(), carToUpdate.getModel()));
+        if (!car.get().getMake().equals(editCarDto.getMake()) && !car.get().getModel().equals(editCarDto.getModel())) {
+            apiService.saveMakeAndModel(new SaveMakeModelDto(carToUpdate.getMake(), carToUpdate.getModel()));
 
         }
         carRepository.saveAndFlush(carToUpdate);
@@ -190,14 +199,17 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public <T>Object findById(Long carId, Class<T> clazz) {
+    public <T> Object findById(Long carId, Class<T> clazz) {
         Optional<Car> car = carRepository.findById(carId);
-    // todo - if is necessary to throw NullPointer exception
-        if (car.isEmpty()) {
-            return null;
-        }
-//        T carToFind = modelMapper.map(car.get(), clazz);
+        // todo - if is necessary to throw NullPointer exception
+        return car.<Object>map(value -> modelMapper.map(value, clazz)).orElse(null);
 
-        return modelMapper.map(car.get(), clazz);
+
+    }
+
+    @Override
+    public List<Car> getAllCarByClientId(Long id) {
+        return carRepository.findAllByClientId(id);
+
     }
 }

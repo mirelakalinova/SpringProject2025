@@ -33,6 +33,11 @@ public class UserServiceImpl implements UserService {
         return this.userRepository.findById(this.getLoggedInUserId());
     }
 
+    @Override
+    public void isUserLogIn() throws AccessDeniedException {
+        Long id = getLoggedInUserId();
+    }
+
     public Long getLoggedInUserId() throws AccessDeniedException {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails userDetails) {

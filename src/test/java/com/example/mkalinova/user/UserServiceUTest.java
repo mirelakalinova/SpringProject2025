@@ -81,7 +81,7 @@ public class UserServiceUTest {
 
     }
 
-    private void mockLoggedInUser(String username) {
+     void mockLoggedInUser(String username) {
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(username, "password", new ArrayList<>());
 
         Authentication authentication = mock(Authentication.class);

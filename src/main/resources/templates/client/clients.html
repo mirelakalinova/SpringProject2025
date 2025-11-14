@@ -1,0 +1,59 @@
+<div class="container"
+><h1>Списък с клиенти</h1>
+<section class="clients" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div th:if="${message}"  th:class="success"><p th:text="${message}"></p></div>
+    <div class="add-user-btn">
+        <a th:href="@{client/add}">Добави клиент</a>
+    </div>
+    <table class=" table table-striped table-hover" >
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Име</th>
+            <th>Телефон</th>
+            <th>Email</th>
+            <th>Автомобили</th>
+            <th>Фирми</th>
+            <th>Редакция</th>
+            <th>Изтрий</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="client : ${clients}">
+            <td th:text="${client.id}"></td>
+            <td th:text="${client.firstName}  + ' ' +  ${client.lastName}"></td>
+            <td th:text="${client.phone}"></td>
+            <td th:text="${client.email}"></td>
+            <td>
+                <ul  class="list-unstyled">
+                    <li th:each="car : ${client.cars}"><strong><span th:text="${car.registrationNumber}">Няма коли..</span></strong></li>
+                </ul>
+            </td>
+            <td>
+                <ul  class="list-unstyled">
+                    <li th:each="company : ${client.companies}"><strong th:text="${company.name}">Няма фирми..</strong></li>
+                </ul>
+            </td>
+            <td>
+                <form th:action="@{/client/edit/{id}(id=${client.id})}" th:method="GET">
+
+                    <button type="submit" class="user-edit-btn user-btn">
+                        Редакция
+                    </button>
+                </form>
+            </td>
+            <td>
+                <form th:action="@{/client/delete/{id}(id=${client.id})}" th:method="post">
+                    <button type="submit" class="user-delete-btn user-btn">
+                        Изтриване
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+</section>
+
+</div>

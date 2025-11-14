@@ -24,6 +24,9 @@ public class EditClientDto {
     @NotBlank
     @Pattern(regexp = "^0\\d{9}$", message = "Телефонният номер трябва да започва с 0 и да съдържа 10 цифри")
     private String phone;
+    private Long carId;
+    private Long companyId;
+
 
     private List<Car> cars;
     private List<Company> companies;
@@ -90,4 +93,19 @@ public class EditClientDto {
         this.phone = phone;
     }
 
+    public Long getCarId() {
+        return carId;
+    }
+
+    public void setCarId(Long carId) {
+        this.carId = carId;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
 }

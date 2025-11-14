@@ -26,4 +26,6 @@ public interface UserService {
     boolean isAdmin(User user) throws AccessDeniedException;
 
     Optional<User> getLoggedInUser() throws AccessDeniedException;
+
+    void isUserLogIn() throws AccessDeniedException;
 }

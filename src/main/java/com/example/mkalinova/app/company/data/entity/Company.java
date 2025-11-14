@@ -7,7 +7,9 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Table(name = "companies")
@@ -35,6 +37,11 @@ public class Company {
     @JoinColumn(name = "client_id") // Един клиент има много фирми
     private Client client;
 
+    @Column(name="deleted_at")
+    private LocalDateTime deletedAt;
+
+
+
     public Client getClient() {
         return client;
     }
@@ -42,6 +49,9 @@ public class Company {
     public void setClient(Client client) {
         this.client = client;
     }
+    //todo -> safe delete - fields -> created, updated, deleted
+
+
 
     public Company() {
     }
@@ -94,14 +104,25 @@ public class Company {
         this.vatNumber = vatNumber;
     }
 
-    @Override
-    public String toString() {
-        return "Фирма \n" +
-                "================ \n" +
-                "Име: '" + name + '\n'
-                + "ЕИК: '" + uic + '\n'
-                + "ДДС номер:  '" + vatNumber + '\n' +
-                "Адрес: " + address + '\n' +
-                "Мол: '" + accountablePerson + '\n';
+    public LocalDateTime deletedAt() {
+        return deletedAt;
     }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeleteAd(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+    //    @Override
+//    public String toString() {
+//        return "Фирма \n" +
+//                "================ \n" +
+//                "Име: '" + name + '\n'
+//                + "ЕИК: '" + uic + '\n'
+//                + "ДДС номер:  '" + vatNumber + '\n' +
+//                "Адрес: " + address + '\n' +
+//                "Мол: '" + accountablePerson + '\n';
+//    }
 }

@@ -9,13 +9,14 @@ import jakarta.validation.Valid;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 public interface CarService {
 
     List<AddCarDto> allCarsWithoutUser();
-    Map<String, String> addCarAndReturnMessage(@Valid AddCarDto addCarDto) throws AccessDeniedException;
-    Car findCar(String registrationNumber);
+    <T> List<T> allCarsWithoutUser(Class<T> clazz);
+    HashMap<String, String> addCarAndReturnMessage(@Valid AddCarDto addCarDto) throws AccessDeniedException;
+    Optional<Car> findCar(String registrationNumber);
     boolean findByRegistrationNumber(String registrationNumber);
     boolean findByVin(String vin);
     String deleteCar(Car car);
@@ -24,6 +25,7 @@ public interface CarService {
     HashMap<String, String> deleteCarById(Long id) throws AccessDeniedException;
     <T> Object getById(Long id, Class<T> clazz);
     HashMap<String, String> editCar(Long id, EditCarDto editCarDto);
-    <T>Object findById(Long carId, Class<T> clazz);
+    <T> Object findById(Long carId, Class<T> clazz);
 
+    List<Car> getAllCarByClientId(Long id);
 }

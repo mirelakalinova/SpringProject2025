@@ -1,0 +1,278 @@
+
+<div class="container align-content-center home" xmlns:th="http://www.w3.org/1999/xhtml">
+	<h1>Добави клиент</h1>
+	<div class="elements">
+		<div th:if="${message}" th:text="${message}" th:class="alert-danger"></div>
+
+		<form th:action="@{/client/add}" th:method="post">
+
+
+			<!-- Лични данни -->
+			<div th:object="${addClientDto}">
+				<h2 class="subheading">Клиент</h2>
+				<div class="div-group">
+					<div class="form-group ">
+
+						<label for="firstName">Име*</label>
+						<input th:field="*{firstName}" class="form-control" type="text" id="firstName" name="firstName"
+							   required>
+						<div class="error-message" th:if="${#fields.hasErrors('firstName')}">
+							<span th:text="${#fields.errors('firstName').get(0)}"></span>
+						</div>
+					</div>
+
+
+					<div class="form-group">
+						<label for="lastName">Фамилия*</label>
+						<input th:field="*{lastName}" class="form-control" type="text" id="lastName" name="lastName"
+							   required>
+						<div class="error-message" th:if="${#fields.hasErrors('lastName')}">
+							<span th:text="${#fields.errors('lastName').get(0)}"></span>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="email">Имейл</label>
+						<input th:field="*{email}" class="form-control" type="email" id="email" name="email">
+						<div class="error-message" th:if="${#fields.hasErrors('email')}">
+							<span th:text="${#fields.errors('email').get(0)}"></span>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="phone">Телефон*</label>
+						<input th:field="*{phone}" class="form-control" type="tel" id="phone" name="phone" required>
+						<div class="error-message" th:if="${#fields.hasErrors('phone')}">
+							<span th:text="${#fields.errors('phone').get(0)}"></span>
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+			<hr>
+			<!-- Автомобил -->
+			<div class="div-group-column">
+				<div class="form-group ">
+
+					<h2 class="subheading">Автомобил</h2>
+
+					<label for="car" class="header-label">Зареди автомобил по рег.№</label>
+					<select id="car" name="car" class="form-control d-none">
+						<option th:if="${!#lists.isEmpty(cars)}" selected disabled>
+							Избери
+						</option>
+						<option th:if="${#lists.isEmpty(cars)}" disabled>Няма налични коли</option>
+						<option th:each="car : ${cars}"
+								th:text="${car.registrationNumber}"
+								th:value="${car.registrationNumber}"
+								th:data-name="${car.registrationNumber}"
+								th:data-registration="${car.registrationNumber}"
+								th:data-make="${car.make}"
+								th:data-model="${car.model}"
+								th:data-year="${car.year}"
+								th:data-cube="${car.cube}"
+								th:data-kw="${car.kw}"
+								th:data-hp="${car.hp}"
+								th:data-vin="${car.vin}"></option>
+
+					</select>
+
+				</div>
+				<!--Автомобил-->
+				<div th:object="${addCarDto}">
+					<div class="form-group">
+
+
+						<label for="registrationNumber">Регистрационен номер</label>
+						<input th:field="*{registrationNumber}" class="form-control" type="text" id="registrationNumber"
+							   name="registrationNumber">
+
+						<div class="error-message" th:if="${#fields.hasErrors('registrationNumber')}">
+							<span th:text="${#fields.errors('registrationNumber').get(0)}"></span>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="row">
+							<div id="app">
+								<label for="make">Марка</label>
+
+								<input name="make" id="make" type="text" v-model="searchMake" th:field="*{make}" th:value="*{make}" @input="searchMakes"
+									   class="form-control" placeholder="Започнете да пишете за марката...">
+
+								<!-- Падащо меню за марки -->
+								<ul v-if="filteredMakes.length > 0 && searchMake" class="dropdown-menu">
+									<li v-for="make in filteredMakes" :key="make.id" @click="selectMake(make)">
+										{{ make.name }}
+									</li>
+								</ul>
+								<div class="error-message" th:if="${#fields.hasErrors('make')}">
+									<span th:text="${#fields.errors('make').get(0)}"></span>
+								</div>
+								<div class="form-group">
+									<label for="model">Модел</label>
+									<input th:field="*{model}" id="model" name="model" type="text"  th:value="*{model}" v-model="searchModel"
+										   @input="searchModels" class="form-control"
+										   placeholder="Започнете да пишете за модела...">
+
+									<!-- Падащо меню за модели (ще се показва винаги, без да е нужно да се въвеждат букви) -->
+									<ul v-if="filteredModels.length > 0" class="dropdown-menu" id="model-list">
+										<li v-for="model in filteredModels" :key="model.id" @click="selectModel(model)">
+											{{ model.name }}
+										</li>
+									</ul>
+									<div class="error-message" th:if="${#fields.hasErrors('model')}">
+										<span th:text="${#fields.errors('model').get(0)}"></span>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+
+
+					<div class="form-group">
+						<label for="year">Година на производство</label>
+						<input th:field="*{year}" class="form-control" type="text" id="year" name="year">
+						<div class="error-message" th:if="${#fields.hasErrors('year')}">
+							<span th:text="${#fields.errors('year').get(0)}"></span>
+						</div>
+					</div>
+
+
+					<div class="form-group">
+						<label for="cube">Куб.</label>
+						<input th:field="*{cube}" class="form-control" type="text" id="cube" name="cube">
+						<div class="error-message" th:if="${#fields.hasErrors('cube')}">
+							<span th:text="${#fields.errors('cube').get(0)}"></span>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="kw">Kw</label>
+						<input th:field="*{kw}" class="form-control" type="text" id="kw" name="kw">
+						<div class="error-message" th:if="${#fields.hasErrors('kw')}">
+							<span th:text="${#fields.errors('kw').get(0)}"></span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="hp">к.с</label>
+						<input th:field="*{hp}" class="form-control" type="text" id="hp" name="hp">
+						<div class="error-message" th:if="${#fields.hasErrors('hp')}">
+							<span th:text="${#fields.errors('hp').get(0)}"></span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="vin">Шаси</label>
+						<input th:field="*{vin}" class="form-control" type="text" id="vin" name="vin">
+						<div class="error-message" th:if="${#fields.hasErrors('vin')}">
+							<span th:text="${#fields.errors('vin').get(0)}"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr>
+
+
+			<div th:object="${addCompanyDto}">
+
+				<!-- Чекбокс за показване на формата -->
+				<div class="form-check form-switch">
+					<input class="form-check-input" type="checkbox" role="switch" id="showCompany" th:checked="*{checked}">
+					<label class="form-check-label" for="showCompany">Добави фирма</label>
+				</div>
+				<input value="true" type="hidden" data-checked="false" id="isChecked" th:field="*{checked}" th:name="checked">
+				<div id="companyForm" class="company-form d-none"
+
+				>
+					<h2 class="subheading">Фирма</h2>
+					<div class="div-group-column">
+						<div class="form-group">
+
+							<div class="row">
+
+								<div class="dynamic-content"><label for="company_name"
+																	class="header-label">Зареди
+									фирма по наименование</label>
+									<select class="form-select"
+											id="company_name" name="company_name">
+
+										<option th:if="${!#lists.isEmpty(companies)}"
+												value="" selected disabled>Избери
+										</option>
+										<option th:if="${#lists.isEmpty(companies)}" disabled>Няма налични
+											компании
+										</option>
+										<option th:each="company : ${companies}"
+												th:text="${company.name}"
+												th:value="${company.name}"
+												th:data-name="${company.name}"
+												th:data-uic="${company.uic}"
+												th:data-address="${company.address}"
+												th:data-vatnumber="${company.vatNumber}"
+												th:data-accountableperson="${company.accountablePerson}"></option>
+									</select></div>
+
+							</div>
+						</div>
+						<div class="company-form">
+
+
+							<div class="form-group">
+								<label for="name">Име на фирмата</label>
+								<input th:field="*{name}" class="form-control" type="text" id="name" name="name">
+								<div class="error-message" th:if="${#fields.hasErrors('name')}">
+									<span th:text="${#fields.errors('name').get(0)}"></span>
+								</div>
+							</div>
+
+
+							<div class="form-group">
+								<label for="uic">ЕИК</label>
+								<input th:field="*{uic}" class="form-control" type="number" id="uic" name="uic">
+								<div class="error-message" th:if="${#fields.hasErrors('uic')}">
+									<span th:text="${#fields.errors('uic').get(0)}"></span>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="vatNumber">ДДС номер</label>
+								<input th:field="*{vatNumber}" class="form-control" type="text" id="vatNumber"
+									   name="vatNumber">
+								<div class="error-message" th:if="${#fields.hasErrors('vatNumber')}">
+									<span th:text="${#fields.errors('vatNumber').get(0)}"></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="address">Адрес</label>
+								<input th:field="*{address}" class="form-control" type="text" id="address"
+									   name="address">
+								<div class="error-message" th:if="${#fields.hasErrors('address')}">
+									<span th:text="${#fields.errors('address').get(0)}"></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="accountablePerson">МОЛ</label>
+								<input th:field="*{accountablePerson}" class="form-control" type="text"
+									   id="accountablePerson" name="accountablePerson">
+								<div class="error-message" th:if="${#fields.hasErrors('accountablePerson')}">
+									<span th:text="${#fields.errors('accountablePerson').get(0)}"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="form-group">
+				<button type="submit">Запази</button>
+			</div>
+
+
+		</form>
+
+
+	</div>
+</div>

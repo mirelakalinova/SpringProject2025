@@ -134,7 +134,7 @@ User user = userRepository.findByUsername("test_editor");
 
         User user = userRepository.findByUsername("test_editor");
         assertNull(user);
-//        assertEquals("test@test.bg", user.getEmail());
+
 
     }
 

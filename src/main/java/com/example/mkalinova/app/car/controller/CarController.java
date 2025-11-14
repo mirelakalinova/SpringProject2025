@@ -5,10 +5,9 @@ import com.example.mkalinova.app.car.data.dto.AddCarDto;
 
 import com.example.mkalinova.app.car.data.dto.CarDto;
 import com.example.mkalinova.app.car.data.dto.EditCarDto;
-import com.example.mkalinova.app.car.data.dto.ListCarsDto;
 import com.example.mkalinova.app.car.service.CarService;
 
-import com.example.mkalinova.app.client.data.dto.ClientListDto;
+import com.example.mkalinova.app.client.data.dto.ClientListCarDto;
 import com.example.mkalinova.app.client.service.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -45,7 +44,7 @@ public class CarController extends BaseController {
 
         ModelAndView modelAndView = super.view("car/add-car");
 //        modelAndView.addObject("formType", "car");
-        modelAndView.addObject("clients", clientService.findAll(ClientListDto.class));
+        modelAndView.addObject("clients", clientService.findAll(ClientListCarDto.class));
 //        modelAndView.addObject("heading", "add");
 
         return modelAndView;
@@ -78,7 +77,7 @@ public class CarController extends BaseController {
 
         ModelAndView modelAndView = super.view("car/edit");
         modelAndView.addObject("editCarDto", carService.findById(id, EditCarDto.class));
-        modelAndView.addObject("clients", clientService.findAll(ClientListDto.class));
+        modelAndView.addObject("clients", clientService.findAll(ClientListCarDto.class));
 
         return modelAndView;
     }
