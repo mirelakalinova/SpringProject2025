@@ -5,7 +5,7 @@
     <div th:if="${success}"  class="success"><span th:text="${success}" ></span></div>
 
     <form  th:action="@{/edit-user/{id}(id=${editUserDto.id})}" th:method="post"    th:object="${editUserDto}">
-<span th:text="${editUserDto.getId()}"></span>
+<!--<span th:text="${editUserDto.getId()}"></span>-->
         <div class="row row-view">
             <div class="col-lg-6 elements">
                 <div class="group">

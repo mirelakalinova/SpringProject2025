@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,9 +50,15 @@ public class Car {
     @OneToMany(mappedBy = "car", fetch = FetchType.EAGER)
     private List<Repair> repairs;
     // за да могат да се променят или изтриват коли без това да се отразява на другите свързани коли с клиента на конкретната
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
+//            (cascade = CascadeType.MERGE)
     @JoinColumn(name = "client_id")
     private Client client;
+    @Column(name="deleted_at")
+    private LocalDateTime deletedAt;
+
+
+//todo -> safe delete - fields -> created, updated, deleted
 
     public Car(List<Repair> repairs) {
         this.repairs = new ArrayList<>();
@@ -147,7 +154,13 @@ public class Car {
     public void setClient(Client client) {
         this.client = client;
     }
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
 
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
     @Override
     public String toString() {
 

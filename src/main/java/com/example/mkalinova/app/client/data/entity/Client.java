@@ -5,6 +5,7 @@ import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.company.data.entity.Company;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class Client {
     private String phone;
     @Column
     private String email;
+    @Column(name="deleted_at")
+    private LocalDateTime deleteAd;
 
     // Persist -> за да може да се изтриват данните за всичко към клиента. После с поръчките ще стане мазало :)
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST,  fetch = FetchType.EAGER)
@@ -31,6 +34,7 @@ public class Client {
     // Свързване с фирми (може да има много фирми)
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL,  fetch = FetchType.EAGER)
     private List<com.example.mkalinova.app.company.data.entity.Company> companies = new ArrayList<>();
+    //todo -> safe delete - fields -> created, updated, deleted
 
 
     public List<Car> getCars() {
@@ -92,14 +96,23 @@ public class Client {
         this.email = email;
     }
 
-//    @Override
-//    public String toString() {
-//        return "Клиент \n" +
-//                "================ \n" +
-//                "Име: '" + firstName + '\n' +
-//                "Фамилия: " + lastName + '\n' +
-//                "email: '" + email + '\n' +
-//                "телефон: '" + phone + '\n'
-//                ;
-//    }
+    public LocalDateTime getDeleteAd() {
+        return deleteAd;
+    }
+
+
+    public void setDeleteAd(LocalDateTime deleteAd) {
+        this.deleteAd = deleteAd;
+    }
+
+    @Override
+    public String toString() {
+        return "Клиент \n" +
+                "================ \n" +
+                "Име: '" + firstName + '\n' +
+                "Фамилия: " + lastName + '\n' +
+                "email: '" + email + '\n' +
+                "телефон: '" + phone + '\n'
+                ;
+    }
 }

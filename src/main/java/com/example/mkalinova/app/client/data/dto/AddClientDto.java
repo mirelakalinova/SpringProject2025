@@ -24,16 +24,6 @@ public class AddClientDto {
     @Email
     private String email;
 
-    @Length(min=4 , message = "Името на компанията трябва да е поне 3 символа")
-    private String company;
-
-    @NotNull(message = "ЕИК не трябва да е празно")
-    @Digits(integer = 9, fraction = 0, message = "ЕИК трябва да съдържа точно 9 цифри.")
-    private String vatNumber;
-
-    private String address;
-
-    private String accountablePerson;
 
     public AddClientDto() {
     }
@@ -70,35 +60,5 @@ public class AddClientDto {
         this.email = email;
     }
 
-    public String getCompany() {
-        return company;
-    }
 
-    public void setCompany(String company) {
-        this.company = company;
-    }
-
-    public String getVatNumber() {
-        return vatNumber;
-    }
-
-    public void setVatNumber(String vatNumber) {
-        this.vatNumber = vatNumber;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getAccountablePerson() {
-        return accountablePerson;
-    }
-
-    public void setAccountablePerson(String accountablePerson) {
-        this.accountablePerson = accountablePerson;
-    }
 }

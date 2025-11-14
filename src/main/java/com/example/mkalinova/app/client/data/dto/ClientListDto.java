@@ -1,34 +1,53 @@
 package com.example.mkalinova.app.client.data.dto;
 
-import jakarta.validation.constraints.*;
-import org.hibernate.validator.constraints.Length;
+import com.example.mkalinova.app.car.data.dto.CarDto;
+import com.example.mkalinova.app.car.data.entity.Car;
+import com.example.mkalinova.app.company.data.dto.CompanyClientListDto;
+import com.example.mkalinova.app.company.data.entity.Company;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ClientListDto {
-
 
     private Long id;
     private String firstName;
 
-
     private String lastName;
-
 
     private String phone;
 
-
     private String email;
 
+    private LocalDateTime deleteAd;
 
-    private String company;
+    private List<CarDto> cars = new ArrayList<>();
 
-    private String vatNumber;
-
-    private String address;
-
-    private String accountablePerson;
+    private List<CompanyClientListDto> companies = new ArrayList<>();
 
     public ClientListDto() {
     }
+
+
+    public List<CarDto> getCars() {
+        return cars;
+    }
+
+    public void setCars(List<CarDto> cars) {
+        this.cars = cars;
+    }
+
+    public List<CompanyClientListDto> getCompanies() {
+        return companies;
+    }
+
+    public void setCompanies(List<CompanyClientListDto> companies) {
+        this.companies = new ArrayList<>();
+    }
+
 
     public Long getId() {
         return id;
@@ -70,35 +89,23 @@ public class ClientListDto {
         this.email = email;
     }
 
-    public String getCompany() {
-        return company;
+    public LocalDateTime getDeleteAd() {
+        return deleteAd;
     }
 
-    public void setCompany(String company) {
-        this.company = company;
+
+    public void setDeleteAd(LocalDateTime deleteAd) {
+        this.deleteAd = deleteAd;
     }
 
-    public String getVatNumber() {
-        return vatNumber;
-    }
-
-    public void setVatNumber(String vatNumber) {
-        this.vatNumber = vatNumber;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getAccountablePerson() {
-        return accountablePerson;
-    }
-
-    public void setAccountablePerson(String accountablePerson) {
-        this.accountablePerson = accountablePerson;
+    @Override
+    public String toString() {
+        return "Клиент \n" +
+                "================ \n" +
+                "Име: '" + firstName + '\n' +
+                "Фамилия: " + lastName + '\n' +
+                "email: '" + email + '\n' +
+                "телефон: '" + phone + '\n'
+                ;
     }
 }

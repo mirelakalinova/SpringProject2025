@@ -12,6 +12,31 @@ new Vue({
         selectedModel: null,
 
     },
+    mounted() {
+        // Попълваме searchMake само ако Vue data е празна и има стойност в DOM (value или attribute)
+        try {
+            const makeInput = document.getElementById('make');
+            if (makeInput) {
+                const domVal = (makeInput.value && makeInput.value.trim()) ? makeInput.value.trim()
+                    : (makeInput.getAttribute('value') || '').trim();
+                if ((!this.searchMake || this.searchMake.trim() === '') && domVal) {
+                    this.searchMake = domVal;
+                }
+            }
+
+            const modelInput = document.getElementById('model');
+            if (modelInput) {
+                const domValModel = (modelInput.value && modelInput.value.trim()) ? modelInput.value.trim()
+                    : (modelInput.getAttribute('value') || '').trim();
+                if ((!this.searchModel || this.searchModel.trim() === '') && domValModel) {
+                    this.searchModel = domValModel;
+                }
+            }
+        } catch (e) {
+            // безопасен fallback — не прекъсва приложението
+            console.error('Init from DOM failed', e);
+        }
+    },
     created() {
         // Зареждаме всички марки
         this.fetchMakes();
@@ -98,10 +123,12 @@ new Vue({
             this.searchMake = make.name; // Поставяме името на марката в полето за търсене
             this.filteredMakes = []; // Изчистваме филтрираните марки
             this.fetchModels(); // Зареждаме моделите за избраната марка
-            const isEditView = window.location.pathname.startsWith('/car/edit');
+            const isEditView = window.location.pathname.startsWith('/car/edit') || window.location.pathname.startsWith('/car/add')
+            || window.location.pathname.startsWith('/client/add') ;
             if(isEditView){
                 const makeName = document.getElementById('make');
                 makeName.value  = make.name;
+                makeName.setAttribute('value', make.name);
 
             }
         },
@@ -115,6 +142,7 @@ new Vue({
             if(isEditView){
                 const modelName = document.getElementById('model');
                 modelName.value  = model.name;
+                modelName.setAttribute('value', model.name);
 
             }
         }

@@ -244,7 +244,7 @@ span.select2{
     display:block;
 }
 
-ul#select2-client-results {
+ul#select2-client-results, ul#select2-car-results, ul#select2-carToAdd-container {
     list-style: none;
     padding: 5px 0;
     background: #f8f9fa;
@@ -265,11 +265,18 @@ span.selection {
 }
 
 
-span#select2-client-container {
+span#select2-client-container, span#select2-car-container, span#select2-carToAdd-container  {
     position: absolute;
     top: 5px;
     left: 5px;
     width: 636px;
+}
+
+span.select2-container.select2-container--default.select2-container--open {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    top: 700px !important;
 }
 
 /* edit car */
@@ -297,6 +304,40 @@ span.span-info {
 
 }
 
+/* clients */
+
+h2.subheading {
+    background: #E8E9ED;
+    padding: 10px 5px;
+    font-size: 22px;
+    margin-top: 50px;
+    margin-bottom: 15px;
+}
+
+label.header-label {
+    font-weight: 800;
+    color: #d42d2f;
+    padding: 20px 0;
+}
+
+select#car {
+    min-width: 70px;
+    padding: 0 20px;
+    height: 40px;
+}
+
+.form-check-input:checked {
+    background-color: #d13733 ;
+    border-color: #d13733 ;
+}
+.form-check-input:focus {
+    border-color: #d42d2f80;
+    box-shadow: 0 0 0 .25rem #d42d2f2b;
+}
+
+.form-switch .form-check-input:focus {
+    --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+}
 
 
 /* error pages */
@@ -321,6 +362,6 @@ span.span-info {
 }
 
 .error-message {
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 12px;
+
 }
