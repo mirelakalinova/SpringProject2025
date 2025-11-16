@@ -23,13 +23,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // какво е публично
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(
                                 "/css/**", "/js/**", "/images/**"   // статични ресурси
                         ).permitAll()
                         .requestMatchers("login").permitAll()
                          .anyRequest().permitAll()
+
 //                         .anyRequest().authenticated()
                 )
                 // стандартният формуляр за логин (вграден)

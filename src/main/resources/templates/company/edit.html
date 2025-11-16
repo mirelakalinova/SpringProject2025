@@ -1,0 +1,105 @@
+
+<div class="container"> <section class="clients" xmlns:th="http://www.w3.org/1999/xhtml">
+
+	<h1 th:text="${name}"></h1>
+
+	<div th:if="${message}" th:text="${message}" style="white-space: pre-line;" th:class="*{status}"></div>
+	<div class="client-form">
+		<form th:method="post" th:action="@{/company/edit/{id}(id=${editCompanyDto.id})}" th:object="${editCompanyDto}">
+
+
+				<h2 class="subheading">Данни за фирмата</h2>
+				<div class="form-group">
+					<label for="name">Име</label>
+					<input id="name" name="name" type="text" th:value="*{name}" class="form-control">
+					<div class="error-message" th:if="${#fields.hasErrors('name')}">
+						<span th:text="${#fields.errors('name').get(0)}"></span>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="uic">ЕИК</label>
+					<input id="uic" name="uic" type="text" th:value="*{uic}" class="form-control">
+					<div class="error-message" th:if="${#fields.hasErrors('uic')}">
+						<span th:text="${#fields.errors('uic').get(0)}"></span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="vatNumber">ДДС #</label>
+					<input id="vatNumber" name="vatNumber" type="text" th:value="*{vatNumber}" class="form-control">
+					<div class="error-message" th:if="${#fields.hasErrors('vatNumber')}">
+						<span th:text="${#fields.errors('vatNumber').get(0)}"></span>
+					</div>
+				</div>
+			<div class="form-group">
+				<label for="address">Адрес</label>
+				<input id="address" name="address" type="text" th:value="*{address}" class="form-control">
+				<div class="error-message" th:if="${#fields.hasErrors('address')}">
+					<span th:text="${#fields.errors('address').get(0)}"></span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="accountablePerson">МОЛ</label>
+				<input id="accountablePerson" name="accountablePerson" type="text" th:value="*{accountablePerson}" class="form-control">
+				<div class="error-message" th:if="${#fields.hasErrors('accountablePerson')}">
+					<span th:text="${#fields.errors('accountablePerson').get(0)}"></span>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-group">
+					<label for="clientId">Добави клиент</label>
+					<select th:field="*{clientId}"   th:attr="disabled=${existingClient != null}"
+							  class="d-none form-select select2"
+
+							  id="clientId"
+							onblur="selectSearch()">
+						<option value="">Избери</option>
+						<option th:if="${clients.empty}" disabled th:value="null">Няма намерени клиенти</option>
+						<option th:each="client : ${clients}"
+								th:text="${client} "
+								th:value="${client.id}"></option>
+					</select>
+
+				</div>
+
+			</div>
+			<button type="submit" class="save">Запази</button>
+		</form>
+			<hr>
+
+			<div class="box">
+				<h2 class="subheading">Данни за клиента</h2>
+			</div>
+			<p class="warning" th:if="${existingClient == null}">Няма клиент</p>
+			<table class="table table-striped table-hover" th:if="${existingClient != null}" >
+				<thead>
+				<tr>
+					<th>Име</th>
+					<th>Фамилия</th>
+					<th>Телефон</th>
+					<th>email</th>
+
+					<th>Премахни</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:object="${existingClient}"  >
+					<td th:text="*{firstName}"></td>
+					<td th:text="*{lastName}"></td>
+					<td th:text="*{phone}"></td>
+					<td th:text="*{email}"></td>
+					<td><form th:action="@{/company/remove-client/{id}(id=${existingClient.id})}" th:method="post">
+
+						<input type="hidden" name="id" th:value="${existingClient.id}">
+						<input type="hidden" name="companyId" th:value="${editCompanyDto.id}" />
+						<button type="submit" class="user-delete-btn user-btn">
+							Премахни
+						</button></form></td>
+				</tr>
+
+
+				</tbody>
+			</table>
+	</div>
+
+</section></div>

@@ -1,0 +1,53 @@
+<div class="container" xmlns:th="http://www.w3.org/1999/xhtml">
+	<h1>Списък с коли</h1>
+	<div th:if="${message}" th:class="success">
+		<span th:text="${message}"></span>
+	</div>
+	<div class="add-user-btn">
+		<a th:href="@{/company/add}">Добави фирма</a>
+	</div>
+	<table class="table table-striped table-hover" th:object="${companies}">
+		<thead class="thead-light">
+		<tr>
+			<td>#</td>
+			<td>Име</td>
+			<td>ЕИК</td>
+			<td>ДДС #</td>
+			<td>МОЛ</td>
+			<td>Клиент</td>
+			<td>Телефон</td>
+			<td>Редакция</td>
+			<td>Изтриване</td>
+		</tr>
+		</thead>
+		<tbody>
+		<tr th:each="company : ${companies}">
+			<td th:text="${company.id}">#</td>
+			<td th:text="${company.name}">Име</td>
+			<td th:text="${company.uic}">ЕИК</td>
+			<td th:text="${company.vatNumber}">ДДС #</td>
+			<td th:text="${company.accountablePerson}">МОЛ</td>
+			<td th:text="${company.client != null ? company.client.name : '-'}" >Клиент</td>
+			<td th:text="${company.client != null ? company.client.phone : '-'}" >Телефон</td>
+			<td>
+				<form th:action="@{/company/edit/{id}(id=${company.id})}" th:method="get">
+
+					<button type="submit" class="user-edit-btn user-btn">
+
+						Редакция
+					</button>
+				</form>
+			</td>
+			<td>
+				<form th:action="@{/company/delete/{id}(id=${company.id})}" th:method="post">
+
+					<button type="submit"
+							class="user-delete-btn user-btn" th:attr="data-name=${company.id}">
+						Изтриване
+					</button>
+				</form>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>

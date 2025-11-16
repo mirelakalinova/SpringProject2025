@@ -243,7 +243,7 @@ public class ClientControllerIT {
         assertTrue(client.isPresent());
         Optional<Car> car = carRepository.findByRegistrationNumber("CB2125KO");
         assertTrue(car.isPresent());
-        Optional<Company> company = companyRepository.findByUic(201799236);
+        Optional<Company> company = companyRepository.findByUic("201799236");
         assertTrue(company.isPresent());
     }
 
@@ -402,7 +402,7 @@ public class ClientControllerIT {
         clientRepository.saveAndFlush(client);
         Company company = new Company();
         company.setName("Audi");
-        company.setUic(201799236);
+        company.setUic("201799236");
         company.setVatNumber("BG201799236");
         company.setAddress("1HGBH41JXMN109177");
         company.setAccountablePerson("Test test");
@@ -454,7 +454,7 @@ public class ClientControllerIT {
         clientRepository.saveAndFlush(client);
         Company compnay = new Company();
         compnay.setName("Audi");
-        compnay.setUic(201799236);
+        compnay.setUic("201799236");
         compnay.setVatNumber("BG201799236");
         compnay.setAddress("1HGBH41JXMN109177");
         compnay.setAccountablePerson("Test test");
@@ -508,7 +508,7 @@ public class ClientControllerIT {
         clientRepository.saveAndFlush(client);
         Company compnay = new Company();
         compnay.setName("Audi");
-        compnay.setUic(201799236);
+        compnay.setUic("201799236");
         compnay.setVatNumber("BG201799236");
         compnay.setAddress("1HGBH41JXMN109177");
         compnay.setAccountablePerson("Test test");
@@ -554,7 +554,7 @@ public class ClientControllerIT {
     public void removeCompanyFromClient_Success() throws Exception {
         Company company = new Company();
         company.setName("Audi");
-        company.setUic(201799236);
+        company.setUic("201799236");
         company.setVatNumber("BG201799236");
         company.setAddress("1HGBH41JXMN109177");
         company.setAccountablePerson("Test test");

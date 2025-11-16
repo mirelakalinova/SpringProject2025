@@ -26,6 +26,7 @@ public class Client {
     private String email;
     @Column(name="deleted_at")
     private LocalDateTime deleteAd;
+    private String name;
 
     // Persist -> за да може да се изтриват данните за всичко към клиента. После с поръчките ще стане мазало :)
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST,  fetch = FetchType.EAGER)
@@ -78,6 +79,14 @@ public class Client {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getName() {
+        return firstName + " " +  lastName;
+    }
+
+    private void setName(String name) {
+        this.name = name;
     }
 
     public String getPhone() {

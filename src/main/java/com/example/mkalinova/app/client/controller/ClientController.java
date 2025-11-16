@@ -8,7 +8,6 @@ import com.example.mkalinova.app.car.data.dto.CarDto;
 import com.example.mkalinova.app.car.data.dto.CarDtoEditClient;
 import com.example.mkalinova.app.car.service.CarService;
 import com.example.mkalinova.app.client.data.dto.AddClientDto;
-import com.example.mkalinova.app.client.data.dto.ClientListDto;
 import com.example.mkalinova.app.client.data.dto.EditClientDto;
 import com.example.mkalinova.app.client.service.ClientService;
 import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
@@ -69,7 +68,7 @@ public class ClientController extends BaseController {
     @GetMapping("/clients")
     public ModelAndView clientList() {
         ModelAndView modelAndView = super.view("/client/clients");
-        modelAndView.addObject("clients", clientService.getAll());
+        modelAndView.addObject("clients", clientService.getAllWithCarsAndCompanies());
         return modelAndView;
     }
 

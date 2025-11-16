@@ -42,7 +42,6 @@ class CarServiceUTest {
     @Mock
     private UserRepository userRepository;
 
-    // SUT - инжектира mock-овете горе
     @InjectMocks
     private CarServiceImpl service;
 
@@ -161,6 +160,7 @@ class CarServiceUTest {
 
 
     }
+
     @Test
     void addCarAndReturnMessage_Error() throws AccessDeniedException {
         when(userService.getLoggedInUser()).thenReturn(Optional.of(admin));

@@ -1,14 +1,15 @@
 package com.example.mkalinova.app.company.data.dto;
 
 import com.example.mkalinova.app.client.data.entity.Client;
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 
-public class AddCompanyDto {
-    private boolean checked;
+public class EditCompanyDto {
+
+
+    protected Long id;
     @NotNull(message = "Името на фирмата не трябва да е празно")
     @NotBlank(message = "Името на фирмата не трябва да е празно")
     private String name;
@@ -26,13 +27,21 @@ public class AddCompanyDto {
     @NotNull(message = "Моля въведете МОЛ")
     private String accountablePerson;
 
-    @NotBlank
-    @NotNull
+    @NotBlank(message = "Моля въведете ДДС номер")
+    @NotNull(message = "Моля въведете ДДС номер")
     private String vatNumber;
 
-    private Client client;
+    private Long clientId;
 
-    public AddCompanyDto() {
+    public EditCompanyDto() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -51,6 +60,14 @@ public class AddCompanyDto {
         this.uic = uic;
     }
 
+    public String getVatNumber() {
+        return vatNumber;
+    }
+
+    public void setVatNumber(String vatNumber) {
+        this.vatNumber = vatNumber;
+    }
+
     public String getAddress() {
         return address;
     }
@@ -67,38 +84,11 @@ public class AddCompanyDto {
         this.accountablePerson = accountablePerson;
     }
 
-    public boolean isShowForm() {
-        return checked;
+    public Long getClientId() {
+        return clientId;
     }
 
-    public boolean isChecked() {
-        return checked;
-    }
-
-    public void setChecked(boolean checked) {
-        this.checked = checked;
-    }
-    public String getVatNumber() {
-        return vatNumber;
-    }
-
-    public void setVatNumber(String vatNumber) {
-        this.vatNumber = vatNumber;
-    }
-
-
-    public boolean isAllFieldsNullOrEmpty() {
-        return (name == null || name.isEmpty()) &&
-                (uic.isEmpty() || uic.isBlank()) &&
-                (address == null || address.isEmpty()) &&
-                (accountablePerson == null || accountablePerson.isEmpty());
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
     }
 }

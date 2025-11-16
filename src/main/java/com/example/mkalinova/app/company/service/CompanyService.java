@@ -2,9 +2,13 @@ package com.example.mkalinova.app.company.service;
 
 
 
+import com.example.mkalinova.app.client.data.dto.ClientDto;
+import com.example.mkalinova.app.client.data.dto.ClientSelectDto;
 import com.example.mkalinova.app.client.data.dto.EditClientDto;
 import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
+import com.example.mkalinova.app.company.data.dto.CompanyListDto;
 import com.example.mkalinova.app.company.data.dto.CompanyRepairDto;
+import com.example.mkalinova.app.company.data.dto.EditCompanyDto;
 import com.example.mkalinova.app.company.data.entity.Company;
 
 import java.nio.file.AccessDeniedException;
@@ -14,28 +18,31 @@ import java.util.Optional;
 
 public interface CompanyService {
 
-    List<Company> getAllCompanies();
+    List<CompanyListDto> getAllActiveCompanies();
 
     List<Company> allCompaniesWithoutClient();
 
-    HashMap<String, String> saveCompany(AddCompanyDto addCompanyDto);
+    HashMap<String, String> saveCompany(AddCompanyDto addCompanyDto) throws AccessDeniedException;
 
     Optional<Company> findCompany(String name);
 
 
-    boolean findByCompanyNameOrUic(String name, int uic);
+    boolean findByCompanyNameOrUic(String name, String uic);
 
-    String deleteCompany(Company company);
+    HashMap<String, String> deleteCompany(CompanyListDto company) throws AccessDeniedException;
 
-    <T> List<T> getAll(Class<T> dtoClass);
+//    <T> List<T> getAll(Class<T> dtoClass);
 
     List<CompanyRepairDto> findByClientId(Long id);
 
-    Company getById(Long id);
+    <T> Object getById(Long id, Class<T> clazz);
 
-    HashMap<String, String> updateCompany(Long id, EditClientDto editClientDto) throws AccessDeniedException;
+    HashMap<String, String> updateCompany(EditCompanyDto editCompanyDto, boolean isClientPresent, Long clientId) throws AccessDeniedException;
 
    <T> Object findById(Long companyId, Class<T> clazz);
 
     List<Company> getAllCompaniesByClientId(Long id);
+
+    ClientDto getCompanyClient(Long id);
+    HashMap<String, String> removeClient(Long id, Long companyId) throws AccessDeniedException;
 }

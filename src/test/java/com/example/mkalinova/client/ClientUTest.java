@@ -11,16 +11,13 @@ import com.example.mkalinova.app.client.service.ClientServiceImpl;
 import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
 import com.example.mkalinova.app.company.data.entity.Company;
 import com.example.mkalinova.app.company.repo.CompanyRepository;
-import com.example.mkalinova.app.company.service.CompanyService;
 import com.example.mkalinova.app.company.service.CompanyServiceImpl;
 import com.example.mkalinova.app.user.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -34,7 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.then;
+
 import static org.mockito.Mockito.*;
 
 
@@ -71,7 +68,7 @@ public class ClientUTest {
         client.setFirstName("Test");
         client.setLastName("Testov");
         client.setPhone("0896619422");
-//        clientRepository.save(client);
+
 
         deletedClient = new Client();
         deletedClient.setEmail("test2@test.bg");
@@ -79,7 +76,6 @@ public class ClientUTest {
         deletedClient.setLastName("Testov");
         deletedClient.setPhone("0896619424");
         deletedClient.setDeleteAd(LocalDateTime.now());
-//        clientRepository.save(deletedClient);
 
 
     }
@@ -249,7 +245,7 @@ public class ClientUTest {
         addCompanyDto.setAddress("Bulgaria");
         addCompanyDto.setAccountablePerson("Test test");
         addCompanyDto.setName("Test Test");
-        addCompanyDto.setUic(201799235);
+        addCompanyDto.setUic("201799235");
         addCompanyDto.setVatNumber("BG201799235");
 
         when(clientRepository.findByPhone(dtoClient.getPhone())).thenReturn(Optional.empty());
@@ -306,7 +302,7 @@ public class ClientUTest {
         addCompanyDto.setAddress("Bulgaria");
         addCompanyDto.setAccountablePerson("Test test");
         addCompanyDto.setName("Test Test");
-        addCompanyDto.setUic(201799235);
+        addCompanyDto.setUic("201799235");
         addCompanyDto.setVatNumber("BG201799235");
 
         when(clientRepository.findByPhone(dtoClient.getPhone())).thenReturn(Optional.empty());
@@ -360,7 +356,7 @@ public class ClientUTest {
         addCompanyDto.setAddress("Bulgaria");
         addCompanyDto.setAccountablePerson("Test test");
         addCompanyDto.setName("Test Test");
-        addCompanyDto.setUic(201799235);
+        addCompanyDto.setUic("201799235");
         addCompanyDto.setVatNumber("BG201799235");
 
 
@@ -380,9 +376,7 @@ public class ClientUTest {
                 clientService
                         .addClientWithAdditionalData(dtoClient, addCarDto, addCompanyDto, true);
         assertEquals(result.get("status"), "error");
-//        assertEquals(dtoClient.getPhone(), "0896619422");
-//        assertEquals(
-//                carRepository.findByRegistrationNumber(savedCar.getRegistrationNumber()).get().getRegistrationNumber(),addCarDto.getRegistrationNumber());
+
 
         verify(companyRepository,times(0)).save(any(Company.class));
         verify(userService).isUserLogIn();
@@ -412,7 +406,7 @@ public class ClientUTest {
         addCompanyDto.setAddress("Bulgaria");
         addCompanyDto.setAccountablePerson("Test test");
         addCompanyDto.setName("Test Test");
-        addCompanyDto.setUic(201799235);
+        addCompanyDto.setUic("201799235");
         addCompanyDto.setVatNumber("BG201799235");
         Company company = new Company();
         company.setClient(client);

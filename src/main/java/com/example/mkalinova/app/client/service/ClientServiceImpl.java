@@ -184,9 +184,9 @@ public class ClientServiceImpl implements ClientService {
 
     }
 
-    //todo -> return dto list -> change IT test
+
     @Override
-    public List<ClientListDto> getAll() {
+    public List<ClientListDto> getAllWithCarsAndCompanies() {
         List<ClientListDto> clientList =
 
          this.clientRepository.findAllByDeleteAdNull().stream()
