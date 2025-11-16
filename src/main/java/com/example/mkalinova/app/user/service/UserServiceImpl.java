@@ -155,7 +155,9 @@ public class UserServiceImpl implements UserService {
 
     public boolean isAdmin(User user) {
 
-        return this.userRepository.findByUsername(user.getUsername()).getRole().name().equals("ADMIN");
+        return this.userRepository.
+                findByUsername(user.getUsername()).getRole().name().equals("ADMIN");
+
     }
 
 

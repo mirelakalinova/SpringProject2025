@@ -24,7 +24,7 @@ public class Company {
     private String name;
 
     @Column(unique = true)
-    private int uic;
+    private String uic;
     @Column(name = "vat_number", nullable = false)
     private String vatNumber;
     @Column(nullable = false)
@@ -72,11 +72,11 @@ public class Company {
         this.name = name;
     }
 
-    public int getUic() {
+    public String getUic() {
         return uic;
     }
 
-    public void setUic(int uic) {
+    public void setUic(String uic) {
         this.uic = uic;
     }
 

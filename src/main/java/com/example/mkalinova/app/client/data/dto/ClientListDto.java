@@ -100,12 +100,7 @@ public class ClientListDto {
 
     @Override
     public String toString() {
-        return "Клиент \n" +
-                "================ \n" +
-                "Име: '" + firstName + '\n' +
-                "Фамилия: " + lastName + '\n' +
-                "email: '" + email + '\n' +
-                "телефон: '" + phone + '\n'
-                ;
+        return  firstName +
+                " " + lastName + " - " + phone               ;
     }
 }

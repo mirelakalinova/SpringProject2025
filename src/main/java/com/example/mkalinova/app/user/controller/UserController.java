@@ -89,7 +89,10 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("edit-user/{id}")
-    public String editUser(@Valid EditUserDto editUserDto, BindingResult bindingResult, RedirectAttributes attributes) throws AccessDeniedException {
+    public String editUser(@Valid
+                               EditUserDto editUserDto,
+                           BindingResult bindingResult,
+                           RedirectAttributes attributes) throws AccessDeniedException {
 
         if (bindingResult.hasErrors()) {
             attributes.addFlashAttribute("editUserDto", editUserDto);

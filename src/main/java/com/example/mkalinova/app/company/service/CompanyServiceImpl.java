@@ -1,20 +1,22 @@
 package com.example.mkalinova.app.company.service;
 
-import com.example.mkalinova.app.car.data.entity.Car;
-import com.example.mkalinova.app.client.data.dto.EditClientDto;
+import com.example.mkalinova.app.client.data.dto.ClientDto;
 import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.client.repo.ClientRepository;
 import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
+import com.example.mkalinova.app.company.data.dto.CompanyListDto;
 import com.example.mkalinova.app.company.data.dto.CompanyRepairDto;
+import com.example.mkalinova.app.company.data.dto.EditCompanyDto;
 import com.example.mkalinova.app.company.data.entity.Company;
 import com.example.mkalinova.app.company.repo.CompanyRepository;
+import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.service.UserService;
-import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDateTime;
 import java.util.*;
+
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -33,9 +35,9 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<Company> getAllCompanies() {
+    public List<CompanyListDto> getAllActiveCompanies() {
 
-        return companyRepository.findAll();
+        return companyRepository.findAllByDeletedAtNull().stream().map(c -> modelMapper.map(c, CompanyListDto.class)).toList();
     }
 
     @Override
@@ -44,7 +46,8 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public HashMap<String, String> saveCompany(AddCompanyDto addCompanyDto) {
+    public HashMap<String, String> saveCompany(AddCompanyDto addCompanyDto) throws AccessDeniedException {
+        userService.isUserLogIn();
         HashMap<String, String> result = new HashMap<>();
         if (companyRepository.findByName(addCompanyDto.getName()).isPresent()) {
             result.put("status", "error");
@@ -73,37 +76,50 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     @Override
-    public boolean findByCompanyNameOrUic(String name, int uic) {
+    public boolean findByCompanyNameOrUic(String name, String uic) {
         return companyRepository.findByUic(uic).isPresent() || companyRepository.findByName(name).isPresent();
     }
 
     @Override
-    public String deleteCompany(Company company) {
+    public HashMap<String, String> deleteCompany(CompanyListDto company) throws AccessDeniedException {
+
+        Optional<User> user = userService.getLoggedInUser();
+        if (user.isEmpty() || !userService.isAdmin(user.get())) {
+            throw new AccessDeniedException("Нямате права да извършите тази операция!");
+
+        }
+
+
         Optional<Company> companyToDelete = companyRepository.findById(company.getId());
-        StringBuilder sb = new StringBuilder();
+
+        HashMap<String, String> result = new HashMap<>();
         if (companyToDelete.isPresent()) {
-            sb.append(companyToDelete.get().getName()).append(" - ЕИК").append(companyToDelete.get().getUic());
-            companyRepository.deleteById(companyToDelete.get().getId());
-            return sb.toString();
+
+            companyToDelete.get().setDeleteAd(LocalDateTime.now());
+            companyRepository.saveAndFlush(companyToDelete.get());
+            result.put("status", "success");
+            result.put("message", "Успешно изтрита фирма с ЕИК: " + companyToDelete.get().getUic());
+
+            return result;
         } else {
-            return "Няма намерена фирма с това Id!";
+            throw new NullPointerException("Няма намерена фирма с това #" + company.getId());
         }
 
     }
 
-    @Override
-    public <T> List<T> getAll(Class<T> dtoClass) {
-        List<Company> companies =
-                companyRepository.findAll().stream()
-                        .sorted(Comparator.comparing(Company::getName))
-                        .toList();
-        List<T> dtoList = new ArrayList<>();
-        for (Company company : companies) {
-            T dto = modelMapper.map(company, dtoClass);
-            dtoList.add(dto);
-        }
-        return dtoList;
-    }
+//    @Override
+//    public <T> List<T> getAll(Class<T> dtoClass) {
+//        List<Company> companies =
+//                companyRepository.findAll().stream()
+//                        .sorted(Comparator.comparing(Company::getName))
+//                        .toList();
+//        List<T> dtoList = new ArrayList<>();
+//        for (Company company : companies) {
+//            T dto = modelMapper.map(company, dtoClass);
+//            dtoList.add(dto);
+//        }
+//        return dtoList;
+//    }
 
     @Override
     public List<CompanyRepairDto> findByClientId(Long id) {
@@ -125,9 +141,9 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Company getById(Long id) {
+    public <T> Object getById(Long id, Class<T> clazz) {
         if (companyRepository.findById(id).isPresent()) {
-            return companyRepository.findById(id).get();
+            return modelMapper.map(companyRepository.findById(id).get(), clazz);
 
         } else {
             throw new NullPointerException("Няма фирма с подаденото #" + id);
@@ -135,10 +151,45 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    @Transactional
-    public HashMap<String, String> updateCompany(Long id, EditClientDto editClientDto) throws AccessDeniedException {
+    public HashMap<String, String> updateCompany(EditCompanyDto editCompanyDto, boolean isClientPresent, Long clientId) throws AccessDeniedException {
 
-        return null;
+        userService.isUserLogIn();
+
+        Optional<Company> optCompany = companyRepository.findById(editCompanyDto.getId());
+        if (!optCompany.isPresent()) {
+            throw new NullPointerException("Няма намерена фирма с #:" + editCompanyDto.getId());
+        }
+        HashMap<String, String> result = new HashMap<>();
+        StringBuilder sb = new StringBuilder();
+        optCompany.get().setName(editCompanyDto.getName());
+        optCompany.get().setUic(editCompanyDto.getUic());
+        optCompany.get().setVatNumber(editCompanyDto.getVatNumber());
+        optCompany.get().setAddress(editCompanyDto.getAddress());
+        optCompany.get().setAccountablePerson(editCompanyDto.getAccountablePerson());
+        sb.append("Успешно обновена фирма: ").append(editCompanyDto.getName());
+        if (isClientPresent) {
+            Optional<Client> client = clientRepository.findById(clientId);
+
+            if (client.isPresent()) {
+                if (optCompany.get().getClient() != null &&
+                        optCompany.get().getClient().getId() != clientId) {
+                    result.put("status", "error");
+                    result.put("message", "Фирмата има вече има клиент!");
+
+                    return result;
+                } else if(optCompany.get().getClient() == null){
+                    optCompany.get().setClient(client.get());
+                    sb.append("Успешно добавен клиент към ").append(editCompanyDto.getName());
+                    result.put("status", "success");
+                    result.put("message", sb.toString());
+
+                }
+            }
+        }
+        companyRepository.saveAndFlush(optCompany.get());
+        result.put("status", "success");
+        result.put("message", sb.toString());
+        return result;
     }
 
 
@@ -154,5 +205,45 @@ public class CompanyServiceImpl implements CompanyService {
     public List<Company> getAllCompaniesByClientId(Long id) {
         return companyRepository.findAllByClientId(id);
     }
+
+    @Override
+    public ClientDto getCompanyClient(Long id) {
+        Optional<Company> company = companyRepository.findById(id);
+        if (company.isPresent()) {
+            Client client = company.get().getClient();
+            if (client == null) {
+                return null;
+            }
+            return modelMapper.map(company.get().getClient(), ClientDto.class);
+        }
+        return null;
+    }
+
+    //todo -> add UTest
+    @Override
+    public HashMap<String, String> removeClient(Long id, Long companyId) throws AccessDeniedException {
+        Optional<Company> companyToUpdate = companyRepository.findById(companyId);
+        Optional<Client> clientToRemove = clientRepository.findById(id);
+        HashMap<String, String> result = new HashMap<>();
+        if (companyToUpdate.isPresent() && clientToRemove.isPresent()) {
+            Client client = companyToUpdate.get().getClient();
+            if (Objects.equals(client.getId(), clientToRemove.get().getId())) {
+                companyToUpdate.get().setClient(null);
+                companyRepository.saveAndFlush(companyToUpdate.get());
+                result.put("status", "success");
+                result.put("message", "Успешно премахнат клиент: " + clientToRemove.get().getName());
+                return result;
+            }
+
+            } else {
+                throw new NullPointerException("Компания с #" + companyId + " не беше намерен!");
+            }
+
+        result.put("status", "error");
+        result.put("message", "Нещо се обърка");
+        return result;
+    }
 }
+
+
 

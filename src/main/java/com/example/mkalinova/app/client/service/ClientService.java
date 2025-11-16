@@ -6,7 +6,6 @@ import com.example.mkalinova.app.client.data.dto.AddClientDto;
 import com.example.mkalinova.app.client.data.dto.ClientListDto;
 import com.example.mkalinova.app.client.data.dto.ClientRepairDto;
 import com.example.mkalinova.app.client.data.dto.EditClientDto;
-import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
 import jakarta.validation.Valid;
 
@@ -23,7 +22,7 @@ public interface ClientService {
                                                 @Valid AddCompanyDto addCompanyDto,
                                                 boolean companyIsFill) throws AccessDeniedException;
 
-    List<ClientListDto> getAll();
+    List<ClientListDto> getAllWithCarsAndCompanies();
 
     void deleteClient(Long id) throws AccessDeniedException;
 

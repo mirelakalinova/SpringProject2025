@@ -226,58 +226,6 @@ ul.dropdown-menu {
     background-color: #e7e7e7;
 }
 
-/* selected -> car/add */
-
-span.select2-selection.select2-selection--single {
-    position: absolute;
-    cursor: pointer;
-}
-
-input.select2-search__field {
-    width: 636px;
-    margin-top: -2px;
-    border: 1px solid #dee2e6;
-    height: 35px;
-}
-span.select2{
-    width:636px
-    display:block;
-}
-
-ul#select2-client-results, ul#select2-car-results, ul#select2-carToAdd-container {
-    list-style: none;
-    padding: 5px 0;
-    background: #f8f9fa;
-
-}
-
-li.select2-results__option {
-    border-bottom: 1px solid #dee2e6;
-    padding-left: 10px;
-    cursor: pointer;
-}
-span.selection {
-    display: block;
-    width: 100%;
-    border: 1px solid #dee2e6;
-    height: 38px;
-    border-radius: 5px;
-}
-
-
-span#select2-client-container, span#select2-car-container, span#select2-carToAdd-container  {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 636px;
-}
-
-span.select2-container.select2-container--default.select2-container--open {
-    background: white;
-    border: 1px solid #dee2e6;
-    border-top: none;
-    top: 700px !important;
-}
 
 /* edit car */
 .car-make-model {

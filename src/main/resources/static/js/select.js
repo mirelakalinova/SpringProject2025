@@ -1,4 +1,11 @@
 $(document).ready(function() {
+
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+
     const isClientAddEditView = window.location.pathname.startsWith('/client/add') || window.location.pathname.startsWith('/client/editt');
     if(isClientAddEditView){
         const isCompanyFormChecked = document.getElementById('isChecked');
@@ -15,7 +22,22 @@ $(document).ready(function() {
 
         });
     }
+    $('#clientId').select2({
+        theme: 'bootstrap-5',
+        placeholder: "Избери клиент...",
+        allowClear: true,
+        width: '100%',
+
+        language: {
+            noResults: function() {
+                return "Няма намерени клиенти";
+            }
+        }
+    }).on('select2:open', function() {
+        $('.select2-search__field').attr('placeholder', 'Пиши за търсене...');
+    });
     $('#client').select2({
+        theme: 'bootstrap-5',
         placeholder: "Избери клиент...",
         allowClear: true,
         width: '100%',
@@ -30,6 +52,7 @@ $(document).ready(function() {
     });
 
     $('#companyToAdd').select2({
+        theme: 'bootstrap-5',
         placeholder: "Избери фирма...",
         allowClear: true,
         width: '100%',
@@ -43,6 +66,7 @@ $(document).ready(function() {
         $('.select2-search__field').attr('placeholder', 'Пиши за търсене...');
     });
     $('#carToAdd').select2({
+        theme: 'bootstrap-5',
         placeholder: "Избери клиент...",
         allowClear: true,
         width: '100%',
