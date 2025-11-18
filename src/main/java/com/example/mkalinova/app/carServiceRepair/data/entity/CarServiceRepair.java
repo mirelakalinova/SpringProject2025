@@ -14,7 +14,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "car_services_repairs")
-public class CarServiceRepair {
+public class
+CarServiceRepair {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,8 +3,6 @@ package com.example.mkalinova.app.company.service;
 
 
 import com.example.mkalinova.app.client.data.dto.ClientDto;
-import com.example.mkalinova.app.client.data.dto.ClientSelectDto;
-import com.example.mkalinova.app.client.data.dto.EditClientDto;
 import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
 import com.example.mkalinova.app.company.data.dto.CompanyListDto;
 import com.example.mkalinova.app.company.data.dto.CompanyRepairDto;

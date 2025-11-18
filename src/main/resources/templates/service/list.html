@@ -1,0 +1,45 @@
+<div class="container" xmlns:th="http://www.w3.org/1999/xhtml">
+	<h1>Списък с услуги</h1>
+	<div th:if="${message}" th:class="${status}">
+		<span th:text="${message}"></span>
+	</div>
+	<div class="add-user-btn">
+		<a th:href="@{/service/add}">Добави част</a>
+	</div>
+	<table class="table table-striped table-hover" th:object="${companies}">
+		<thead class="thead-light">
+		<tr>
+			<td>#</td>
+			<td>Име</td>
+			<td>Цена</td>
+			<td>Редакция</td>
+			<td>Изтриване</td>
+		</tr>
+		</thead>
+		<tbody>
+		<tr th:each="service : ${services}">
+			<td th:text="${service.id}">#</td>
+			<td th:text="${service.name}">Име</td>
+			<td th:text="${service.price!= null ?  service.price : '-'}">ЕИК</td>
+			<td>
+				<form th:action="@{/service/edit/{id}(id=${service.id})}" th:method="get">
+
+					<button type="submit" class="user-edit-btn user-btn">
+
+						Редакция
+					</button>
+				</form>
+			</td>
+			<td>
+				<form th:action="@{/service/delete/{id}(id=${service.id})}" th:method="post">
+
+					<button type="submit"
+							class="user-delete-btn user-btn" th:attr="data-name=${service.id}">
+						Изтриване
+					</button>
+				</form>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>

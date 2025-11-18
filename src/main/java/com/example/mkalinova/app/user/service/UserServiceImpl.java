@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
         }
         if (userByUsernameOrEmail(addUserDto.getUsername(), addUserDto.getEmail())) {
-            result.addFirst("error");
+            result.add("error");
             result.add("Вече съществува потребител с този имейл или с потребителско име!");
             return result;
         }
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(pass);
         user.setRole(UsersRole.valueOf(addUserDto.getRole().toUpperCase()));
         userRepository.save(user);
-        result.addFirst("success");
+        result.add("success");
         result.add("Успешно добавен потребител!\n" +
                 "Username: \n" + addUserDto.getUsername() + "Email: " + addUserDto.getEmail());
 
