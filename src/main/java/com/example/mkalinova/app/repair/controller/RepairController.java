@@ -16,7 +16,7 @@ import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 
 @Controller
-@RequestMapping("/service")
+@RequestMapping("/repair")
 public class RepairController extends BaseController {
     private final RepairService service;
 
@@ -27,70 +27,70 @@ public class RepairController extends BaseController {
 
     @GetMapping("/list")
     public ModelAndView listService() {
-        ModelAndView modelAndView = super.view("service/list");
+        ModelAndView modelAndView = super.view("repair/list");
 
-        modelAndView.addObject("services", service.getAllServicesByDeletedAtNull());
+        modelAndView.addObject("repairs", service.getAllServicesByDeletedAtNull());
         return modelAndView;
     }
 
 
     @GetMapping("/add")
-    public ModelAndView addService(@ModelAttribute RepairDto dto) {
-        return super.view("service/add");
+    public ModelAndView addRepair(@ModelAttribute RepairDto repairDto) {
+        return super.view("repair/add");
     }
 
     @PostMapping("/add")
-    public String addNewService(@Valid RepairDto dto,
+    public String addNewRepair(@Valid RepairDto repairDto,
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes) throws AccessDeniedException {
-        if(dto.getPrice() == null){
-            dto.setPrice(0D);
+        if(repairDto.getPrice() == null){
+            repairDto.setPrice(0D);
         }
         if(bindingResult.hasErrors()){
-            redirectAttributes.addFlashAttribute("dto", dto);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.dto", bindingResult);
-            return "redirect:/service/add";
+            redirectAttributes.addFlashAttribute("repairDto", repairDto);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.repairDto", bindingResult);
+            return "redirect:/repair/add";
         }
-        HashMap<String, String> result =  service.addService(dto);
+        HashMap<String, String> result =  service.addService(repairDto);
         redirectAttributes.addFlashAttribute("status", result.get("status"));
         redirectAttributes.addFlashAttribute("message", result.get("message"));
-        return "redirect:/service/list";
+        return "redirect:/repair/list";
     }
 
     @GetMapping("/edit/{id}")
     public ModelAndView editView(@PathVariable Long id, Model model) {
-        ModelAndView modelAndView = super.view("service/edit");
-        modelAndView.addObject("dto", service.findById(id));
+        ModelAndView modelAndView = super.view("repair/edit");
+        modelAndView.addObject("repairDto", service.findById(id));
 
         return modelAndView;
     }
 
     @PostMapping("/edit/{id}")
-    public String editService(@Valid EditRepairDto dto,
+    public String editRepair(@Valid EditRepairDto repairDto,
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes) throws AccessDeniedException {
-        if(dto.getPrice() == null){
-            dto.setPrice(0D);
+        if(repairDto.getPrice() == null){
+            repairDto.setPrice(0D);
         }
         if(bindingResult.hasErrors()){
-            redirectAttributes.addFlashAttribute("dto", dto);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.dto", bindingResult);
-            return "redirect:/service/edit/" + dto.getId();
+            redirectAttributes.addFlashAttribute("repairDto", repairDto);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.repairDto", bindingResult);
+            return "redirect:/repair/edit/" + repairDto.getId();
         }
-        HashMap<String,String> result = service.editService(dto);
+        HashMap<String,String> result = service.editService(repairDto);
         redirectAttributes.addFlashAttribute("status", result.get("status"));
         redirectAttributes.addFlashAttribute("message", result.get("message"));
-        return "redirect:/service/list";
+        return "redirect:/repair/list";
     }
 
 
     @PostMapping("/delete/{id}")
-    public String deleteService(@PathVariable Long id, RepairDto dto,
+    public String deleteRepair(@PathVariable Long id, RepairDto repairDto,
                              RedirectAttributes attributes) throws AccessDeniedException {
         HashMap<String, String> result = service.deleteService(id);
         attributes.addFlashAttribute("status", result.get("status"));
         attributes.addFlashAttribute("message", result.get("message"));
-        return "redirect:/service/list";
+        return "redirect:/repair/list";
 
     }
 }

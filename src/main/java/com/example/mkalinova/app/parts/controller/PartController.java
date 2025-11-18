@@ -60,7 +60,10 @@ public class PartController extends BaseController {
     @GetMapping("/edit/{id}")
     public ModelAndView editView(@PathVariable Long id, Model model) {
         ModelAndView modelAndView = super.view("part/edit");
-        modelAndView.addObject("partDto", partService.findById(id));
+        if(!model.containsAttribute("partDto")){
+
+            modelAndView.addObject("partDto", partService.findById(id));
+        }
 
         return modelAndView;
     }

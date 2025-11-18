@@ -2,7 +2,7 @@
 <div class="container align-content-center home" xmlns:th="http://www.w3.org/1999/xhtml">
 	<h1>Добави клиент</h1>
 	<div class="elements">
-		<div th:if="${message}" th:text="${message}" th:class="alert-danger"></div>
+		<div th:if="${message}" th:text="${message}" th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"></div>
 
 		<form th:action="@{/client/add}" th:method="post">
 

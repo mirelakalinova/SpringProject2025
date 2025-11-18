@@ -1,7 +1,7 @@
 <div class="container"
 ><h1>Списък с клиенти</h1>
 <section class="clients" xmlns:th="http://www.w3.org/1999/xhtml">
-    <div th:if="${message}"  th:class="success"><p th:text="${message}"></p></div>
+    <div th:if="${message}"  th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"><p th:text="${message}"></p></div>
     <div class="add-user-btn">
         <a th:href="@{client/add}">Добави клиент</a>
     </div>

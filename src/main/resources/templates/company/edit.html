@@ -3,7 +3,7 @@
 
 	<h1 th:text="${name}"></h1>
 
-	<div th:if="${message}" th:text="${message}" style="white-space: pre-line;" th:class="*{status}"></div>
+	<div th:if="${message}" th:text="${message}" style="white-space: pre-line;" th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"></div>
 	<div class="client-form">
 		<form th:method="post" th:action="@{/company/edit/{id}(id=${editCompanyDto.id})}" th:object="${editCompanyDto}">
 
