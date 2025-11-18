@@ -1,11 +1,12 @@
 <div class="container align-content-center home" xmlns:th="http://www.w3.org/1999/xhtml">
-	<h1>Нова част</h1>
+	<h1>Редактиран на услуга</h1>
 	<div class="elements">
 
-		<form th:action="@{/service/add}" th:method="post">
+		<form th:action="@{/repair/edit/{id}(id=${repairDto.id})}" th:method="post" th:object="${repairDto}">
 
-			<div th:object="${dto}">
-				<h2 class="subheading">Добави част</h2>
+
+			<div >
+				<h2 class="subheading">Редакция услуга</h2>
 				<div class="div-group">
 					<div class="form-group ">
 
@@ -20,7 +21,7 @@
 
 					<div class="form-group">
 						<label for="price">Цена</label>
-						<input th:field="*{price}" step="0.01"  class="form-control" type="number" id="price">
+						<input  th:field="*{price}"  th:value="${#numbers.formatDecimal(price, 1, 4)}" class="form-control" type="number" id="price">
 					</div>
 
 

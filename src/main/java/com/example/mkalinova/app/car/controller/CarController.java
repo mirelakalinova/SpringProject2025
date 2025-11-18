@@ -43,9 +43,9 @@ public class CarController extends BaseController {
     public ModelAndView addCar() {
 
         ModelAndView modelAndView = super.view("car/add-car");
-//        modelAndView.addObject("formType", "car");
+
         modelAndView.addObject("clients", clientService.findAll(ClientListCarDto.class));
-//        modelAndView.addObject("heading", "add");
+
 
         return modelAndView;
     }

@@ -3,7 +3,7 @@
 
 	<h1 th:text="${client.firstName}  + ' ' +  ${client.lastName}"></h1>
 
-	<div th:if="${message}" th:text="${message}" style="white-space: pre-line;" th:class="*{status}"></div>
+	<div th:if="${message}" th:text="${message}" style="white-space: pre-line;" th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"></div>
 	<div class="client-form">
 		<form th:method="post" th:action="@{/client/edit/{id}(id=${client.id})}" th:object="${client}">
 			<input type="hidden" th:name="_method" th:value="put"/>
