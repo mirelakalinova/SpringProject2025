@@ -1,6 +1,6 @@
 package com.example.mkalinova.app.car.controller;
 
-import com.example.mkalinova.app.Land.Controller.BaseController;
+import com.example.mkalinova.app.land.Controller.BaseController;
 import com.example.mkalinova.app.car.data.dto.AddCarDto;
 
 import com.example.mkalinova.app.car.data.dto.CarDto;

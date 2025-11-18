@@ -1,11 +1,11 @@
-package com.example.mkalinova.app.carService.service;
+package com.example.mkalinova.app.repair.service;
 
 
-import com.example.mkalinova.app.carService.data.dto.CarServiceDto;
-import com.example.mkalinova.app.carService.data.dto.CarServiceListDto;
-import com.example.mkalinova.app.carService.data.dto.EditCarServiceDto;
-import com.example.mkalinova.app.carService.data.entity.CarService;
-import com.example.mkalinova.app.carService.repo.CarServiceRepository;
+import com.example.mkalinova.app.repair.data.dto.RepairDto;
+import com.example.mkalinova.app.repair.data.dto.EditRepairDto;
+import com.example.mkalinova.app.repair.data.dto.RepairListDto;
+import com.example.mkalinova.app.repair.data.entity.Repair;
+import com.example.mkalinova.app.repair.repo.RepairRepository;
 import com.example.mkalinova.app.user.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -18,12 +18,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CarServiceServiceImpl implements CarServiceService {
-    private final CarServiceRepository carServiceRepository;
+public class CarServiceServiceImpl implements RepairService {
+    private final RepairRepository carServiceRepository;
     private final ModelMapper modelMapper;
     private final UserService userService;
 
-    public CarServiceServiceImpl(CarServiceRepository carServiceRepository, ModelMapper modelMapper, UserService userService) {
+    public CarServiceServiceImpl(RepairRepository carServiceRepository, ModelMapper modelMapper, UserService userService) {
         this.carServiceRepository = carServiceRepository;
         this.modelMapper = modelMapper;
         this.userService = userService;
@@ -31,21 +31,21 @@ public class CarServiceServiceImpl implements CarServiceService {
 
 
     @Override
-    public List<CarServiceListDto> getAllServicesByDeletedAtNull() {
-        return this.carServiceRepository.findAllByDeletedAtNull().stream().map(p -> modelMapper.map(p, CarServiceListDto.class)).toList();
+    public List<RepairListDto> getAllServicesByDeletedAtNull() {
+        return this.carServiceRepository.findAllByDeletedAtNull().stream().map(p -> modelMapper.map(p, RepairListDto.class)).toList();
     }
 
     @Override
-    public HashMap<String, String> addService(CarServiceDto dto) throws AccessDeniedException {
+    public HashMap<String, String> addService(RepairDto dto) throws AccessDeniedException {
         userService.isUserLogIn();;
         HashMap<String, String> result = new HashMap<>();
-        Optional<CarService> optService = carServiceRepository.findByName(dto.getName());
+        Optional<Repair> optService = carServiceRepository.findByName(dto.getName());
         if(optService.isPresent()){
             result.put("status", "error");
             result.put("message", "Услуга " + dto.getName() + " вече съществува!");
             return result;
         }
-        carServiceRepository.save(modelMapper.map(dto, CarService.class));
+        carServiceRepository.save(modelMapper.map(dto, Repair.class));
         result.put("status", "success");
         result.put("message", "Успешно добавена услуга " + dto.getName());
         return result;
@@ -59,7 +59,7 @@ public class CarServiceServiceImpl implements CarServiceService {
             throw new AccessDeniedException("Нямате права да извършите тази операция!");
         }
         HashMap<String, String> result = new HashMap<>();
-        Optional<CarService> service = carServiceRepository.findById(id);
+        Optional<Repair> service = carServiceRepository.findById(id);
         if(service.isPresent()){
             service.get().setDeletedAt(LocalDateTime.now());
             carServiceRepository.save(service.get());
@@ -71,10 +71,10 @@ public class CarServiceServiceImpl implements CarServiceService {
     }
 
     @Override
-    public HashMap<String, String> editService(EditCarServiceDto dto) throws AccessDeniedException {
+    public HashMap<String, String> editService(EditRepairDto dto) throws AccessDeniedException {
         userService.isUserLogIn();;
         HashMap<String, String> result = new HashMap<>();
-        Optional<CarService> optService = carServiceRepository.findById(dto.getId());
+        Optional<Repair> optService = carServiceRepository.findById(dto.getId());
         if(!optService.isPresent()){
             result.put("status", "error");
             result.put("message", "Услуга #" + dto.getId() + " не съществува!");
@@ -93,11 +93,11 @@ public class CarServiceServiceImpl implements CarServiceService {
     }
 
     @Override
-    public EditCarServiceDto findById(Long id) {
-        Optional<CarService> service = carServiceRepository.findById(id);
+    public EditRepairDto findById(Long id) {
+        Optional<Repair> service = carServiceRepository.findById(id);
         if(service.isPresent()){
 
-            return modelMapper.map(service, EditCarServiceDto.class);
+            return modelMapper.map(service, EditRepairDto.class);
         }
         throw new RuntimeException("Няма намерена услуга с #" + id);
     }

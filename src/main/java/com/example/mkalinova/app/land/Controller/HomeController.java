@@ -1,4 +1,4 @@
-package com.example.mkalinova.app.Land.Controller;
+package com.example.mkalinova.app.land.Controller;
 
 
 import org.springframework.stereotype.Controller;

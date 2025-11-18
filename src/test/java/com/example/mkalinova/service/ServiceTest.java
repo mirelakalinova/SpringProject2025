@@ -1,14 +1,14 @@
 package com.example.mkalinova.service;
 
 
-import com.example.mkalinova.app.car.data.dto.AddCarDto;
-import com.example.mkalinova.app.carService.data.dto.CarServiceDto;
-import com.example.mkalinova.app.carService.data.dto.CarServiceListDto;
-import com.example.mkalinova.app.carService.data.dto.EditCarServiceDto;
-import com.example.mkalinova.app.carService.data.entity.CarService;
-import com.example.mkalinova.app.carService.repo.CarServiceRepository;
-import com.example.mkalinova.app.carService.service.CarServiceServiceImpl;
+import com.example.mkalinova.app.repair.data.dto.RepairDto;
+import com.example.mkalinova.app.repair.data.dto.EditRepairDto;
+import com.example.mkalinova.app.repair.data.dto.RepairListDto;
+import com.example.mkalinova.app.repair.data.entity.Repair;
+import com.example.mkalinova.app.repair.repo.RepairRepository;
+import com.example.mkalinova.app.repair.service.CarServiceServiceImpl;
 
+import com.example.mkalinova.app.repair.service.RepairService;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.data.entity.UsersRole;
 import com.example.mkalinova.app.user.repo.UserRepository;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.*;
 
 public class ServiceTest {
     @Mock
-    private CarServiceRepository serviceRepository;
+    private RepairRepository repository;
     @Mock
     private ModelMapper modelMapper;
     @Mock
@@ -48,25 +48,25 @@ public class ServiceTest {
     private CarServiceServiceImpl service;
     private User admin;
     private User editor;
-    private CarService serviceFirst;
-    private CarService deletedService;
+    private Repair repairFirst;
+    private Repair deletedService;
 
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
-        serviceRepository.deleteAll();
-        serviceFirst = new CarService();
-        serviceFirst.setPrice(120);
-        serviceFirst.setName("test");
+        repository.deleteAll();
+        repairFirst = new Repair();
+        repairFirst.setPrice(120);
+        repairFirst.setName("test");
 
-        serviceRepository.saveAndFlush(serviceFirst);
+        repository.saveAndFlush(repairFirst);
 
-        deletedService = new CarService();
+        deletedService = new Repair();
         deletedService.setPrice(125);
         deletedService.setName("testSecond");
         deletedService.setDeletedAt(LocalDateTime.now());
 
-        serviceRepository.saveAndFlush(deletedService);
+        repository.saveAndFlush(deletedService);
         admin = new User();
         admin.setFirstName("Mirela");
         admin.setLastName("Kalinova");
@@ -88,10 +88,10 @@ public class ServiceTest {
 
     @Test
     void getAllActiveServices_ReturnListOfOne() {
-        when(modelMapper.map(serviceFirst, CarServiceListDto.class)).thenReturn(new CarServiceListDto());
-        when(serviceRepository.findAllByDeletedAtNull()).thenReturn(List.of(serviceFirst));
-        List<CarServiceListDto> result = service.getAllServicesByDeletedAtNull();
-        verify(serviceRepository).findAllByDeletedAtNull();
+        when(modelMapper.map(repairFirst, RepairListDto.class)).thenReturn(new RepairListDto());
+        when(repository.findAllByDeletedAtNull()).thenReturn(List.of(repairFirst));
+        List<RepairListDto> result = service.getAllServicesByDeletedAtNull();
+        verify(repository).findAllByDeletedAtNull();
         assertEquals(1, result.size());
     }
 
@@ -99,21 +99,21 @@ public class ServiceTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void addNewserviceWithPrice_Success() throws AccessDeniedException {
         doNothing().when(userService).isUserLogIn();
-        CarServiceDto dto = new CarServiceDto();
+        RepairDto dto = new RepairDto();
         dto.setName("TestDto");
         dto.setPrice(120D);
-        CarService service = new CarService();
-        service.setName(dto.getName());
-        service.setPrice(dto.getPrice());
+        Repair repair = new Repair();
+        repair.setName(dto.getName());
+        repair.setPrice(dto.getPrice());
 
-        when(serviceRepository.findByName(dto.getName())).thenReturn(Optional.empty()).thenReturn(Optional.of(service));
-        when(modelMapper.map(dto, CarService.class)).thenReturn(service);
+        when(repository.findByName(dto.getName())).thenReturn(Optional.empty()).thenReturn(Optional.of(repair));
+        when(modelMapper.map(dto, Repair.class)).thenReturn(repair);
 
         HashMap<String, String> result = this.service.addService(dto);
-        verify(serviceRepository).findByName(dto.getName());
-        verify(serviceRepository).save(service);
+        verify(repository).findByName(dto.getName());
+        verify(repository).save(repair);
         assertEquals("success", result.get("status"));
-        Optional<CarService> optService = serviceRepository.findByName(service.getName());
+        Optional<Repair> optService = repository.findByName(repair.getName());
         assertTrue(optService.isPresent());
         assertEquals(120, optService.get().getPrice());
 
@@ -125,23 +125,23 @@ public class ServiceTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void addNewServiceWithoutPrice_Success() throws AccessDeniedException {
         doNothing().when(userService).isUserLogIn();
-        CarServiceDto dto = new CarServiceDto();
+        RepairDto dto = new RepairDto();
         dto.setName("TestDto");
         dto.setPrice(null);
-        CarService service = new CarService();
+        Repair service = new Repair();
         service.setName(dto.getName());
         service.setPrice(0);
 
-        when(serviceRepository.findByName(dto.getName())).thenReturn(Optional.empty()).thenReturn(Optional.of(service));
-        when(modelMapper.map(dto, CarService.class)).thenReturn(service);
+        when(repository.findByName(dto.getName())).thenReturn(Optional.empty()).thenReturn(Optional.of(service));
+        when(modelMapper.map(dto, Repair.class)).thenReturn(service);
 
         HashMap<String, String> result = this.service.addService(dto);
-        verify(serviceRepository).findByName(dto.getName());
-        verify(serviceRepository).save(service);
+        verify(repository).findByName(dto.getName());
+        verify(repository).save(service);
         assertEquals("success", result.get("status"));
-        Optional<CarService> optService = serviceRepository.findByName(service.getName());
-        assertTrue(optService.isPresent());
-        assertEquals(0, optService.get().getPrice());
+        Optional<Repair> optRepair = repository.findByName(service.getName());
+        assertTrue(optRepair.isPresent());
+        assertEquals(0, optRepair.get().getPrice());
 
     }
 
@@ -149,17 +149,17 @@ public class ServiceTest {
     @WithAnonymousUser
     void addNewserviceWithPrice_AccessDenied() throws AccessDeniedException {
 
-        CarServiceDto dto = new CarServiceDto();
+        RepairDto dto = new RepairDto();
         dto.setName("TestDto");
         dto.setPrice(null);
-        CarService service = new CarService();
-        service.setName(dto.getName());
-        service.setPrice(120D);
+        Repair repair = new Repair();
+        repair.setName(dto.getName());
+        repair.setPrice(120D);
 
         doThrow(new AccessDeniedException("Нямате права да извършите тази операция!")).when(userService).isUserLogIn();
         assertThrows(AccessDeniedException.class, () -> this.service.addService(dto));
-        verify(serviceRepository, times(0)).findByName(dto.getName());
-        verify(serviceRepository, times(0)).save(service);
+        verify(repository, times(0)).findByName(dto.getName());
+        verify(repository, times(0)).save(repair);
 
 
     }
@@ -168,22 +168,22 @@ public class ServiceTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void editServiceWithoutPrice_Success() throws AccessDeniedException {
         doNothing().when(userService).isUserLogIn();
-        serviceFirst.setId(3L);
-        serviceRepository.save(serviceFirst);
-        EditCarServiceDto dto = new EditCarServiceDto();
+        repairFirst.setId(3L);
+        repository.save(repairFirst);
+        EditRepairDto dto = new EditRepairDto();
         dto.setName("TestDto");
         dto.setPrice(null);
-        dto.setId(serviceFirst.getId());
+        dto.setId(repairFirst.getId());
 
 
-        when(serviceRepository.findById(dto.getId())).thenReturn(Optional.of(serviceFirst));
+        when(repository.findById(dto.getId())).thenReturn(Optional.of(repairFirst));
 
 
         HashMap<String, String> result = this.service.editService(dto);
-        verify(serviceRepository).findById(dto.getId());
-        verify(serviceRepository, times(2)).save(serviceFirst);
+        verify(repository).findById(dto.getId());
+        verify(repository, times(2)).save(repairFirst);
         assertEquals("success", result.get("status"));
-        Optional<CarService> optService = serviceRepository.findById(dto.getId());
+        Optional<Repair> optService = repository.findById(dto.getId());
         assertTrue(optService.isPresent());
         assertEquals(0, optService.get().getPrice());
         assertEquals(dto.getName(), optService.get().getName());
@@ -195,22 +195,22 @@ public class ServiceTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void editServiceWithPrice_Success() throws AccessDeniedException {
         doNothing().when(userService).isUserLogIn();
-        serviceFirst.setId(3L);
-        serviceRepository.save(serviceFirst);
-        EditCarServiceDto dto = new EditCarServiceDto();
+        repairFirst.setId(3L);
+        repository.save(repairFirst);
+        EditRepairDto dto = new EditRepairDto();
         dto.setName("TestDto");
         dto.setPrice(130D);
-        dto.setId(serviceFirst.getId());
+        dto.setId(repairFirst.getId());
 
 
-        when(serviceRepository.findById(dto.getId())).thenReturn(Optional.of(serviceFirst));
+        when(repository.findById(dto.getId())).thenReturn(Optional.of(repairFirst));
 
 
         HashMap<String, String> result = this.service.editService(dto);
-        verify(serviceRepository).findById(dto.getId());
-        verify(serviceRepository, times(2)).save(serviceFirst);
+        verify(repository).findById(dto.getId());
+        verify(repository, times(2)).save(repairFirst);
         assertEquals("success", result.get("status"));
-        Optional<CarService> optService = serviceRepository.findById(dto.getId());
+        Optional<Repair> optService = repository.findById(dto.getId());
         assertTrue(optService.isPresent());
         assertEquals(130, optService.get().getPrice());
         assertEquals(dto.getName(), optService.get().getName());
@@ -223,16 +223,16 @@ public class ServiceTest {
     void editService_ErrorMessage() throws AccessDeniedException {
         doNothing().when(userService).isUserLogIn();
 
-        EditCarServiceDto dto = new EditCarServiceDto();
+        EditRepairDto dto = new EditRepairDto();
         dto.setName("TestDto");
         dto.setPrice(130D);
         dto.setId(1L);
-        when(serviceRepository.findById(dto.getId())).thenReturn(Optional.empty());
+        when(repository.findById(dto.getId())).thenReturn(Optional.empty());
         HashMap<String, String> result = this.service.editService(dto);
-        verify(serviceRepository).findById(dto.getId());
-        verify(serviceRepository, never()).save(serviceFirst);
+        verify(repository).findById(dto.getId());
+        verify(repository, never()).save(repairFirst);
         assertEquals("error", result.get("status"));
-        Optional<CarService> optService = serviceRepository.findByName(dto.getName());
+        Optional<Repair> optService = repository.findByName(dto.getName());
         assertFalse(optService.isPresent());
 
 
@@ -243,17 +243,17 @@ public class ServiceTest {
     @WithAnonymousUser
     void editServiceWithPrice_AccessDenied() throws AccessDeniedException {
 
-        EditCarServiceDto dto = new EditCarServiceDto();
+        EditRepairDto dto = new EditRepairDto();
         dto.setName("TestDto");
         dto.setPrice(null);
-        CarService service = new CarService();
-        service.setName(dto.getName());
-        service.setPrice(120D);
+        Repair repair = new Repair();
+        repair.setName(dto.getName());
+        repair.setPrice(120D);
 
         doThrow(new AccessDeniedException("Нямате права да извършите тази операция!")).when(userService).isUserLogIn();
         assertThrows(AccessDeniedException.class, () -> this.service.editService(dto));
-        verify(serviceRepository, times(0)).findByName(dto.getName());
-        verify(serviceRepository, times(0)).save(service);
+        verify(repository, times(0)).findByName(dto.getName());
+        verify(repository, times(0)).save(repair);
 
 
     }
@@ -265,10 +265,10 @@ public class ServiceTest {
 
 
         doThrow(new AccessDeniedException("Нямате права да извършите тази операция!")).when(userService).isUserLogIn();
-        assertThrows(AccessDeniedException.class, () -> this.service.deleteService(serviceFirst.getId()));
-        verify(serviceRepository, times(0)).findById(serviceFirst.getId());
-        verify(serviceRepository, times(0)).save(serviceFirst);
-        assertEquals(null, serviceFirst.getDeletedAt());
+        assertThrows(AccessDeniedException.class, () -> this.service.deleteService(repairFirst.getId()));
+        verify(repository, times(0)).findById(repairFirst.getId());
+        verify(repository, times(0)).save(repairFirst);
+        assertEquals(null, repairFirst.getDeletedAt());
 
 
     }
@@ -279,10 +279,10 @@ public class ServiceTest {
         doNothing().when(userService).isUserLogIn();
         when(userService.getLoggedInUser()).thenReturn(Optional.of(editor));
         when(userService.isAdmin(editor)).thenReturn(false);
-        assertThrows(AccessDeniedException.class, () -> this.service.deleteService(serviceFirst.getId()));
-        verify(serviceRepository, times(0)).findById(serviceFirst.getId());
-        verify(serviceRepository, times(0)).save(serviceFirst);
-        assertEquals(null, serviceFirst.getDeletedAt());
+        assertThrows(AccessDeniedException.class, () -> this.service.deleteService(repairFirst.getId()));
+        verify(repository, times(0)).findById(repairFirst.getId());
+        verify(repository, times(0)).save(repairFirst);
+        assertEquals(null, repairFirst.getDeletedAt());
 
 
     }
@@ -290,22 +290,22 @@ public class ServiceTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void deleteserviceByAdmin_AccessDenied() throws AccessDeniedException {
-        serviceFirst.setId(1L);
-        serviceRepository.save(serviceFirst);
-        Long id = serviceFirst.getId();
+        repairFirst.setId(1L);
+        repository.save(repairFirst);
+        Long id = repairFirst.getId();
 
         doNothing().when(userService).isUserLogIn();
 
         when(userService.getLoggedInUser()).thenReturn(Optional.of(admin));
         when(userService.isAdmin(admin)).thenReturn(true);
-        when(serviceRepository.findById(id)).thenReturn(Optional.of(serviceFirst));
+        when(repository.findById(id)).thenReturn(Optional.of(repairFirst));
 
-        HashMap<String, String> result = this.service.deleteService(serviceFirst.getId());
+        HashMap<String, String> result = this.service.deleteService(repairFirst.getId());
 
-        verify(serviceRepository, times(1)).findById(serviceFirst.getId());
-        verify(serviceRepository, times(2)).save(serviceFirst);
+        verify(repository, times(1)).findById(repairFirst.getId());
+        verify(repository, times(2)).save(repairFirst);
 
-        assertNotEquals(null, serviceFirst.getDeletedAt());
+        assertNotEquals(null, repairFirst.getDeletedAt());
 
 
     }

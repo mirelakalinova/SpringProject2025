@@ -1,6 +1,6 @@
 package com.example.mkalinova.app.company.controller;
 
-import com.example.mkalinova.app.Land.Controller.BaseController;
+import com.example.mkalinova.app.land.Controller.BaseController;
 import com.example.mkalinova.app.client.data.dto.ClientDto;
 import com.example.mkalinova.app.client.data.dto.ClientListCarDto;
 import com.example.mkalinova.app.client.service.ClientService;

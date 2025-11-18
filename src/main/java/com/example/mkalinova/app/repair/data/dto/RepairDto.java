@@ -1,10 +1,10 @@
-package com.example.mkalinova.app.carService.data.dto;
+package com.example.mkalinova.app.repair.data.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
-public class CarServiceDto
+public class RepairDto
 {
 
     @NotNull
@@ -14,7 +14,7 @@ public class CarServiceDto
     @PositiveOrZero
     private Double price;
 
-    public CarServiceDto() {
+    public RepairDto() {
 
     }
 

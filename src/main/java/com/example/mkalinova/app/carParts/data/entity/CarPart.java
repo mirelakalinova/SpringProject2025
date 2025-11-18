@@ -2,15 +2,8 @@ package com.example.mkalinova.app.carParts.data.entity;
 
 
 import com.example.mkalinova.app.car.data.entity.Car;
-import com.example.mkalinova.app.client.data.entity.Client;
-import com.example.mkalinova.app.company.data.entity.Company;
 import com.example.mkalinova.app.parts.data.entity.Part;
-import com.example.mkalinova.app.repair.data.entity.Repair;
 import jakarta.persistence.*;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "car_parts")
@@ -29,9 +22,9 @@ public class CarPart {
 
     private double price;
 
-    @ManyToOne
-    @JoinColumn(name = "repair_id")  // Добавяме колоната за свързване към Repair
-    private Repair repair;
+//    @ManyToOne
+//    @JoinColumn(name = "repair_id")  // Добавяме колоната за свързване към Repair
+//    private Repair repair;
 
     public CarPart() {
 
@@ -77,11 +70,11 @@ public class CarPart {
         this.price = price;
     }
 
-    public Repair getRepair() {
-        return repair;
-    }
-
-    public void setRepair(Repair repair) {
-        this.repair = repair;
-    }
+//    public Repair getRepair() {
+//        return repair;
+//    }
+//
+//    public void setRepair(Repair repair) {
+//        this.repair = repair;
+//    }
 }

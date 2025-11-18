@@ -1,8 +1,8 @@
 package com.example.mkalinova.service;
 
-import com.example.mkalinova.app.carService.data.dto.CarServiceListDto;
-import com.example.mkalinova.app.carService.data.entity.CarService;
-import com.example.mkalinova.app.carService.repo.CarServiceRepository;
+import com.example.mkalinova.app.repair.data.dto.RepairListDto;
+import com.example.mkalinova.app.repair.data.entity.Repair;
+import com.example.mkalinova.app.repair.repo.RepairRepository;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.data.entity.UsersRole;
 import com.example.mkalinova.app.user.repo.UserRepository;
@@ -16,11 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,13 +37,13 @@ public class ServiceControllerIT {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private CarServiceRepository repository;
+    private RepairRepository repository;
     @Autowired
     private ModelMapper modelMapper;
     private User admin;
     private User editor;
-    private CarService serviceFirst;
-    private CarService serviceSecond;
+    private Repair repairFirst;
+    private Repair repairSecond;
 
 
 
@@ -73,22 +71,22 @@ public class ServiceControllerIT {
         editor.setRole(UsersRole.EDITOR);
         userRepository.save(editor);
 
-        serviceFirst = new CarService();
-        serviceFirst.setName("Test first service");
-        serviceFirst.setPrice(120D);
-        serviceSecond = new CarService();
-        serviceSecond.setPrice(140D);
-        serviceFirst.setName("Test second service");
-        serviceSecond.setDeletedAt(LocalDateTime.now());
-        repository.save(serviceFirst);
-        repository.save(serviceSecond);
+        repairFirst = new Repair();
+        repairFirst.setName("Test first service");
+        repairFirst.setPrice(120D);
+        repairSecond = new Repair();
+        repairSecond.setPrice(140D);
+        repairFirst.setName("Test second service");
+        repairSecond.setDeletedAt(LocalDateTime.now());
+        repository.save(repairFirst);
+        repository.save(repairSecond);
     }
 
     @Test
     public void getServiceList() throws Exception {
-        ArrayList<CarServiceListDto> list = new ArrayList<>();
-        list.add(modelMapper.map(serviceFirst, CarServiceListDto.class));
-        list.add(modelMapper.map(serviceSecond, CarServiceListDto.class));
+        ArrayList<RepairListDto> list = new ArrayList<>();
+        list.add(modelMapper.map(repairFirst, RepairListDto.class));
+        list.add(modelMapper.map(repairSecond, RepairListDto.class));
         mockMvc.perform(get("/service/list").contentType(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("services", hasSize(1)));
@@ -104,9 +102,9 @@ public class ServiceControllerIT {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/service/list"));
 
-        Optional<CarService> service = repository.findByName("Test123");
-        assertTrue(service.isPresent());
-        assertEquals(120D, service.get().getPrice());
+        Optional<Repair> repair = repository.findByName("Test123");
+        assertTrue(repair.isPresent());
+        assertEquals(120D, repair.get().getPrice());
 
     }
 
@@ -120,7 +118,7 @@ public class ServiceControllerIT {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/service/add"));
 
-        Optional<CarService> service = repository.findByName("Test");
+        Optional<Repair> service = repository.findByName("Test");
         assertFalse(service.isPresent());
 
     }
@@ -134,7 +132,7 @@ public class ServiceControllerIT {
                         .with(csrf()))
                 .andExpect(status().isForbidden());
 
-        Optional<CarService> service = repository.findByName("Test");
+        Optional<Repair> service = repository.findByName("Test");
         assertFalse(service.isPresent());
 
     }
@@ -142,33 +140,33 @@ public class ServiceControllerIT {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void editServiceByAdmin_Success() throws Exception {
-        mockMvc.perform(post("/service/edit/{id}", serviceFirst.getId())
-                        .param("id", String.valueOf(serviceFirst.getId()))
+        mockMvc.perform(post("/service/edit/{id}", repairFirst.getId())
+                        .param("id", String.valueOf(repairFirst.getId()))
                         .param("name", "Test")
                         .param("price", String.valueOf(110D))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/service/list"));
 
-        Optional<CarService> service = repository.findByName("Test");
-        assertNotNull(service);
-        assertEquals("Test", service.get().getName());
-        assertEquals(110D, service.get().getPrice());
+        Optional<Repair> repair = repository.findByName("Test");
+        assertNotNull(repair);
+        assertEquals("Test", repair.get().getName());
+        assertEquals(110D, repair.get().getPrice());
 
     }
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void editServiceByAdmin_Error() throws Exception {
-        mockMvc.perform(post("/service/edit/{id}", serviceFirst.getId())
-                        .param("id", String.valueOf(serviceFirst.getId()))
+        mockMvc.perform(post("/service/edit/{id}", repairFirst.getId())
+                        .param("id", String.valueOf(repairFirst.getId()))
                         .param("name", "Te")
                         .param("price", String.valueOf(110D))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/service/edit/" + serviceFirst.getId()));
+                .andExpect(redirectedUrl("/service/edit/" + repairFirst.getId()));
 
-        Optional<CarService> service = repository.findByName("Test");
+        Optional<Repair> service = repository.findByName("Test");
         assertTrue(service.isEmpty());
 
     }
@@ -176,29 +174,29 @@ public class ServiceControllerIT {
     @Test
     @WithAnonymousUser
     public void editServiceByAnonymous_AccessDenied() throws Exception {
-        mockMvc.perform(post("/service/edit/{id}", serviceFirst.getId())
-                        .param("id", String.valueOf(serviceFirst.getId()))
+        mockMvc.perform(post("/service/edit/{id}", repairFirst.getId())
+                        .param("id", String.valueOf(repairFirst.getId()))
                         .param("name", "Test")
                         .param("price", String.valueOf(110D))
                         .with(csrf()))
                 .andExpect(status().isForbidden());
 
-        Optional<CarService> service = repository.findByName("Test");
-        assertTrue(service.isEmpty());
+        Optional<Repair> repair = repository.findByName("Test");
+        assertTrue(repair.isEmpty());
 
     }
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void DeleteServiceByAdmin_Success() throws Exception {
-        mockMvc.perform(post("/service/delete/{id}", serviceFirst.getId())
-                        .param("id", String.valueOf(serviceFirst.getId()))
+        mockMvc.perform(post("/service/delete/{id}", repairFirst.getId())
+                        .param("id", String.valueOf(repairFirst.getId()))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/service/list"));
 
-        Optional<CarService> service = repository.findById(serviceFirst.getId());
-        assertTrue(service.get().getDeletedAt() != null);
+        Optional<Repair> repair = repository.findById(repairFirst.getId());
+        assertTrue(repair.get().getDeletedAt() != null);
 
 
     }
@@ -207,13 +205,13 @@ public class ServiceControllerIT {
     @Test
     @WithMockUser(username = "editor", roles = {"EDITOR"})
     public void DeleteCarServiceByEditor_AccessDenied() throws Exception {
-        mockMvc.perform(post("/service/delete/{id}", serviceFirst.getId())
-                        .param("id", String.valueOf(serviceFirst.getId()))
+        mockMvc.perform(post("/service/delete/{id}", repairFirst.getId())
+                        .param("id", String.valueOf(repairFirst.getId()))
                         .with(csrf()))
                 .andExpect(status().isForbidden());
 
-        Optional<CarService> service = repository.findById(serviceFirst.getId());
-        assertTrue(service.get().getDeletedAt() == null);
+        Optional<Repair> repair = repository.findById(repairFirst.getId());
+        assertTrue(repair.get().getDeletedAt() == null);
 
 
     }
@@ -222,13 +220,13 @@ public class ServiceControllerIT {
     @Test
     @WithAnonymousUser
     public void DeleteserviceByAnonymous_AccessDenied() throws Exception {
-        mockMvc.perform(post("/service/delete/{id}", serviceFirst.getId())
-                        .param("id", String.valueOf(serviceFirst.getId()))
+        mockMvc.perform(post("/service/delete/{id}", repairFirst.getId())
+                        .param("id", String.valueOf(repairFirst.getId()))
                         .with(csrf()))
                 .andExpect(status().isForbidden());
 
-        Optional<CarService> service = repository.findById(serviceFirst.getId());
-        assertTrue(service.get().getDeletedAt() == null);
+        Optional<Repair> repair = repository.findById(repairFirst.getId());
+        assertTrue(repair.get().getDeletedAt() == null);
 
 
     }

@@ -1,55 +1,25 @@
 package com.example.mkalinova.app.repair.data.entity;
 
 
-import com.example.mkalinova.app.car.data.entity.Car;
-import com.example.mkalinova.app.carParts.data.entity.CarPart;
-import com.example.mkalinova.app.carServiceRepair.data.entity.CarServiceRepair;
-import com.example.mkalinova.app.client.data.entity.Client;
-import com.example.mkalinova.app.company.data.entity.Company;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "repairs")
+@Table(name = "services")
 public class Repair {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private LocalDate date;
+    private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "car_id")
-    private Car car;
-
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
-
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
-
-
-    @OneToMany(mappedBy = "repair")
-    private List<CarPart> parts = new ArrayList<>();  // Един ремонт има много части
-
-    @OneToMany(mappedBy = "repair")
-    private List<CarServiceRepair> services = new ArrayList<>();
-
-    private double total;
+    @Column
+    private double price;
+    private LocalDateTime deletedAt;
 
     public Repair() {
-        this.services = new ArrayList<>();
-        this.parts=new ArrayList<>();
     }
 
     public Long getId() {
@@ -60,59 +30,27 @@ public class Repair {
         this.id = id;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public String getName() {
+        return name;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Car getCar() {
-        return car;
+    public double getPrice() {
+        return price;
     }
 
-    public void setCar(Car car) {
-        this.car = car;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
-    public Client getClient() {
-        return client;
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
-    public List<CarPart> getParts() {
-        return parts;
-    }
-
-    public void setParts(List<CarPart> parts) {
-        this.parts = parts;
-    }
-
-    public List<CarServiceRepair> getServices() {
-        return services;
-    }
-
-    public void setServices(List<CarServiceRepair> services) {
-        this.services = services;
-    }
-
-    public double getTotal() {
-        return total;
-    }
-
-    public void setTotal(double total) {
-        this.total = total;
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

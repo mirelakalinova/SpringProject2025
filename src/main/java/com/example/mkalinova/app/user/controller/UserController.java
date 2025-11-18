@@ -1,6 +1,6 @@
 package com.example.mkalinova.app.user.controller;
 
-import com.example.mkalinova.app.Land.Controller.BaseController;
+import com.example.mkalinova.app.land.Controller.BaseController;
 import com.example.mkalinova.app.user.data.dto.AddUserDto;
 import com.example.mkalinova.app.user.data.dto.EditUserDto;
 import com.example.mkalinova.app.user.data.dto.UserListDto;

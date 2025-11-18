@@ -1,6 +1,6 @@
 package com.example.mkalinova.app.exepction;
 
-import com.example.mkalinova.app.Land.Controller.BaseController;
+import com.example.mkalinova.app.land.Controller.BaseController;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
