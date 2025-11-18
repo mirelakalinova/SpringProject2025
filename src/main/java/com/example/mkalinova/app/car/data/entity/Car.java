@@ -2,7 +2,6 @@ package com.example.mkalinova.app.car.data.entity;
 
 
 import com.example.mkalinova.app.client.data.entity.Client;
-import com.example.mkalinova.app.repair.data.entity.Repair;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -47,8 +46,8 @@ public class Car {
     @Column
     private String model;
 
-    @OneToMany(mappedBy = "car", fetch = FetchType.EAGER)
-    private List<Repair> repairs;
+//    @OneToMany(mappedBy = "car", fetch = FetchType.EAGER)
+//    private List<Repair> repairs;
     // за да могат да се променят или изтриват коли без това да се отразява на другите свързани коли с клиента на конкретната
     @ManyToOne
 //            (cascade = CascadeType.MERGE)
@@ -60,9 +59,9 @@ public class Car {
 
 //todo -> safe delete - fields -> created, updated, deleted
 
-    public Car(List<Repair> repairs) {
-        this.repairs = new ArrayList<>();
-    }
+//    public Car(List<Repair> repairs) {
+//        this.repairs = new ArrayList<>();
+//    }
 
     public Car() {
     }
@@ -138,14 +137,14 @@ public class Car {
     public void setHp(int hp) {
         this.hp = hp;
     }
-
-    public List<Repair> getRepairs() {
-        return repairs;
-    }
-
-    public void setRepairs(List<Repair> repairs) {
-        this.repairs = repairs;
-    }
+//
+//    public List<Repair> getRepairs() {
+//        return repairs;
+//    }
+//
+//    public void setRepairs(List<Repair> repairs) {
+//        this.repairs = repairs;
+//    }
 
     public Client getClient() {
         return client;

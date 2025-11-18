@@ -1,6 +1,6 @@
-package com.example.mkalinova.app.carService.data.dto;
+package com.example.mkalinova.app.repair.data.dto;
 
-public class CarServiceListDto {
+public class RepairListDto {
 
     private Long id;
 
@@ -8,7 +8,7 @@ public class CarServiceListDto {
 
     private double price;
 
-    public CarServiceListDto() {
+    public RepairListDto() {
     }
 
     public Long getId() {

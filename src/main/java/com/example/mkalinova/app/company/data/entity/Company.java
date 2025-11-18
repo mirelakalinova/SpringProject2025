@@ -1,16 +1,9 @@
 package com.example.mkalinova.app.company.data.entity;
 
 import com.example.mkalinova.app.client.data.entity.Client;
-import com.example.mkalinova.app.repair.data.entity.Repair;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Table(name = "companies")
 @Entity

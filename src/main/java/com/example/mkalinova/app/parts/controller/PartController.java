@@ -1,6 +1,6 @@
 package com.example.mkalinova.app.parts.controller;
 
-import com.example.mkalinova.app.Land.Controller.BaseController;
+import com.example.mkalinova.app.land.Controller.BaseController;
 import com.example.mkalinova.app.parts.data.dto.EditPartDto;
 import com.example.mkalinova.app.parts.data.dto.PartDto;
 import com.example.mkalinova.app.parts.service.PartService;

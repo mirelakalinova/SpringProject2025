@@ -1,9 +1,9 @@
-package com.example.mkalinova.app.carService.controller;
+package com.example.mkalinova.app.repair.controller;
 
-import com.example.mkalinova.app.Land.Controller.BaseController;
-import com.example.mkalinova.app.carService.data.dto.CarServiceDto;
-import com.example.mkalinova.app.carService.data.dto.EditCarServiceDto;
-import com.example.mkalinova.app.carService.service.CarServiceService;
+import com.example.mkalinova.app.land.Controller.BaseController;
+import com.example.mkalinova.app.repair.data.dto.RepairDto;
+import com.example.mkalinova.app.repair.data.dto.EditRepairDto;
+import com.example.mkalinova.app.repair.service.RepairService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,11 +17,11 @@ import java.util.HashMap;
 
 @Controller
 @RequestMapping("/service")
-public class CarServiceController extends BaseController {
-    private final CarServiceService carService;
+public class RepairController extends BaseController {
+    private final RepairService service;
 
-    public CarServiceController(CarServiceService carService) {
-        this.carService = carService;
+    public RepairController(RepairService service) {
+        this.service = service;
     }
 
 
@@ -29,18 +29,18 @@ public class CarServiceController extends BaseController {
     public ModelAndView listService() {
         ModelAndView modelAndView = super.view("service/list");
 
-        modelAndView.addObject("services", carService.getAllServicesByDeletedAtNull());
+        modelAndView.addObject("services", service.getAllServicesByDeletedAtNull());
         return modelAndView;
     }
 
 
     @GetMapping("/add")
-    public ModelAndView addService(@ModelAttribute CarServiceDto dto) {
+    public ModelAndView addService(@ModelAttribute RepairDto dto) {
         return super.view("service/add");
     }
 
     @PostMapping("/add")
-    public String addNewService(@Valid CarServiceDto dto,
+    public String addNewService(@Valid RepairDto dto,
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes) throws AccessDeniedException {
         if(dto.getPrice() == null){
@@ -51,7 +51,7 @@ public class CarServiceController extends BaseController {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.dto", bindingResult);
             return "redirect:/service/add";
         }
-        HashMap<String, String> result =  carService.addService(dto);
+        HashMap<String, String> result =  service.addService(dto);
         redirectAttributes.addFlashAttribute("status", result.get("status"));
         redirectAttributes.addFlashAttribute("message", result.get("message"));
         return "redirect:/service/list";
@@ -60,13 +60,13 @@ public class CarServiceController extends BaseController {
     @GetMapping("/edit/{id}")
     public ModelAndView editView(@PathVariable Long id, Model model) {
         ModelAndView modelAndView = super.view("service/edit");
-        modelAndView.addObject("dto", carService.findById(id));
+        modelAndView.addObject("dto", service.findById(id));
 
         return modelAndView;
     }
 
     @PostMapping("/edit/{id}")
-    public String editService(@Valid EditCarServiceDto dto,
+    public String editService(@Valid EditRepairDto dto,
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes) throws AccessDeniedException {
         if(dto.getPrice() == null){
@@ -77,7 +77,7 @@ public class CarServiceController extends BaseController {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.dto", bindingResult);
             return "redirect:/service/edit/" + dto.getId();
         }
-        HashMap<String,String> result = carService.editService(dto);
+        HashMap<String,String> result = service.editService(dto);
         redirectAttributes.addFlashAttribute("status", result.get("status"));
         redirectAttributes.addFlashAttribute("message", result.get("message"));
         return "redirect:/service/list";
@@ -85,9 +85,9 @@ public class CarServiceController extends BaseController {
 
 
     @PostMapping("/delete/{id}")
-    public String deleteService(@PathVariable Long id, CarServiceDto dto,
+    public String deleteService(@PathVariable Long id, RepairDto dto,
                              RedirectAttributes attributes) throws AccessDeniedException {
-        HashMap<String, String> result = carService.deleteService(id);
+        HashMap<String, String> result = service.deleteService(id);
         attributes.addFlashAttribute("status", result.get("status"));
         attributes.addFlashAttribute("message", result.get("message"));
         return "redirect:/service/list";
