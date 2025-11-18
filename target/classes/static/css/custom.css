@@ -152,7 +152,7 @@ button.user-btn {
     background-color: #dc3545bd;
     transition: 0.5s;
 }
-        /* home */
+/* home */
 
 .home-login {
     display: flex;
@@ -173,7 +173,7 @@ button.user-btn {
     transition:0.2s;
 }
 .home-login a:hover {
-  opacity:0.9;
+    opacity:0.9;
 }
 
 
@@ -186,6 +186,15 @@ button.user-btn {
     justify-content: center;
 }
 
+.short-links {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    max-width: 1440px;
+    justify-content: center;
+}
+
 .home-logged a {
     color: #fff;
     padding: 40px 50px;
@@ -195,12 +204,14 @@ button.user-btn {
     font-size: 18px;
     font-weight: 600;
     transition: 0.2s;
+    min-width: 300px;
+    text-align: center;
 }
 .home-logged a:hover {
     opacity:0.9;
 }
 
-        /* Dropdown for makes and models*/
+/* Dropdown for makes and models*/
 
 ul.dropdown-menu {
     display: block;

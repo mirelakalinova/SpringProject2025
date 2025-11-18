@@ -1,9 +1,6 @@
 package com.example.mkalinova.company;
 
 
-import com.example.mkalinova.app.car.data.dto.AddCarDto;
-import com.example.mkalinova.app.car.data.dto.CarRepairDto;
-import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.client.data.dto.ClientDto;
 import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.client.repo.ClientRepository;
@@ -12,14 +9,11 @@ import com.example.mkalinova.app.company.data.dto.CompanyListDto;
 import com.example.mkalinova.app.company.data.dto.EditCompanyDto;
 import com.example.mkalinova.app.company.data.entity.Company;
 import com.example.mkalinova.app.company.repo.CompanyRepository;
-
-import static net.bytebuddy.matcher.ElementMatchers.erasures;
 import static org.junit.jupiter.api.Assertions.*;
 import com.example.mkalinova.app.company.service.CompanyServiceImpl;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.data.entity.UsersRole;
 import com.example.mkalinova.app.user.repo.UserRepository;
-import com.example.mkalinova.app.user.service.UserService;
 import com.example.mkalinova.app.user.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,16 +25,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
-
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-
-import static net.bytebuddy.matcher.ElementMatchers.any;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
@@ -365,7 +354,7 @@ public class CompanyUTest {
 
         verify(companyRepository, never()).findById(dto.getId());
         verify(companyRepository, never()).saveAndFlush(company);
-        assertEquals(company.getDeletedAt(), null);
+        assertEquals(null, company.getDeletedAt());
 
 
 

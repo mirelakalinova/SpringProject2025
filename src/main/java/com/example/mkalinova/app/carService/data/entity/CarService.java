@@ -1,4 +1,4 @@
-package com.example.mkalinova.app.parts.data.entity;
+package com.example.mkalinova.app.carService.data.entity;
 
 
 import jakarta.persistence.*;
@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "parts")
-public class Part {
+@Table(name = "services")
+public class CarService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,7 +19,7 @@ public class Part {
     private double price;
     private LocalDateTime deletedAt;
 
-    public Part() {
+    public CarService() {
     }
 
     public Long getId() {

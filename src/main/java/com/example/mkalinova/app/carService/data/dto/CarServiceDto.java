@@ -1,21 +1,21 @@
-package com.example.mkalinova.app.parts.data.dto;
+package com.example.mkalinova.app.carService.data.dto;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
-public class AddPartDto {
+public class CarServiceDto
+{
 
     @NotNull
     @Size(min=3)
     private String name;
 
-    @Positive
-    private double price;
+    @PositiveOrZero
+    private Double price;
 
-    public AddPartDto(String name, double price) {
-        this.name = name;
-        this.price = price;
+    public CarServiceDto() {
+
     }
 
     public String getName() {
@@ -26,11 +26,11 @@ public class AddPartDto {
         this.name = name;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 }
