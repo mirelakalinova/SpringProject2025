@@ -87,20 +87,20 @@ public class ServiceControllerIT {
         ArrayList<RepairListDto> list = new ArrayList<>();
         list.add(modelMapper.map(repairFirst, RepairListDto.class));
         list.add(modelMapper.map(repairSecond, RepairListDto.class));
-        mockMvc.perform(get("/service/list").contentType(MediaType.TEXT_HTML))
+        mockMvc.perform(get("/repair/list").contentType(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("services", hasSize(1)));
+                .andExpect(model().attribute("repairs", hasSize(1)));
     }
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void addservice_Success() throws Exception {
-        mockMvc.perform(post("/service/add")
+        mockMvc.perform(post("/repair/add")
                         .param("name", "Test123")
                         .param("price", String.valueOf(120d))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/service/list"));
+                .andExpect(redirectedUrl("/repair/list"));
 
         Optional<Repair> repair = repository.findByName("Test123");
         assertTrue(repair.isPresent());
@@ -111,12 +111,12 @@ public class ServiceControllerIT {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void addService_Error() throws Exception {
-        mockMvc.perform(post("/service/add")
+        mockMvc.perform(post("/repair/add")
                         .param("name", "Te")
                         .param("price", String.valueOf(120d))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/service/add"));
+                .andExpect(redirectedUrl("/repair/add"));
 
         Optional<Repair> service = repository.findByName("Test");
         assertFalse(service.isPresent());
@@ -126,7 +126,7 @@ public class ServiceControllerIT {
     @Test
     @WithAnonymousUser
     public void addService_AccessDenied() throws Exception {
-        mockMvc.perform(post("/service/add")
+        mockMvc.perform(post("/repair/add")
                         .param("name", "Test")
                         .param("price", String.valueOf(120d))
                         .with(csrf()))
@@ -140,13 +140,13 @@ public class ServiceControllerIT {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void editServiceByAdmin_Success() throws Exception {
-        mockMvc.perform(post("/service/edit/{id}", repairFirst.getId())
+        mockMvc.perform(post("/repair/edit/{id}", repairFirst.getId())
                         .param("id", String.valueOf(repairFirst.getId()))
                         .param("name", "Test")
                         .param("price", String.valueOf(110D))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/service/list"));
+                .andExpect(redirectedUrl("/repair/list"));
 
         Optional<Repair> repair = repository.findByName("Test");
         assertNotNull(repair);
@@ -158,23 +158,23 @@ public class ServiceControllerIT {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void editServiceByAdmin_Error() throws Exception {
-        mockMvc.perform(post("/service/edit/{id}", repairFirst.getId())
+        mockMvc.perform(post("/repair/edit/{id}", repairFirst.getId())
                         .param("id", String.valueOf(repairFirst.getId()))
                         .param("name", "Te")
                         .param("price", String.valueOf(110D))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/service/edit/" + repairFirst.getId()));
+                .andExpect(redirectedUrl("/repair/edit/" + repairFirst.getId()));
 
-        Optional<Repair> service = repository.findByName("Test");
-        assertTrue(service.isEmpty());
+        Optional<Repair> repair = repository.findByName("Test");
+        assertTrue(repair.isEmpty());
 
     }
 
     @Test
     @WithAnonymousUser
     public void editServiceByAnonymous_AccessDenied() throws Exception {
-        mockMvc.perform(post("/service/edit/{id}", repairFirst.getId())
+        mockMvc.perform(post("/repair/edit/{id}", repairFirst.getId())
                         .param("id", String.valueOf(repairFirst.getId()))
                         .param("name", "Test")
                         .param("price", String.valueOf(110D))
@@ -189,11 +189,11 @@ public class ServiceControllerIT {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void DeleteServiceByAdmin_Success() throws Exception {
-        mockMvc.perform(post("/service/delete/{id}", repairFirst.getId())
+        mockMvc.perform(post("/repair/delete/{id}", repairFirst.getId())
                         .param("id", String.valueOf(repairFirst.getId()))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/service/list"));
+                .andExpect(redirectedUrl("/repair/list"));
 
         Optional<Repair> repair = repository.findById(repairFirst.getId());
         assertTrue(repair.get().getDeletedAt() != null);
@@ -205,7 +205,7 @@ public class ServiceControllerIT {
     @Test
     @WithMockUser(username = "editor", roles = {"EDITOR"})
     public void DeleteCarServiceByEditor_AccessDenied() throws Exception {
-        mockMvc.perform(post("/service/delete/{id}", repairFirst.getId())
+        mockMvc.perform(post("/repair/delete/{id}", repairFirst.getId())
                         .param("id", String.valueOf(repairFirst.getId()))
                         .with(csrf()))
                 .andExpect(status().isForbidden());
@@ -220,7 +220,7 @@ public class ServiceControllerIT {
     @Test
     @WithAnonymousUser
     public void DeleteserviceByAnonymous_AccessDenied() throws Exception {
-        mockMvc.perform(post("/service/delete/{id}", repairFirst.getId())
+        mockMvc.perform(post("/repair/delete/{id}", repairFirst.getId())
                         .param("id", String.valueOf(repairFirst.getId()))
                         .with(csrf()))
                 .andExpect(status().isForbidden());

@@ -2,13 +2,13 @@ package com.example.mkalinova.app.client.controller;
 
 
 import ch.qos.logback.core.model.Model;
+import com.example.mkalinova.app.client.data.dto.*;
+import com.example.mkalinova.app.company.data.dto.FetchCompaniesDto;
 import com.example.mkalinova.app.land.Controller.BaseController;
 import com.example.mkalinova.app.car.data.dto.AddCarDto;
 import com.example.mkalinova.app.car.data.dto.CarDto;
 import com.example.mkalinova.app.car.data.dto.CarDtoEditClient;
 import com.example.mkalinova.app.car.service.CarService;
-import com.example.mkalinova.app.client.data.dto.AddClientDto;
-import com.example.mkalinova.app.client.data.dto.EditClientDto;
 import com.example.mkalinova.app.client.service.ClientService;
 import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
 import com.example.mkalinova.app.company.data.dto.CompanyDtoEditClient;
@@ -17,6 +17,7 @@ import com.example.mkalinova.app.util.ObjectUtils;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -245,6 +246,42 @@ public class ClientController extends BaseController {
         attributes.addFlashAttribute("message", result.get("message"));
         return "redirect:/client/edit/" + clientId;
 
+
+    }
+    @GetMapping("/fetch/clients")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> fetchAllClients(){
+
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+
+
+            List<FetchClientListDto> clientList = clientService.fetchAllClientsByDeletedAtNull();
+            response.put("clients", clientList);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+
+            return ResponseEntity.status(500).body(null);
+        }
+
+    }
+
+
+    @GetMapping("/fetch/companies/{id}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> fetchClientByCarId(
+            @PathVariable("id") Long id){
+
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+
+            List<FetchCompaniesDto>  companies = companyService.fetchCompaniesByClientId(id);
+            response.put("companies", companies);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+
+            return ResponseEntity.status(500).body(null);
+        }
 
     }
 }

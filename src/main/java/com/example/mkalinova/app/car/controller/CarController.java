@@ -1,5 +1,8 @@
 package com.example.mkalinova.app.car.controller;
 
+import com.example.mkalinova.app.car.data.dto.CarListDto;
+import com.example.mkalinova.app.client.data.dto.FetchClientDto;
+import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.land.Controller.BaseController;
 import com.example.mkalinova.app.car.data.dto.AddCarDto;
 
@@ -10,6 +13,8 @@ import com.example.mkalinova.app.car.service.CarService;
 import com.example.mkalinova.app.client.data.dto.ClientListCarDto;
 import com.example.mkalinova.app.client.service.ClientService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.file.AccessDeniedException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,4 +120,43 @@ public class CarController extends BaseController {
 
         return modelAndView;
     }
+
+
+    @GetMapping("/fetch/cars")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> fetchAllCars(){
+
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+
+            List<CarListDto> carList = carService.fetchAllCarsByDeletedAtNull();
+            response.put("cars", carList);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+
+            return ResponseEntity.status(500).body(null);
+        }
+
+    }
+
+
+    @GetMapping("/fetch/client/{id}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> fetchClientByCarId(
+            @PathVariable("id") Long id){
+
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+
+            List<FetchClientDto>  client = carService.fetchClientByCarId(id);
+            response.put("clients", client);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+
+            return ResponseEntity.status(500).body(null);
+        }
+
+    }
+
+
 }

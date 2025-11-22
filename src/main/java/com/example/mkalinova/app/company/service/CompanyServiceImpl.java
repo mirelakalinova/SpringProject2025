@@ -3,10 +3,7 @@ package com.example.mkalinova.app.company.service;
 import com.example.mkalinova.app.client.data.dto.ClientDto;
 import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.client.repo.ClientRepository;
-import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
-import com.example.mkalinova.app.company.data.dto.CompanyListDto;
-import com.example.mkalinova.app.company.data.dto.CompanyRepairDto;
-import com.example.mkalinova.app.company.data.dto.EditCompanyDto;
+import com.example.mkalinova.app.company.data.dto.*;
 import com.example.mkalinova.app.company.data.entity.Company;
 import com.example.mkalinova.app.company.repo.CompanyRepository;
 import com.example.mkalinova.app.user.data.entity.User;
@@ -242,6 +239,12 @@ public class CompanyServiceImpl implements CompanyService {
         result.put("status", "error");
         result.put("message", "Нещо се обърка");
         return result;
+    }
+
+    @Override
+    public List<FetchCompaniesDto> fetchCompaniesByClientId(Long id) {
+      List<Company> companies =  companyRepository.findAllByClientIdAndDeletedAtNull(id);
+        return companies.stream().map(c-> modelMapper.map(c, FetchCompaniesDto.class)).toList();
     }
 }
 

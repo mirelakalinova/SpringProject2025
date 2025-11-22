@@ -1,10 +1,9 @@
 package com.example.mkalinova.app.car.service;
 
-import com.example.mkalinova.app.car.data.dto.AddCarDto;
-import com.example.mkalinova.app.car.data.dto.CarDto;
-import com.example.mkalinova.app.car.data.dto.CarRepairDto;
-import com.example.mkalinova.app.car.data.dto.EditCarDto;
+import com.example.mkalinova.app.car.data.dto.*;
 import com.example.mkalinova.app.car.data.entity.Car;
+import com.example.mkalinova.app.client.data.dto.FetchClientDto;
+import com.example.mkalinova.app.client.data.entity.Client;
 import jakarta.validation.Valid;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
@@ -28,4 +27,8 @@ public interface CarService {
     <T> Object findById(Long carId, Class<T> clazz);
 
     List<Car> getAllCarByClientId(Long id);
+
+     List<CarListDto> fetchAllCarsByDeletedAtNull();
+
+    List<FetchClientDto> fetchClientByCarId(Long id);
 }

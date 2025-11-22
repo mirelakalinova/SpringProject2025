@@ -1,3 +1,6 @@
+
+
+
 $(document).ready(function() {
 
     window.addEventListener('pageshow', function (event) {
@@ -14,71 +17,74 @@ $(document).ready(function() {
             comapny.classList.remove('d-none');
         }
 
-
-
         document.getElementById('showCompany').addEventListener('change', function() {
             comapny.classList.toggle('d-none', !this.checked);
             isCompanyFormChecked.value = this.checked.toString();
 
         });
     }
-    $('#clientId').select2({
-        theme: 'bootstrap-5',
-        placeholder: "Избери клиент...",
-        allowClear: true,
-        width: '100%',
 
-        language: {
-            noResults: function() {
-                return "Няма намерени клиенти";
-            }
-        }
-    }).on('select2:open', function() {
-        $('.select2-search__field').attr('placeholder', 'Пиши за търсене...');
-    });
-    $('#client').select2({
-        theme: 'bootstrap-5',
-        placeholder: "Избери клиент...",
-        allowClear: true,
-        width: '100%',
 
-        language: {
-            noResults: function() {
-                return "Няма намерени клиенти";
-            }
-        }
-    }).on('select2:open', function() {
-        $('.select2-search__field').attr('placeholder', 'Пиши за търсене...');
-    });
 
-    $('#companyToAdd').select2({
-        theme: 'bootstrap-5',
-        placeholder: "Избери фирма...",
-        allowClear: true,
-        width: '100%',
 
-        language: {
-            noResults: function() {
-                return "Няма намерени клиенти";
-            }
-        }
-    }).on('select2:open', function() {
-        $('.select2-search__field').attr('placeholder', 'Пиши за търсене...');
-    });
-    $('#carToAdd').select2({
-        theme: 'bootstrap-5',
-        placeholder: "Избери клиент...",
-        allowClear: true,
-        width: '100%',
 
-        language: {
-            noResults: function() {
-                return "Няма намерени клиенти";
-            }
-        }
-    }).on('select2:open', function() {
-        $('.select2-search__field').attr('placeholder', 'Пиши за търсене...');
-    });
+    //    $('#clientId').select2({
+    //        theme: 'bootstrap-5',
+    //        placeholder: "Избери клиент...",
+    //        allowClear: true,
+    //        width: '100%',
+    //
+    //        language: {
+    //            noResults: function() {
+    //                return "Няма намерени клиенти";
+    //            }
+    //        }
+    //    }).on('select2:open', function() {
+    //        $('.select2-search__field').attr('placeholder', 'Пиши за търсене...');
+    //    });
+    //    $('#client').select2({
+    //        theme: 'bootstrap-5',
+    //        placeholder: "Избери клиент...",
+    //        allowClear: true,
+    //        width: '100%',
+    //
+    //        language: {
+    //            noResults: function() {
+    //                return "Няма намерени клиенти";
+    //            }
+    //        }
+    //    }).on('select2:open', function() {
+    //        $('.select2-search__field').attr('placeholder', 'Пиши за търсене...');
+    //    });
+    //
+    //    $('#companyToAdd').select2({
+    //        theme: 'bootstrap-5',
+    //        placeholder: "Избери фирма...",
+    //        allowClear: true,
+    //        width: '100%',
+    //
+    //        language: {
+    //            noResults: function() {
+    //                return "Няма намерени клиенти";
+    //            }
+    //        }
+    //    }).on('select2:open', function() {
+    //        $('.select2-search__field').attr('placeholder', 'Пиши за търсене...');
+    //    });
+    //    $('#carToAdd').select2({
+    //        theme: 'bootstrap-5',
+    //        placeholder: "Избери клиент...",
+    //        allowClear: true,
+    //        width: '100%',
+    //
+    //        language: {
+    //            noResults: function() {
+    //                return "Няма намерени клиенти";
+    //            }
+    //        }
+    //    }).on('select2:open', function() {
+    //        $('.select2-search__field').attr('placeholder', 'Пиши за търсене...');
+    //    });
     const isEditView = window.location.pathname.startsWith('/car/edit');
     if(isEditView){
         document.getElementById('change-make').addEventListener('click', function() {
@@ -94,14 +100,16 @@ $(document).ready(function() {
         });}
 
 
-    // 1) инициализация на select2 (както вече имаш)
-    $('#car').select2({
-        placeholder: "Избери кола...",
-        allowClear: true,
-        width: '100%'
-    }).on('select2:open', function() {
-        $('.select2-search__field').attr('placeholder', 'Пиши за търсене...');
-    });
+    //    // 1) инициализация на select2 (както вече имаш)
+    //    $('#car').select2({
+    //        placeholder: "Избери кола...",
+    //        allowClear: true,
+    //        width: '100%'
+    //    }).on('select2:open', function() {
+    //        $('.select2-search__field').attr('placeholder', 'Пиши за търсене...');
+    //    });
+
+
 
     // 2) хендлери за избор (работят и ако select2 е използван или не)
     // при select2:select - използваме e.params.data.element (DOM <option>) когато е налично
@@ -128,9 +136,6 @@ $(document).ready(function() {
         const hp = $opt.data('hp') || $opt.attr('data-hp') || '';
         const vin = $opt.data('vin') || $opt.attr('data-vin') || '';
 
-        // debug (махни след като работи)
-        console.log('selected option element:', $opt.prop('outerHTML'));
-        console.log({ registration, make, model, year, cube, kw, hp, vin });
 
         // 3) попълваме input-ите и ги правим readonly
         $('#registrationNumber').val(registration).prop('readOnly', true);
@@ -218,3 +223,42 @@ document.addEventListener('click', function (e) {
         if (confirm(`Наистина ли искате да изтриете ${name}?`)) doDelete();
     }
 });
+
+
+
+// select2 избрана стойност
+$('select.form-select').on('select2:select', function(e) {
+    const selected = e.params.data; // данни от Select2
+    console.log(selected.id);
+    // маркираме оригиналния option
+    const $option = $(this).find('option').filter(function() {
+        return $(this).val() === selected.id;
+    });
+    $(this).find('option').removeAttr('selected')
+    if ($option.length) {
+        console.log("Влиза");
+        $option.attr('selected', 'selected');
+    }
+
+    // Обновяваме UI на Select2
+    $(this).trigger('change');
+
+    // Вече можеш да обработваш стойностите
+    const value = $(this).val();                    // value на избрания option
+    const price = $option.data('price');           // data-price
+    const text = $option.text();                   // видим текст
+
+    console.log('Value:', value, 'Text:', text, 'Price:', price);
+});
+
+
+
+
+$(document).ready(function () {
+    $('select.form-select').each(function() {
+        $(this).select2({
+            placeholder: 'Избери опция',
+            allowClear: true
+        });
+    });  });
+

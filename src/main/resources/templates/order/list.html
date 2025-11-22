@@ -1,0 +1,87 @@
+<div class="container order-container" xmlns:th="http://www.w3.org/1999/xhtml">
+	<h1>Списък с ремонти</h1>
+	<div th:if="${message}" th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')">
+		<span th:text="${message}"></span>
+	</div>
+	<div class="add-user-btn">
+		<a th:href="@{/order/add}">Добави ремонт</a>
+	</div>
+
+
+	<table class="table table-striped table-hover">
+		<thead>
+		<tr>
+			<th>#</th>
+			<th>Дата</th>
+			<th>Автомобил</th>
+			<th>Клиент</th>
+			<th>Телефон</th>
+			<th>Части</th>
+			<th>Услуги</th>
+			<th>Отстъпка</th>
+			<th>Обща сума</th>
+			<th>Фирма</th>
+			<th>Бележка</th>
+			<th>Редакция</th>
+			<th>Изтриване</th>
+
+		</tr>
+		</thead>
+		<tbody>
+		<tr th:each="order : ${orderList}">
+			<td th:text="${order.id}"></td>
+			<td>
+				<i class="fa-solid fa-calendar-days"></i><span th:text="${#temporals.format(order.date, 'dd-MM-yyyy')}"></span>
+				<br/>
+				<i class="fa-solid fa-clock"></i>
+				<span th:text="${#temporals.format(order.date, 'HH:mm')}"></span>
+			</td>
+			<td ><strong th:text="${order.car.registrationNumber}"> </strong></td>
+
+			<td th:text="${order.client.firstName}  + ' ' +  ${order.client.lastName}"></td>
+			<td th:text="${order.client.phone}"></td>
+
+			<td>
+				<ul class="list-unstyled list-group list-group-flush">
+
+					<li class="list-group-item" th:each="item : ${order.partsList}" ><span th:text="${item.part.name}"></span></li>
+				</ul>
+			</td>
+			<td>
+				<ul class="list-unstyled list-group list-group-flush">
+
+					<li class="list-group-item" th:each="item : ${order.repairsList}" ><span th:text="${item.repair.name}"></span></li>
+				</ul>
+			</td>
+			<!--            todo -->
+			<td th:text="${#numbers.formatDecimal(order.discount, 1, 'NONE', 2, 'POINT')}"></td>
+			<td th:text="${#numbers.formatDecimal(order.total, 1, 'NONE', 2, 'POINT')}"></td>
+			<td th:text="${order.company.name != null ? order.company.name : '-'}"></td>
+
+			<td th:text="${order.note}"></td>
+			<td>
+				<form th:action="@{/order/edit/{id}(id=${order.id})}" th:method="get">
+
+					<button type="submit" class="user-edit-btn user-btn">
+
+						<i class="fa-solid fa-square-pen"></i>
+					</button>
+				</form>
+			</td>
+			<td>
+				<form th:action="@{/order/delete/{id}(id=${order.id})}" th:method="post">
+
+					<button type="submit"
+							class="user-delete-btn user-btn" th:attr="data-name=${order.id}">
+						<i class="fa-solid fa-trash-arrow-up"></i>
+					</button>
+				</form>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+
+
+</div>
+
+

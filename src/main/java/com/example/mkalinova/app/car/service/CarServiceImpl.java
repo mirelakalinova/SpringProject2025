@@ -2,12 +2,11 @@ package com.example.mkalinova.app.car.service;
 
 import com.example.mkalinova.app.apiService.data.dto.SaveMakeModelDto;
 import com.example.mkalinova.app.apiService.service.ApiService;
-import com.example.mkalinova.app.car.data.dto.AddCarDto;
-import com.example.mkalinova.app.car.data.dto.CarDto;
-import com.example.mkalinova.app.car.data.dto.CarRepairDto;
-import com.example.mkalinova.app.car.data.dto.EditCarDto;
+import com.example.mkalinova.app.car.data.dto.*;
 import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.car.repo.CarRepository;
+import com.example.mkalinova.app.client.data.dto.FetchClientDto;
+import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.exepction.ResourceNotFoundException;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.service.UserServiceImpl;
@@ -53,7 +52,7 @@ public class CarServiceImpl implements CarService {
 
         carRepository.findByClientIsNull().forEach(car -> {
             T carToAdd = modelMapper.map(car, clazz);
-                 list.add(carToAdd);
+            list.add(carToAdd);
         });
 
         return list;
@@ -85,7 +84,7 @@ public class CarServiceImpl implements CarService {
     public Optional<Car> findCar(String registrationNumber) {
 
 
-        return  carRepository.findByRegistrationNumber(registrationNumber);
+        return carRepository.findByRegistrationNumber(registrationNumber);
     }
 
     @Override
@@ -212,4 +211,31 @@ public class CarServiceImpl implements CarService {
         return carRepository.findAllByClientId(id);
 
     }
+
+    @Override
+    public List<CarListDto> fetchAllCarsByDeletedAtNull() {
+        List<Car> carList = carRepository.getAllByDeletedAtNull();
+        List<CarListDto> listDto = new ArrayList<>();
+        carList.forEach(car -> listDto.add(modelMapper.map(car, CarListDto.class)));
+
+
+        return listDto;
+    }
+
+    @Override
+    public List<FetchClientDto> fetchClientByCarId(Long id) {
+        Optional<Car> car = carRepository.findById(id);
+        if(car.isEmpty()) {
+            return null;
+        }
+        if(car.get().getClient() == null){
+            return null;
+        }
+
+        List<FetchClientDto> list = new ArrayList<>();
+        list.add(modelMapper.map(car.get().getClient(), FetchClientDto.class));
+        return list;
+    }
+
+
 }

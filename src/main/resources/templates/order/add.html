@@ -1,0 +1,422 @@
+<div class="container align-content-center order" xmlns:th="http://www.w3.org/1999/xhtml"
+	 xmlns:v-="http://www.w3.org/1999/xhtml">
+	<!-- todo ако може да се взема от някакви настройки -->
+	<div th:if="${message}" th:text="${message}"
+		 th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"></div>
+	<h1>Добави ремонт</h1>
+	<form th:action="@{/order/add}" th:method="post" th:object="${orderDto}">
+		<input type="hidden" name="orderJson" id="orderJson">
+		<div id="order">
+			<div class="row row-view">
+				<div class="col-lg-6 elements-add-repair">
+
+
+					<div class="app-select-form">
+
+
+						<!-- Селект за автомобил -->
+						<div class="choose-data ">
+							<label for="order-car">1. Избери автомобил</label>
+							<input type="hidden" name="car" id="car">
+							<select v-model="selectedCar" @change="handleCarChange" id="order-car" name="order-car"
+									class="form form-select">
+								<option value="" disabled>Избери</option>
+								<option v-for="car in cars" :key="car.id" :value="car.id">
+									{{ car.registrationNumber }}
+								</option>
+							</select>
+						</div>
+						<!-- Селект за клиент -->
+						<div class="choose-data ">
+							<label for="order-client">2. Избери клиент</label>
+							<input type="hidden" name="client" id="client">
+							<select v-model="selectedClient" @change="handleClientChange" id="order-client"
+									name="order-client" class="form form-select"
+									:disabled="!enableClientDropdown">
+								<option value="" disabled>Избери</option>
+								<option v-for="client in clients" :key="client.id" :value="client.id">
+									{{ client.firstName }} {{ client.lastName }}
+								</option>
+							</select>
+						</div>
+						<!-- Селект за фирма -->
+						<div class="choose-data ">
+							<label for="order-company">3. Избери фирма</label>
+							<input type="hidden" name="company" id="company">
+							<select v-model="selectedCompany" @change="handleCompanyChange" id="order-company"
+									name="order-company" class="form  form-select"
+									:disabled="!enableCompanyDropdown">
+								<option value="" disabled>Избери</option>
+								<option v-for="company in companies" :key="company.id" :value="company.id">
+									{{ company.name }}
+								</option>
+							</select></div>
+					</div>
+					<h4>Данни</h4>
+					<table class="table table-responsive table-data">
+						<thead>
+
+						<tr>
+							<th scope="col">Автомобил</th>
+							<th scope="col">Клиент</th>
+							<th scope="col">Фирма</th>
+
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>
+								Рег.#: <span v-if="selectedCarData">{{ selectedCarData.registrationNumber  }}</span><br>
+								Марка: <span v-if="selectedCarData">{{ selectedCarData.make }}</span><br>
+								Модел: <span v-if="selectedCarData">{{ selectedCarData.model }}</span><br>
+								Година: <span v-if="selectedCarData">{{ selectedCarData.year }}</span>
+							</td>
+							<td>
+								Име: <span v-if="selectedClientData">{{ selectedClientData.firstName }}</span><br>
+								Фамилия: <span v-if="selectedClientData">{{ selectedClientData.lastName }}</span><br>
+								Телефон: <span v-if="selectedClientData">{{ selectedClientData.phone }}</span><br>
+
+							</td>
+
+							<td>
+								Наименование: <span v-if="selectedCompanyData">{{ selectedCompanyData.name }}</span><br>
+								ЕИК: <span v-if="selectedCompanyData">{{ selectedCompanyData.uic }}</span><br>
+								ДДС #: <span v-if="selectedCompanyData">{{ selectedCompanyData.vatNumber }}</span><br>
+								Адрес: <span v-if="selectedCompanyData">{{ selectedCompanyData.address }}</span><br>
+								МОЛ: <span v-if="selectedCompanyData">{{ selectedCompanyData.accountablePerson }}</span><br>
+
+							</td>
+						</tr>
+
+
+						</tbody>
+					</table>
+
+					<h4>Добави части</h4>
+					<table class="table table-responsive table-parts">
+						<thead>
+
+						<tr>
+
+							<th scope="col" colspan="3">Части</th>
+							<th scope="col" colspan="1">Брой</th>
+							<th scope="col" colspan="1">Цена</th>
+							<th scope="col" colspan="1">Действие</th>
+							<th scope="col" colspan="1">Нов</th>
+
+						</tr>
+						</thead>
+						<tbody>
+
+
+						<tr class="form-repair">
+
+							<td colspan="3">
+
+								<select class="form form-select select-price" id="partSelect" data-id="part"
+								>
+									<option value="" selected disabled>Избери</option>
+									<option th:each="part : ${parts}"
+											th:text="${part.name}"
+											th:id="'parts[' + ${part.id} + ']'"
+											th:data-id="${part.id}"
+											th:value="${part.name}"
+											th:data-price="${part.price}"></option>
+								</select>
+
+
+							</td>
+							<td colspan="1">
+								<input class="form-control count-input" type="number" id="count-part"
+									   name="count-parts"
+									   step="1" value="1">
+
+							</td>
+
+							<td colspan="1">
+								<input class="form-control price-input" type="number" id="price-part"
+									   name="price-part"
+								>
+							</td>
+							<td colspan="1">
+
+								<button class="add-btn add-item"
+										data-id="part"
+										id="btn-part"
+										type="button">Добави
+								</button>
+							</td>
+
+							<td colspan="1">
+								<button
+										class="circle-btn"
+										type="button"
+										data-view-type="part"
+										id="add-part-modal">+
+								</button>
+							</td>
+						</tr>
+
+
+						</tbody>
+					</table>
+
+					<h4>Добави услуга</h4>
+					<table class="table table-responsive table-repair">
+						<thead>
+
+						<tr>
+
+							<th scope="col" colspan="3">Услуги</th>
+							<th scope="col">Брой</th>
+							<th scope="col">Цена</th>
+							<th scope="col">Действие</th>
+							<th scope="col">Нов</th>
+
+						</tr>
+						</thead>
+						<tbody>
+
+
+						<tr class="form-repair">
+
+							<td colspan="3">
+
+								<select
+										class="form form form-select select-price"
+										id="repair"
+										data-id="repair"
+
+								>
+									<option value="" selected disabled>Избери</option>
+									<option th:each="repair : ${repairs}"
+											th:text="${repair.name}"
+											th:value="${repair.name}"
+											th:id="'repairs[' + ${repair.id} + ']'"
+											th:data-id="${repair.id}"
+											th:data-price="${repair.price}"></option>
+								</select>
+
+
+							</td>
+							<td>
+								<input class="form-control count-input"
+									   type="number"
+									   id="count-repair"
+									   name="count-repair"
+									   step="1" value="1">
+
+							</td>
+
+							<td>
+								<input class="form-control price-input"
+									   type="number"
+									   id="price-repair"
+									   name="price-repair"
+								>
+							</td>
+							<td>
+
+								<button class="add-btn add-item"
+										type="button"
+										id="btn-repair"
+										data-id="repair">Добави
+								</button>
+							</td>
+
+							<td>
+								<button class="circle-btn"
+										data-view-type="service">+
+								</button>
+							</td>
+						</tr>
+
+
+						</tbody>
+					</table>
+
+					<h4>Отстъпка</h4>
+					<table class="table table-responsive table-service">
+						<thead>
+						<tr>
+							<th scope="col">Твърда отстъпка</th>
+							<th scope="col">% отстъпка</th>
+							<th scope="col">Добави</th>
+
+						</tr>
+						</thead>
+						<tbody>
+
+						<tr class="form-repair">
+
+							<td>
+								<input class="form-control discount-input" type="text" id="discount-amount"
+									   name="discount-amount" value="0"
+								>
+							</td>
+
+							<td>
+								<input class="form-control discount-input" type="text" id="discount-percent"
+									   name="discount-percent" value="0"
+								>
+							</td>
+
+
+							<td>
+								<button type="button" class="circle-btn" onclick="makeDiscount()">+</button>
+							</td>
+						</tr>
+
+
+						</tbody>
+					</table>
+
+				</div>
+
+				<div class="col-lg-6 elements-add-repair">
+					<h3>Поръчка</h3>
+					<hr>
+					<div class="row">
+						<div class="col-lg-6">
+							<h6>Получател</h6>
+							<div v-if="!selectedCompanyData && selectedClientData">
+								<p>Име на клиент: <span>{{ selectedClientData.firstName }} {{ selectedClientData.lastName }}  </span>
+								</p>
+								<p>Телефон: <span>{{ selectedClientData.phone }} </span></p>
+
+							</div>
+							<div v-if="selectedCompanyData">
+								<p><span>{{ selectedCompanyData.name }} </span></p>
+								<p>Адрес: <span>{{ selectedCompanyData.address }}</span></p>
+								<p>ЕИК: <span>{{ selectedCompanyData.uic }}</span></p>
+								<p>ДДС номер: <span>{{ selectedCompanyData.vatNumber }}</span></p>
+								<p>МОЛ: <span>{{ selectedCompanyData.accountablePerson }}</span></p>
+							</div>
+
+						</div>
+						<div class="col-lg-6">
+							<h6> Предоставил услугата</h6>
+							<p>Име на клиент: <span> Дорела Ауто ЕООД</span></p>
+							<p>Телефон: <span>0896619422</span></p>
+							<p>ЕИК: <span>201799256</span></p>
+							<p>Адрес: <span>Русе, ул. Боримечка 35</span></p>
+							<p>МОЛ: <span>Галина Калинова</span></p>
+						</div>
+					</div>
+					<h4> Закупени части</h4>
+					<input type="hidden" value="0" id="part-array">
+					<input type="hidden" value="0" id="repair-array">
+					<table class="order table" id="table-part" name="parts" data-count-rows="0" data-sum="0">
+						<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Услуга</th>
+							<th scope="col">Цена</th>
+							<th scope="col">брой</th>
+							<th scope="col">Общо</th>
+							<th scope="col">Изтрий</th>
+						</tr>
+						</thead>
+						<tbody>
+
+						</tbody>
+
+
+						<tfoot>
+						<tr id="total-row-part">
+							<td colspan="5" style="text-align: right;">Общо:</td>
+							<td colspan="1" id="total-table-part">0.00 <span> лв.</span></td>
+						</tr>
+						</tfoot>
+					</table>
+					<h4> Извършени услуги</h4>
+					<table class="order table" id="table-repair" name="repairs" data-count-rows="0" data-sum="0">
+						<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Услуга</th>
+							<th scope="col">Цена</th>
+							<th scope="col">брой</th>
+							<th scope="col">Общо</th>
+							<th scope="col">Изтрий</th>
+						</tr>
+						</thead>
+						<tbody>
+
+
+						</tbody>
+
+						<tfoot>
+						<tr id="total-row-service">
+							<td colspan="5" style="text-align: right;">Общо:</td>
+							<td colspan="1" id="total-table-repair"><span> лв.</span></td>
+						</tr>
+						</tfoot>
+					</table>
+					<!--					<input type="hidden" name="services" id="tableData-service">-->
+
+					<!--					<input type="hidden" name="parts" id="tableData-part">-->
+					<h5 class="totals"> Сума без ДДС: <input class="readonly-input" name="subtotal"
+															 id="total-without-tax" value="0.00"><span> лв. </span></h5>
+					<h5 class="totals"> ДДС(20.00%): <input class="readonly-input" name="tax" id="tax" value="0.00">
+						<span> лв. </span></h5>
+					<h5 class="totals discount"> Отстъпка: <input class="readonly-input" readonly name="discount"
+																  id="discount" value="0.00"> <span> лв. </span></h5>
+					<h5 class="totals"> Сума с ДДС: <input class="readonly-input" value="0.00" id="order-total"
+														   name="total"> <span> лв. </span></h5>
+					<input type="hidden" id="discount-sum" name="discountAmount" th:value="${discountAmount}"/>
+					<input type="hidden" id="discount-perc" name="discountPercent" th:value="${discountPercent}"/>
+					<!--
+	 <h4> Отстъпка: <span id="discount">-25лв</span></h4>-->
+					<!--                    <h4> Тотал: <span id="total-after-discount"> 2475</span>лв.</h4>-->
+				</div>
+
+			</div>
+		</div>
+		<button type="submit" value="Запиши">Запиши</button>
+		<!--         <button type="submit" value="Изпрати">Принтирай</button>-->
+	</form>
+
+
+</div>
+<div class="d-none" th:object="${dto}">
+	<!-- Данни от dto-то при bindingResults.hasError... -->
+	<!--modelAndView.addObject("dtoCar", orderDto.getCar());-->
+	<input type="hidden" id="dtoCar" th:value="${dtoCar}">
+	<!--modelAndView.addObject("dtoClient", orderDto.getClient());-->
+	<input type="hidden" id="dtoClient" th:value="${dtoClient}">
+	<!--modelAndView.addObject("dtoCompany", orderDto.getCompany());-->
+	<input type="hidden" id="dtoCompany" th:value="${dtoCompany}">
+	<!--modelAndView.addObject("dtoParts", orderDto.getParts());-->
+	<ul class="d-none" id="dtoParts">
+		<li th:each="p : ${dtoParts}"
+			th:value="${p.id}"
+			th:text="${p.name}"
+			th:data-price="${p.price}"
+			th:data-quantity="${p.quantity}"
+		></li>
+	</ul>
+	<!--modelAndView.addObject("dtoRepairs", orderDto.getRepairs());-->
+	<ul class="d-none" id="dtoRepairs">
+		<li th:each="r : ${dtoRepairs}"
+			th:value="${r.id}"
+			th:text="${r.name}"
+			th:data-price="${r.price}"
+			th:data-quantity="${r.quantity}"
+		></li>
+	</ul>
+	<!--modelAndView.addObject("dtoSubtotal", orderDto.getSubtotal());-->
+	<input type="hidden" id="dtoSubtotal" th:value="${dtoSubtotal}">
+	<!--modelAndView.addObject("dtoTax", orderDto.getTax());-->
+	<input type="hidden" id="dtoTax" th:value="${dtoTax}">
+	<input type="hidden" id="dtoDiscount" th:value="${dtoDiscount}">
+	<!--modelAndView.addObject("dtoDiscount", orderDto.getDiscount());-->
+	<!--modelAndView.addObject("dtoTotal", orderDto.getTotal());-->
+	<input type="hidden" id="dtoTotal" th:value="${dtoTotal}">
+	<!--modelAndView.addObject("dtoNote", orderDto.getNote());-->
+	<input type="hidden" id="dtoNote" th:value="${dtoNote}">
+
+</div>
+
+
+

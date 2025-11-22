@@ -5,10 +5,7 @@ import com.example.mkalinova.app.car.data.dto.CarDto;
 import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.car.repo.CarRepository;
 import com.example.mkalinova.app.car.service.CarService;
-import com.example.mkalinova.app.client.data.dto.AddClientDto;
-import com.example.mkalinova.app.client.data.dto.ClientListDto;
-import com.example.mkalinova.app.client.data.dto.ClientRepairDto;
-import com.example.mkalinova.app.client.data.dto.EditClientDto;
+import com.example.mkalinova.app.client.data.dto.*;
 import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.client.repo.ClientRepository;
 import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
@@ -49,8 +46,9 @@ public class ClientServiceImpl implements ClientService {
 
 
     @Override
-    public <T> Object getById(Long id, Class<T> tClass) {
-        return null;
+    public Optional<Client>  getById(Long id) {
+
+        return clientRepository.findById(id);
     }
 
     @Override
@@ -187,6 +185,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public List<ClientListDto> getAllWithCarsAndCompanies() {
+
         List<ClientListDto> clientList =
 
          this.clientRepository.findAllByDeleteAdNull().stream()
@@ -312,12 +311,12 @@ public class ClientServiceImpl implements ClientService {
 
         return dtoClientList;
     }
-
+// todo -> check is unnecessary
     @Override
     public List<ClientRepairDto> findById(Long id) {
         return List.of();
     }
-
+    // todo -> check is unnecessary
     @Override
     public boolean findByPhone(String phoneNumber) {
         Optional<Client> client = clientRepository.findByPhone(phoneNumber);
@@ -385,4 +384,10 @@ public class ClientServiceImpl implements ClientService {
         return result;
     }
 
+    @Override
+    public List<FetchClientListDto> fetchAllClientsByDeletedAtNull() {
+        List<FetchClientListDto> list =  clientRepository.findAllByDeleteAdNull().stream().map(c->modelMapper.map(c, FetchClientListDto.class)).toList();
+
+        return list;
+    }
 }
