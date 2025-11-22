@@ -128,24 +128,26 @@ button {
 }
 
 button.user-btn {
-    padding: 5px 15px;
+    border-radius: 55px ;
+    padding: 5px 10px;
     border: 1px solid #ccc;
-    border-radius: 10px;
-    margin:0;
+    display: block;
+    margin: 0 auto;
     color: white;
 }
 
 .user-edit-btn{
-    background-color: #2274A5;
+    background-color: #3C887E;
 }
 
 .user-edit-btn:hover {
-    background-color: #2274a5c7;
+    background-color: #5B7B7A;
     transition: 0.5s;
 }
 
-.user-delete-btn{
+.user-delete-btn {
     background-color: #dc3545;
+
 }
 
 .user-delete-btn:hover {
@@ -198,7 +200,7 @@ button.user-btn {
 .home-logged a {
     color: #fff;
     padding: 40px 50px;
-    background-color: #353a47;
+    background-color: #2D728F;
     border-radius: 4px;
     text-decoration: none;
     font-size: 18px;
@@ -323,4 +325,182 @@ select#car {
 .error-message {
     font-size: 12px;
 
+}
+
+/*order*/
+
+.order{
+
+    max-width: 100%;
+    padding: 20px 150px;
+
+}
+
+div#order {
+    margin-top: 20px;
+}
+.col-lg-6.elements-add-repair {
+    background-color: #e9e9e9;
+    padding: 15px 20px;
+    border-radius: 15px;
+}
+
+.choose-data {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    width: 33%;
+    min-height: 120px;
+    justify-content: flex-start;
+}
+
+.app-select-form {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+.row.row-view {
+    display: flex;
+    gap: 20px;
+    flex-wrap: nowrap;
+}
+
+.order h4 , .order h3 {
+    background: #1d244a;
+    color: white;
+    padding: 10px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.table-data {
+    min-height: 230px;
+    background: white;
+}
+
+button.add-btn {
+    display: block;
+    margin: 0 auto;
+}
+
+button.circle-btn {
+    border-radius: 223px;
+    max-width: 48px;
+    padding: 5px 13px;
+    display: block;
+    margin: 0 auto;
+    background-color: #00800099;
+}
+
+.table-data td{
+    width:33.33%;
+}
+
+.table-data span{
+    display: block;
+    font-weight: 600;
+}
+table.order  {
+    counter-reset: rowNumber;
+}
+
+table.order tbody tr {
+    counter-increment: rowNumber;
+}
+
+table.order tbody tr .row-number::before {
+    content: counter(rowNumber);
+}
+h5.totals {
+    text-align: right;
+    font-weight: 500;
+    color: #1e2449;
+}
+
+h5.totals span {
+
+    font-weight: 800;
+
+}
+
+.readonly-input {
+    border: none;
+    background: none;
+    text-align: right;
+    font-weight: 800;
+    cursor: default;
+}
+
+.readonly-input:focus-visible {
+
+    outline: none;
+    cursor: default;
+}
+
+span.select2.select2-container.select2-container--default.select2-container--focus {
+    height: 100%;
+}
+
+span.select2-selection.select2-selection--single.select2-selection--clearable {
+    height: 38px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__clear {
+    cursor: pointer;
+    float: right;
+    font-weight: bold;
+    /* height: 26px; */
+    top: -26px;
+    left: 155px;
+    /* position: absolute; */
+    background: #d137339c;
+    border-radius: 84px;
+    width: 30px;
+    height: 30px;
+    margin: 0 auto;
+    padding: 0;
+    color: white;
+}
+
+.container.order-container {
+    max-width: 90%;
+}
+
+table thead tr th{
+    text-align:cente;
+}
+
+tr {
+    vertical-align: middle;
+}
+li.list-group-item {
+    background: none;
+}
+
+span.select2-selection.select2-selection--single {
+    height: 38px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+/* color: #dc3545; */
+/* line-height: 28px; */
+    padding: 4px 10px;
+    margin: 0;
+}
+
+span.select2-selection__arrow {
+    padding: 0;
+    margin: 4px;
+}
+
+td > i.fa-solid {
+    color: #1213144f;
+    padding: 10px 5px;
 }

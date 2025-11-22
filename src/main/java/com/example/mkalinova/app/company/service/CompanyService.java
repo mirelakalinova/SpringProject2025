@@ -3,10 +3,7 @@ package com.example.mkalinova.app.company.service;
 
 
 import com.example.mkalinova.app.client.data.dto.ClientDto;
-import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
-import com.example.mkalinova.app.company.data.dto.CompanyListDto;
-import com.example.mkalinova.app.company.data.dto.CompanyRepairDto;
-import com.example.mkalinova.app.company.data.dto.EditCompanyDto;
+import com.example.mkalinova.app.company.data.dto.*;
 import com.example.mkalinova.app.company.data.entity.Company;
 
 import java.nio.file.AccessDeniedException;
@@ -43,4 +40,7 @@ public interface CompanyService {
 
     ClientDto getCompanyClient(Long id);
     HashMap<String, String> removeClient(Long id, Long companyId) throws AccessDeniedException;
+
+    List<FetchCompaniesDto> fetchCompaniesByClientId(Long id);
+
 }

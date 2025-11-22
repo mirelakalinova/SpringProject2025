@@ -57,8 +57,10 @@
 
 					<h2 class="subheading">Автомобил</h2>
 
+
+					</ul>
 					<label for="car" class="header-label">Зареди автомобил по рег.№</label>
-					<select id="car" name="car" class="form-control d-none">
+					<select id="car" name="car" class="form form-control d-none">
 						<option th:if="${!#lists.isEmpty(cars)}" selected disabled>
 							Избери
 						</option>
@@ -195,7 +197,7 @@
 								<div class="dynamic-content"><label for="company_name"
 																	class="header-label">Зареди
 									фирма по наименование</label>
-									<select class="form-select"
+									<select class="form form-select"
 											id="company_name" name="company_name">
 
 										<option th:if="${!#lists.isEmpty(companies)}"

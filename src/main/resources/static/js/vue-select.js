@@ -1,4 +1,13 @@
 
+//$('select.form-select').on('change', function() {
+//    const selectId = $(this).attr('id'); // уникален id на селекта
+//    const selectedVal = $(this).val();
+//    if(selectId == "order-car"){
+//        this.handleCarChange();
+//    }
+//    console.log('Селектът с ID:', selectId, 'е променен. Нов избор:', selectedVal);
+//});
+
 new Vue({
     el: '#app',
     data: {
@@ -88,7 +97,7 @@ new Vue({
 
                 if (!response.ok) {
                     alert('Неуспешен отговор от сървъра за марки автомобили!');
-//                    throw new Error('Неуспешен отговор от сървъра за марки автомобили!');
+                    //                    throw new Error('Неуспешен отговор от сървъра за марки автомобили!');
                 }
 
                 const data = await response.json();;
@@ -148,3 +157,8 @@ new Vue({
         }
     }
 });
+
+
+
+
+

@@ -1,10 +1,7 @@
 package com.example.mkalinova.app.client.data.dto;
 
 import com.example.mkalinova.app.car.data.dto.CarDto;
-import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.company.data.dto.CompanyClientListDto;
-import com.example.mkalinova.app.company.data.entity.Company;
-import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

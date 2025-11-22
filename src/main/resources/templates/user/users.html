@@ -27,7 +27,7 @@
                 <form th:action="@{/edit-user/{id}(id=${user.id})}" th:method="get">
 
                     <button type="submit" class="user-edit-btn user-btn">
-                        Редакция
+                        <i class="fa-solid fa-square-pen"></i>
                     </button>
                 </form>
             </td>
@@ -35,7 +35,7 @@
                 <form th:action="@{/delete/{id}(id=${user.id})}" th:method="post" >
 
                     <button type="submit" class="user-delete-btn user-btn"  th:attr="data-name=${user.username}">
-                        Изтриване
+                        <i class="fa-solid fa-trash-arrow-up"></i>
                     </button>
                 </form>
             </td>

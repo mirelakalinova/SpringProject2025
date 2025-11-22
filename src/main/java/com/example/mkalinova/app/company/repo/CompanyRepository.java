@@ -22,4 +22,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     List<Company> findAllByClientId(Long id);
 
     List<Company> findAllByDeletedAtNull();
+
+    List<Company> findAllByClientIdAndDeletedAtNull(Long id);
 }

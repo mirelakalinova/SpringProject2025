@@ -21,4 +21,6 @@ public interface CarRepository extends JpaRepository<Car, Long> {
     List<Car> findAllByClientId(Long id);
 
     List<Car> findAllByDeletedAtNull();
+
+    List<Car> getAllByDeletedAtNull();
 }

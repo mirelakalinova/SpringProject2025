@@ -2,20 +2,19 @@ package com.example.mkalinova.app.client.service;
 
 import com.example.mkalinova.app.car.data.dto.AddCarDto;
 import com.example.mkalinova.app.car.data.dto.CarDto;
-import com.example.mkalinova.app.client.data.dto.AddClientDto;
-import com.example.mkalinova.app.client.data.dto.ClientListDto;
-import com.example.mkalinova.app.client.data.dto.ClientRepairDto;
-import com.example.mkalinova.app.client.data.dto.EditClientDto;
+import com.example.mkalinova.app.client.data.dto.*;
+import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
 import jakarta.validation.Valid;
 
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public interface ClientService {
 
-    <T> Object getById(Long id, Class<T> tClass);
+   Optional<Client> getById(Long id);
 
     HashMap<String, String> addClientWithAdditionalData(@Valid AddClientDto addClientDto,
                                                 @Valid AddCarDto addCarDto,
@@ -40,4 +39,6 @@ public interface ClientService {
     HashMap<String, String> removeCar(Long id, Long clientId) throws AccessDeniedException;
 
     HashMap<String, String> removeCompany(Long id, Long clientId) throws AccessDeniedException;
+
+    List<FetchClientListDto> fetchAllClientsByDeletedAtNull();
 }
