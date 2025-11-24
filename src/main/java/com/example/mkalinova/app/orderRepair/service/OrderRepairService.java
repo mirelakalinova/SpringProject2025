@@ -10,4 +10,7 @@ public interface OrderRepairService {
     void saveOrderRepair(AddOrderRepairDto addOrderRepairDto, Order order);
 
     List<OrderRepair> findAllByOrderId(Long id);
+
+    void setDeletedAtAllByOrderId(Long id);
+    void deleteAllByOrderId(Long id);
 }

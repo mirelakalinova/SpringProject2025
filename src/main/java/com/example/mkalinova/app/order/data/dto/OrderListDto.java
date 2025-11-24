@@ -12,9 +12,7 @@ import java.util.List;
 
 public class OrderListDto {
 
-     private Long id;
-
-
+    private Long id;
     private double subtotal;
     private double discount;
     private double tax;

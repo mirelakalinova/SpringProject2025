@@ -1,43 +1,55 @@
 package com.example.mkalinova.app.order.data.dto;
 
+import com.example.mkalinova.app.car.data.entity.Car;
+import com.example.mkalinova.app.client.data.entity.Client;
+import com.example.mkalinova.app.company.data.entity.Company;
+import com.example.mkalinova.app.orderPart.data.OrderPart;
 import com.example.mkalinova.app.orderPart.data.dto.AddOrderPartDto;
+import com.example.mkalinova.app.orderRepair.data.OrderRepair;
 import com.example.mkalinova.app.orderRepair.data.dto.AddOrderRepairDto;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddOrderDto {
+public class EditOrderDto {
 
-
+    private Long id;
     @NotNull
     private double subtotal;
-    @PositiveOrZero
+    @NotNull
     private double discount;
-    @PositiveOrZero
     private double discountAmount;
-    @PositiveOrZero
     private double discountPercent;
     @NotNull
     private double tax;
     @NotNull
     private double total;
     private String note;
-
+    private LocalDateTime date;
+    private LocalDateTime editedAt;
     @NotNull
-    private long car;
-    private long client;
-    private long company;
+    private Car car;
+    private Client client;
+    private Company company;
     private List<AddOrderPartDto> parts;
     @NotNull
     @NotEmpty
     private List<AddOrderRepairDto> repairs;
 
-    public AddOrderDto() {
+    public EditOrderDto() {
         this.parts = new ArrayList<>();
         this.repairs = new ArrayList<>();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public double getSubtotal() {
@@ -68,7 +80,6 @@ public class AddOrderDto {
         return discountPercent;
     }
 
-
     public void setDiscountPercent(double discountPercent) {
         this.discountPercent = discountPercent;
     }
@@ -97,29 +108,43 @@ public class AddOrderDto {
         this.note = note;
     }
 
-
-    public long getCar() {
+    public Car getCar() {
         return car;
     }
 
-    public void setCar(long car) {
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
+    public LocalDateTime getEditedAt() {
+        return editedAt;
+    }
+
+    public void setEditedAt(LocalDateTime editedAt) {
+        this.editedAt = editedAt;
+    }
+
+    public void setCar(Car car) {
         this.car = car;
     }
 
-
-    public long getClient() {
+    public Client getClient() {
         return client;
     }
 
-    public void setClient(long client) {
+    public void setClient(Client client) {
         this.client = client;
     }
 
-    public long getCompany() {
+    public Company getCompany() {
         return company;
     }
 
-    public void setCompany(long company) {
+    public void setCompany(Company company) {
         this.company = company;
     }
 
@@ -138,5 +163,4 @@ public class AddOrderDto {
     public void setRepairs(List<AddOrderRepairDto> repairs) {
         this.repairs = repairs;
     }
-
 }

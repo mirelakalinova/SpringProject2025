@@ -4,6 +4,8 @@ import com.example.mkalinova.app.order.data.entity.Order;
 import com.example.mkalinova.app.parts.data.entity.Part;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "orders_parts")
 public class OrderPart {
@@ -21,6 +23,8 @@ public class OrderPart {
     private int quantity;
     private double price;
     private double total;
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
     @ManyToOne
     @JoinColumn(name = "part_id")
     private Part part;
@@ -82,5 +86,13 @@ public class OrderPart {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }
