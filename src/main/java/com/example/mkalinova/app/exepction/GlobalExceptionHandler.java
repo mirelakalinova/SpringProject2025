@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.nio.file.AccessDeniedException;
@@ -14,6 +15,7 @@ public class GlobalExceptionHandler extends BaseController {
 
     public static final String ERROR_VIEW = "errors/error";
     public static final String ERROR_403 = "../../images/errors/403.jpg";
+    public static final String ERROR = "../../images/errors/error.jpg";
     public static final String NO_SUCH_RESOURCE = "../../images/errors/no-such-resource.jpg";
 
     @ExceptionHandler
@@ -28,22 +30,32 @@ public class GlobalExceptionHandler extends BaseController {
 
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus
     public ModelAndView handleNullPointerException(NullPointerException ex) {
         ModelAndView modelAndView = super.view(ERROR_VIEW);
-        modelAndView.addObject("heading","Няма намерен такъв ресуср!");
+        modelAndView.addObject("heading","Нещо се обърка!");
         modelAndView.addObject("message", ex.getMessage());
-        modelAndView.addObject("image", ERROR_403);
+        modelAndView.addObject("image", ERROR);
         return modelAndView;
     }
 
 
+//    @ExceptionHandler
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    public ModelAndView ResourceNotFoundException(ResourceNotFoundException ex) {
+//        ModelAndView modelAndView = super.view(ERROR_VIEW);
+//            modelAndView.addObject("heading","Няма намерен такъв ресуср!");
+//        modelAndView.addObject("message", ex.getMessage());
+//        modelAndView.addObject("image", NO_SUCH_RESOURCE);
+//        return modelAndView;
+//    }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ModelAndView ResourceNotFoundException(ResourceNotFoundException ex) {
+    public ModelAndView ResponseStatusException(ResponseStatusException ex) {
         ModelAndView modelAndView = super.view(ERROR_VIEW);
-            modelAndView.addObject("heading","Няма намерен такъв ресуср!");
-        modelAndView.addObject("message", ex.getMessage());
+        modelAndView.addObject("heading","Няма намерен такъв ресуср!");
+        modelAndView.addObject("message", ex.getReason());
         modelAndView.addObject("image", NO_SUCH_RESOURCE);
         return modelAndView;
     }

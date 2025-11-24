@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -29,12 +30,12 @@ public class OrderPartServiceImpl implements OrderPartService{
 
     @Override
     public void saveOrderPart(AddOrderPartDto addOrderPartDto, Order order) {
-        Long partId = addOrderPartDto.getId();
+        String name = addOrderPartDto.getName();
 
         addOrderPartDto.setId(null);
 
         OrderPart orderPart = modelMapper.map(addOrderPartDto, OrderPart.class);
-        Optional<Part> part = partRepository.findById(partId);
+        Optional<Part> part = partRepository.findByName(name);
         if(part.isPresent()){
 
             orderPart.setPart(part.get());
@@ -51,5 +52,26 @@ public class OrderPartServiceImpl implements OrderPartService{
     public List<OrderPart> findAllByOrderId(Long id) {
 
         return repository.findAllByOrderId(id);
+    }
+
+    @Override
+    public void setDeletedAtAllByOrderId(Long id) {
+        List<OrderPart> orderParts = repository.findAllByOrderId(id);
+        if(orderParts.isEmpty()){
+            return;
+        }
+        orderParts.forEach(p->{
+            p.setDeletedAt(LocalDateTime.now());
+            repository.save(p);
+        });
+    }
+
+    @Override
+    public void deletedAllByOrderId(Long id) {
+        List<OrderPart> orderParts = repository.findAllByOrderId(id);
+        if(orderParts.isEmpty()){
+            return;
+        }
+        orderParts.forEach(repository::delete);
     }
 }

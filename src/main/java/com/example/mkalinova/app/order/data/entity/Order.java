@@ -4,9 +4,13 @@ package com.example.mkalinova.app.order.data.entity;
 import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.company.data.entity.Company;
+import com.example.mkalinova.app.orderPart.data.OrderPart;
+import com.example.mkalinova.app.orderRepair.data.OrderRepair;
 import com.example.mkalinova.app.parts.data.entity.Part;
 import com.example.mkalinova.app.repair.data.entity.Repair;
 import jakarta.persistence.*;
+import org.modelmapper.internal.bytebuddy.implementation.bind.annotation.Default;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +25,18 @@ public class Order {
 
 
     private double subtotal;
-    private double discount;
+    private Double discount;
+    @Column(name = "discount_amount")
+    private Double discountAmount;
+    @Column(name = "discount_percent")
+    private Double discountPercent;
     private double tax;
     private double total;
     private String note;
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+    @Column(name = "edited_at")
+    private LocalDateTime editedAt;
 
     @Column
     private LocalDateTime date; //todo rename to createdAt ...
@@ -43,19 +53,13 @@ public class Order {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @ManyToMany
-    @JoinTable(
-            name = "orders_parts",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "part_id"))
-    private List<Part> partList;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "orders_parts", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "part_id"))
+    private List<OrderPart> partList;
 
-    @ManyToMany
-    @JoinTable(
-            name = "orders_repair",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "repair_id"))
-    private List<Repair> repairList;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "orders_repair", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "repair_id"))
+    private List<OrderRepair> repairList;
 
     public Order() {
         this.partList = new ArrayList<>();
@@ -82,8 +86,39 @@ public class Order {
         return discount;
     }
 
-    public void setDiscount(double discount) {
-        this.discount = discount;
+    public void setDiscount(Double discount) {
+        if (discount == null) {
+            this.discount = 0D;
+        } else {
+
+            this.discount = discount;
+        }
+    }
+
+    public double getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(Double discountAmount) {
+        if (discountAmount == null) {
+            this.discountAmount = 0D;
+        } else {
+
+            this.discountAmount = discountAmount;
+        }
+    }
+
+    public double getDiscountPercent() {
+        return discountPercent;
+    }
+
+    public void setDiscountPercent(Double discountPercent) {
+        if (discountPercent == null) {
+            this.discountPercent = 0D;
+        } else {
+
+            this.discountPercent = discountPercent;
+        }
     }
 
     public double getTotal() {
@@ -118,6 +153,14 @@ public class Order {
         this.deletedAt = deletedAt;
     }
 
+    public LocalDateTime getEditedAt() {
+        return editedAt;
+    }
+
+    public void setEditedAt(LocalDateTime editedAt) {
+        this.editedAt = editedAt;
+    }
+
     public Car getCar() {
         return car;
     }
@@ -142,19 +185,19 @@ public class Order {
         this.company = company;
     }
 
-    public List<Part> getPartList() {
+    public List<OrderPart> getPartList() {
         return partList;
     }
 
-    public void setPartList(List<Part> partList) {
+    public void setPartList(List<OrderPart> partList) {
         this.partList = partList;
     }
 
-    public List<Repair> getRepairList() {
+    public List<OrderRepair> getRepairList() {
         return repairList;
     }
 
-    public void setRepairList(List<Repair> repairList) {
+    public void setRepairList(List<OrderRepair> repairList) {
         this.repairList = repairList;
     }
 

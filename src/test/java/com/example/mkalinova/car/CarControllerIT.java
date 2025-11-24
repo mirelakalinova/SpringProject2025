@@ -141,7 +141,7 @@ public class CarControllerIT {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void DeleteCarByAdmin_ThrowNullPointer() throws Exception {
+    public void DeleteCarByAdmin_ThrowResponseStatusException() throws Exception {
         mockMvc.perform(post("/car/delete/{id}", 15)
                         .param("id", String.valueOf(15))
                         .with(csrf()))

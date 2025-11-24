@@ -3,9 +3,9 @@
 	<!-- todo ако може да се взема от някакви настройки -->
 	<div th:if="${message}" th:text="${message}"
 		 th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"></div>
-	<h1>Добави ремонт</h1>
-	<form th:action="@{/order/add}" th:method="post" th:object="${orderDto}">
-		<input type="hidden" name="orderJson" id="orderJson">
+	<form th:action="@{/order/edit/{id}(id=${editOrderDto.id})}" th:method="post" th:object="${editOrderDto}">
+		<h1>Редакция Ремонт #<span th:text="${id}"></span></h1>
+
 		<div id="order">
 			<div class="row row-view">
 				<div class="col-lg-6 elements-add-repair">
@@ -369,11 +369,16 @@
 					<h5 class="totals"> Сума без ДДС: <input class="readonly-input" name="subtotal"
 															 id="total-without-tax"
 															 value="0.00"><span> лв. </span></h5>
-					<h5 class="totals"> ДДС(20.00%): <input class="readonly-input" name="tax" id="tax" value="0.00"> <span> лв. </span></h5>
-					<h5 class="totals discount"> Отстъпка: <input class="readonly-input" readonly name="discount" id="discount" value="0.00"> <span> лв. </span> </h5>
-					<h5 class="totals"> Сума с ДДС: <input class="readonly-input" value="0.00" id="order-total"name="total"> <span> лв. </span></h5>
-					<input type="hidden" id="discount-sum" name="discountAmount" th:value="${discountAmount != null ? discountAmount : 0}"/>
-					<input type="hidden" id="discount-perc" name="discountPercent" th:value="${discountPercent != null ? discountPercent : 0}"/>
+					<h5 class="totals"> ДДС(20.00%): <input class="readonly-input" name="tax" id="tax" value="0.00">
+						<span> лв. </span></h5>
+					<h5 class="totals discount"> Отстъпка: <input class="readonly-input" readonly name="discount"
+																  id="discount" value="0.00"> <span> лв. </span></h5>
+					<h5 class="totals"> Сума с ДДС: <input class="readonly-input" value="0.00" id="order-total"
+														   name="total"> <span> лв. </span></h5>
+					<input type="hidden" id="discount-sum" name="discountAmount"
+						   th:value="${dto.discountAmount != null ? dto.discountAmount : 0}"/>
+					<input type="hidden" id="discount-perc" name="discountPercent"
+						   th:value="${dto.discountPercent != null ? dto.discountPercent : 0}"/>
 
 
 				</div>
@@ -385,17 +390,23 @@
 
 
 </div>
+<p class="info-text">Последна дата на обновяване:
+	<span th:text="${dto.editedAt != null ? #temporals.format(dto.deletedAt, 'dd-MM-yyyy') : #temporals.format(dto.date, 'dd-MM-yyyy')}"></span>
+	<br>
+	<span th:text="${dto.editedAt != null ? #temporals.format(dto.deletedAt, 'HH:MM') : #temporals.format(dto.date, 'HH:MM')}"></span>
+
+</p>
 <div class="d-none" th:object="${dto}">
 	<!-- Данни от dto-то при bindingResults.hasError... -->
 	<!--modelAndView.addObject("dtoCar", orderDto.getCar());-->
-	<input type="hidden" id="dtoCar" th:value="${dtoCar}">
+	<input type="hidden" id="dtoCar" th:value="${dto.car.id}">
 	<!--modelAndView.addObject("dtoClient", orderDto.getClient());-->
-	<input type="hidden" id="dtoClient" th:value="${dtoClient}">
+	<input type="hidden" id="dtoClient" th:value="${dto.client.id}">
 	<!--modelAndView.addObject("dtoCompany", orderDto.getCompany());-->
-	<input type="hidden" id="dtoCompany" th:value="${dtoCompany}">c
+	<input type="hidden" id="dtoCompany" th:value="${dto.company.id}">c
 	<!--modelAndView.addObject("dtoParts", orderDto.getParts());-->
 	<ul class="d-none" id="dtoParts">
-		<li th:each="p : ${dtoParts}"
+		<li th:each="p : ${partList}"
 			th:value="${p.id}"
 			th:text="${p.name}"
 			th:data-price="${p.price}"
@@ -404,7 +415,7 @@
 	</ul>
 	<!--modelAndView.addObject("dtoRepairs", orderDto.getRepairs());-->
 	<ul class="d-none" id="dtoRepairs">
-		<li th:each="r : ${dtoRepairs}"
+		<li th:each="r : ${repairList}"
 			th:value="${r.id}"
 			th:text="${r.name}"
 			th:data-price="${r.price}"
@@ -412,15 +423,15 @@
 		></li>
 	</ul>
 	<!--modelAndView.addObject("dtoSubtotal", orderDto.getSubtotal());-->
-	<input type="hidden" id="dtoSubtotal" th:value="${dtoSubtotal}">
+	<input type="hidden" id="dtoSubtotal" th:value="${dto.subtotal}">
 	<!--modelAndView.addObject("dtoTax", orderDto.getTax());-->
-	<input type="hidden" id="dtoTax" th:value="${dtoTax}">
-	<input type="hidden" id="dtoDiscount" th:value="${dtoDiscount}">
+	<input type="hidden" id="dtoTax" th:value="${dto.tax}">
+	<input type="hidden" id="dtoDiscount" th:value="${dto.discount}">
 	<!--modelAndView.addObject("dtoDiscount", orderDto.getDiscount());-->
 	<!--modelAndView.addObject("dtoTotal", orderDto.getTotal());-->
-	<input type="hidden" id="dtoTotal" th:value="${dtoTotal}">
+	<input type="hidden" id="dtoTotal" th:value="${dto.total}">
 	<!--modelAndView.addObject("dtoNote", orderDto.getNote());-->
-	<input type="hidden" id="dtoNote" th:value="${dtoNote}">
+	<input type="hidden" id="dtoNote" th:value="${dto.note}">
 
 </div>
 

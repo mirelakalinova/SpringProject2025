@@ -7,8 +7,11 @@ import com.example.mkalinova.app.repair.data.dto.RepairListDto;
 import com.example.mkalinova.app.repair.data.entity.Repair;
 import com.example.mkalinova.app.repair.repo.RepairRepository;
 import com.example.mkalinova.app.user.service.UserService;
+
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import java.nio.file.AccessDeniedException;
@@ -67,7 +70,7 @@ public class CarServiceServiceImpl implements RepairService {
             result.put("message", "Успешно изтрита услуга " + service.get().getName());
             return result;
         }
-        throw new NullPointerException("Услуга с #" + id + " не съществува!");
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Услуга с #" + id + " не съществува!");
     }
 
     @Override

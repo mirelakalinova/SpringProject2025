@@ -5,6 +5,8 @@ import com.example.mkalinova.app.parts.data.entity.Part;
 import com.example.mkalinova.app.repair.data.entity.Repair;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "orders_repairs")
 public class OrderRepair {
@@ -22,6 +24,8 @@ public class OrderRepair {
     private int quantity;
     private double price;
     private double total;
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
     @ManyToOne
     @JoinColumn(name = "repair_id")
     private Repair repair;
@@ -83,5 +87,13 @@ public class OrderRepair {
 
     public void setRepair(Repair repair) {
         this.repair = repair;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

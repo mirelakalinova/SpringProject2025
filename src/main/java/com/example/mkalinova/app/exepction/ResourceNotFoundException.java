@@ -1,10 +1,9 @@
 package com.example.mkalinova.app.exepction;
 
 
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
+@ResponseStatus()
 public class ResourceNotFoundException extends RuntimeException {
 
 

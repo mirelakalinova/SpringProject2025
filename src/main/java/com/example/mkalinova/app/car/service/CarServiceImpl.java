@@ -6,12 +6,13 @@ import com.example.mkalinova.app.car.data.dto.*;
 import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.car.repo.CarRepository;
 import com.example.mkalinova.app.client.data.dto.FetchClientDto;
-import com.example.mkalinova.app.client.data.entity.Client;
-import com.example.mkalinova.app.exepction.ResourceNotFoundException;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.service.UserServiceImpl;
+
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.AccessDeniedException;
 import java.util.*;
@@ -158,7 +159,7 @@ public class CarServiceImpl implements CarService {
                 return result;
             } else {
 
-                throw new ResourceNotFoundException("Няма намерен автомобил с #" + id);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Няма намерен автомобил с #" + id);
 
             }
         }
@@ -171,7 +172,7 @@ public class CarServiceImpl implements CarService {
             return modelMapper.map(car.get(), clazz);
 
         } else {
-            throw new NullPointerException("Автомобил #" + id + " не съществува!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Автомобил #" + id + " не съществува!");
         }
     }
 
@@ -180,7 +181,7 @@ public class CarServiceImpl implements CarService {
         Optional<Car> car = carRepository.findById(id);
         HashMap<String, String> result = new HashMap<>();
         if (car.isEmpty()) {
-            throw new NullPointerException("Автомобил с #" + id + "и рег.# " + editCarDto.getRegistrationNumber() + " не съществува!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Автомобил с #" + id + "и рег.# " + editCarDto.getRegistrationNumber() + " не съществува!");
         }
 
         Car carToUpdate = modelMapper.map(editCarDto, Car.class);
