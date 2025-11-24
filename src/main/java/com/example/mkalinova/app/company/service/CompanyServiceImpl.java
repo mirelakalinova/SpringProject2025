@@ -8,8 +8,12 @@ import com.example.mkalinova.app.company.data.entity.Company;
 import com.example.mkalinova.app.company.repo.CompanyRepository;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.service.UserService;
+
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -99,7 +103,7 @@ public class CompanyServiceImpl implements CompanyService {
 
             return result;
         } else {
-            throw new NullPointerException("Няма намерена фирма с това #" + company.getId());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Няма намерена фирма с #" + company.getId());
         }
 
     }
@@ -143,7 +147,7 @@ public class CompanyServiceImpl implements CompanyService {
             return modelMapper.map(companyRepository.findById(id).get(), clazz);
 
         } else {
-            throw new NullPointerException("Няма фирма с подаденото #" + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Няма фирма с подаденото #" + id);
         }
     }
 
@@ -154,7 +158,7 @@ public class CompanyServiceImpl implements CompanyService {
 
         Optional<Company> optCompany = companyRepository.findById(editCompanyDto.getId());
         if (!optCompany.isPresent()) {
-            throw new NullPointerException("Няма намерена фирма с #:" + editCompanyDto.getId());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Няма намерена фирма с #:" + editCompanyDto.getId());
         }
         HashMap<String, String> result = new HashMap<>();
         StringBuilder sb = new StringBuilder();
@@ -233,7 +237,7 @@ public class CompanyServiceImpl implements CompanyService {
             }
 
             } else {
-                throw new NullPointerException("Компания с #" + companyId + " не беше намерен!");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Компания с #" + companyId + " не беше намерен!");
             }
 
         result.put("status", "error");

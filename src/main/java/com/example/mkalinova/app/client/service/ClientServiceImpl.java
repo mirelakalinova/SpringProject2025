@@ -17,7 +17,9 @@ import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.service.UserService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
@@ -234,7 +236,7 @@ public class ClientServiceImpl implements ClientService {
             client.get().setDeleteAd(LocalDateTime.now());
             clientRepository.save(client.get());
         } else {
-            throw new NullPointerException("Клиент с #" + id + " не съществува!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Клиент с #" + id + " не съществува!");
         }
 
     }
@@ -246,7 +248,7 @@ public class ClientServiceImpl implements ClientService {
             return modelMapper.map(client, EditClientDto.class);
 
         }
-        throw new NullPointerException("Няма намерен клиент с #" + id);
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Няма намерен клиент с #" + id);
     }
 
     @Override
@@ -257,7 +259,7 @@ public class ClientServiceImpl implements ClientService {
         StringBuilder sb = new StringBuilder();
         Optional<Client> client = clientRepository.findById(editClientDto.getId());
         if (client.isEmpty()) {
-            throw new NullPointerException("Няма намерен клиентс с #" + editClientDto.getId());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Няма намерен клиентс с #" + editClientDto.getId());
         }
         sb.append("Успешно обновен клиент").append(System.lineSeparator());
         Long carId = editClientDto.getCarId();
@@ -351,7 +353,7 @@ public class ClientServiceImpl implements ClientService {
             }
 
         } else {
-            throw new NullPointerException("Автомобил с #" + id + " не беше намерен!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Автомобил с #" + id + " не беше намерен!");
         }
 
         result.put("status", "error");
@@ -376,7 +378,7 @@ public class ClientServiceImpl implements ClientService {
             }
 
         } else {
-            throw new NullPointerException("Автомобил с #" + id + " не беше намерен!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Автомобил с #" + id + " не беше намерен!");
         }
 
         result.put("status", "error");
