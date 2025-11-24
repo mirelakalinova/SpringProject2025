@@ -1,5 +1,6 @@
 <div class="container align-content-center home"
-	 xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+	 xmlns:th="http://www.w3.org/1999/xhtml"
+	 xmlns="http://www.w3.org/1999/html">
 	<h1>Редакция автомобил <span th:text="*{registrationNumber}"></span> </h1>
 	<!--  <h1 th:if="${heading == 'edit'}">Редакция автомобил</h1>-->
 
@@ -12,7 +13,7 @@
 			<div th:fragment="form-car" xmlns:th="http://www.w3.org/1999/xhtml">
 
 
-				<div th:if="${message}" th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')""></div>
+				<div th:if="${message}" th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"></div>
 				<form th:method="POST"
 					  th:action="@{/car/edit/{id}(id=${editCarDto.id})}"
 					  th:object="${editCarDto}">
