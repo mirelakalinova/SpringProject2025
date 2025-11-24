@@ -52,14 +52,15 @@ a.nav-link:hover {
 }
 
 .error-message {
-    font-size: 12px;
-    color: red;
+    font-size: 18px;
+    font-weight:600;
+    color: #D71F2B;
     margin-bottom: 5px;
 }
 
-.error-message:before {
-    content: '*';
 
+.error-status img {
+    min-width: 900px;
 }
 
 .success {
@@ -503,4 +504,15 @@ span.select2-selection__arrow {
 td > i.fa-solid {
     color: #1213144f;
     padding: 10px 5px;
+}
+
+p.info-text {
+    display: block;
+    text-align: right;
+    margin-right: 150px;
+    color: #777474;
+}
+
+.info-text span {
+    font-weight: 700;
 }
