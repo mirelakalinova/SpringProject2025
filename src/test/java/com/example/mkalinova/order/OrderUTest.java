@@ -133,7 +133,7 @@ public class OrderUTest {
         order.setSubtotal(125);
         order.setTotal(113);
         order.setTax(12);
-        order.setId(1L);
+        order.setId(UUID.randomUUID());
         order.setDiscountAmount(0D);
         order.setDiscountPercent(0D);
         orderRepository.save(order);
@@ -143,14 +143,14 @@ public class OrderUTest {
         company.setVatNumber("BG201799235");
         company.setName("Test");
         company.setAccountablePerson("Test test");
-        company.setId(1L);
+        company.setId(UUID.randomUUID());
         companyRepository.save(company);
 
         client = new Client();
         client.setPhone("0896619422");
         client.setLastName("Test");
         client.setFirstName("Test");
-        client.setId(1L);
+        client.setId(UUID.randomUUID());
         clientRepository.save(client);
 
         car = new Car();
@@ -162,18 +162,18 @@ public class OrderUTest {
         car.setKw(120);
         car.setHp(120);
         car.setRegistrationNumber("CB2126KH");
-        car.setId(1L);
+        car.setId(UUID.randomUUID());
         carRepository.save(car);
 
         part = new Part();
         part.setPrice(120);
-        part.setId(1L);
+        part.setId(UUID.randomUUID());
         part.setName("test");
         partRepository.save(part);
 
         repair = new Repair();
         repair.setPrice(120);
-        repair.setId(1L);
+        repair.setId(UUID.randomUUID());
         repair.setName("test");
         repairRepository.save(repair);
 
@@ -196,7 +196,7 @@ public class OrderUTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void saveOrderWithNonExistingCar_ErrorMessage() throws AccessDeniedException {
-        AddOrderDto dto = getAddOrderDto(10L, client.getId(), company.getId());
+        AddOrderDto dto = getAddOrderDto(UUID.randomUUID(), client.getId(), company.getId());
 
         Order newOrder = modelMapper.map(dto, Order.class);
         doNothing().when(userService).isUserLogIn();
@@ -215,7 +215,7 @@ public class OrderUTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void saveOrderWithNonExistingCompany_ErrorMessage() throws AccessDeniedException {
-        AddOrderDto dto = getAddOrderDto(car.getId(), client.getId(), 10L);
+        AddOrderDto dto = getAddOrderDto(car.getId(), client.getId(), UUID.randomUUID());
 
         Order newOrder = modelMapper.map(dto, Order.class);
         doNothing().when(userService).isUserLogIn();
@@ -233,7 +233,7 @@ public class OrderUTest {
 
     }
 
-    private AddOrderDto getAddOrderDto(Long car, Long client, long company) {
+    private AddOrderDto getAddOrderDto(UUID car, UUID client, UUID company) {
         AddOrderDto dto = new AddOrderDto();
         dto.setCar(car);
         dto.setClient(client);
@@ -261,7 +261,7 @@ public class OrderUTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void saveOrderWithNonExistingClient_ErrorMessage() throws AccessDeniedException {
-        AddOrderDto dto = getAddOrderDto(car.getId(), 10L, company.getId());
+        AddOrderDto dto = getAddOrderDto(car.getId(), UUID.randomUUID(), company.getId());
 
         Order newOrder = modelMapper.map(dto, Order.class);
         doNothing().when(userService).isUserLogIn();
@@ -341,7 +341,7 @@ public class OrderUTest {
     @Test
     void editOrder_AccessDenied() throws AccessDeniedException {
         EditOrderDto dto = new EditOrderDto();
-        dto.setId(1L);
+        dto.setId(UUID.randomUUID());
         Order newOrder = modelMapper.map(dto, Order.class);
         doThrow(new AccessDeniedException("Нямате права да извършите тази операция!"))
                 .when(userService).isUserLogIn();
@@ -357,28 +357,34 @@ public class OrderUTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void editOrder_Success() throws AccessDeniedException {
-        Long orderId = 1L;
+
+        UUID orderId = UUID.randomUUID();
+        UUID carId = UUID.randomUUID();
+        UUID clientId = UUID.randomUUID();
+        UUID companyId = UUID.randomUUID();
+
         Order order = new Order();
         order.setId(orderId);
 
+        Car newCar = new Car();
+        newCar.setId(carId);
+        Client newClient = new Client();
+        newClient.setId(clientId);
+        Company newCompany = new Company();
+        newCompany.setId(companyId);
+
         EditOrderDto dto = new EditOrderDto();
-        dto.setCar(car);
-        dto.setClient(client);
-        dto.setCompany(company);
+        dto.setCar(newCar);
+        dto.setClient(newClient);
+        dto.setCompany(newCompany);
         dto.setParts(List.of(new AddOrderPartDto()));
         dto.setRepairs(List.of(new AddOrderRepairDto()));
 
-        Car car = new Car();
-        car.setId(1L);
-        Client client = new Client();
-        client.setId(1L);
-        Company company = new Company();
-        company.setId(1L);
 
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
-        when(carService.getById(1L, Car.class)).thenReturn(car);
-        when(clientService.getById(1L)).thenReturn(Optional.of(client));
-        when(companyService.getById(1L, Company.class)).thenReturn(company);
+        when(carService.getById(carId, Car.class)).thenReturn(newCar);
+        when(clientService.getById(clientId)).thenReturn(Optional.of(newClient));
+        when(companyService.getById(companyId, Company.class)).thenReturn(newCompany);
 
 
         HashMap<String, String> result = service.editOrder(orderId, dto);
@@ -390,14 +396,14 @@ public class OrderUTest {
         verify(orderRepairService, atLeastOnce()).saveOrderRepair(any(), any());
         verify(orderRepository).save(order);
         assertNotNull(order.getEditedAt());
-        assertEquals(car, order.getCar());
-        assertEquals(client, order.getClient());
-        assertEquals(company, order.getCompany());
+        assertEquals(newCar, order.getCar());
+        assertEquals(newClient, order.getClient());
+        assertEquals(newCompany, order.getCompany());
     }
 
     @Test
-    void EditOrder_NotFoundExcepton() {
-        Long orderId = 1L;
+    void EditOrder_NotFoundException() {
+        UUID orderId = UUID.randomUUID();
         EditOrderDto dto = new EditOrderDto();
 
         when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
@@ -405,6 +411,6 @@ public class OrderUTest {
         ResponseStatusException ex = assertThrows(ResponseStatusException.class, () ->
                 service.editOrder(orderId, dto));
 
-        assertEquals("Поръчка с #1 не съществува!", ex.getReason());
+        assertEquals("Поръчка с #" + orderId + " не съществува!", ex.getReason());
     }
 }

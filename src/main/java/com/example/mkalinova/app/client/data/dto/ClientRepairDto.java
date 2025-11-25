@@ -2,8 +2,10 @@ package com.example.mkalinova.app.client.data.dto;
 
 import jakarta.validation.constraints.*;
 
+import java.util.UUID;
+
 public class ClientRepairDto {
-    private Long id;
+    private UUID id;
     @Size(min = 3)
     @NotNull
     @NotBlank
@@ -23,11 +25,11 @@ public class ClientRepairDto {
     public ClientRepairDto() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

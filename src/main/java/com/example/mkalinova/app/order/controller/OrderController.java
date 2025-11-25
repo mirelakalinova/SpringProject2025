@@ -13,24 +13,15 @@ import com.example.mkalinova.app.orderRepair.service.OrderRepairService;
 import com.example.mkalinova.app.parts.service.PartService;
 import com.example.mkalinova.app.repair.service.RepairService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.springframework.boot.Banner;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.beans.BeanInfo;
 import java.nio.file.AccessDeniedException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/order")
@@ -116,7 +107,7 @@ public class OrderController extends BaseController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteOrder(@PathVariable Long id, RedirectAttributes attributes) {
+    public String deleteOrder(@PathVariable UUID id, RedirectAttributes attributes) {
         HashMap<String, String> result = orderService.deleteOrder(id);
         attributes.addFlashAttribute("status", result.get("status"));
         attributes.addFlashAttribute("message", result.get("message"));
@@ -127,11 +118,12 @@ public class OrderController extends BaseController {
     }
 
     @GetMapping("/edit/{id}")
-    public ModelAndView editOrderView(@PathVariable Long id, EditOrderDto editOrderDto){
+    public ModelAndView editOrderView(@PathVariable String id, EditOrderDto editOrderDto){
+        UUID uuid = UUID.fromString(id);
         ModelAndView modelAndView = super.view("order/edit");
-        modelAndView.addObject("dto", orderService.getOrderById(id));
-        modelAndView.addObject("partList", orderPartService.findAllByOrderId(id));
-        modelAndView.addObject("repairList",orderRepairService.findAllByOrderId(id));
+        modelAndView.addObject("dto", orderService.getOrderById(uuid));
+        modelAndView.addObject("partList", orderPartService.findAllByOrderId(uuid));
+        modelAndView.addObject("repairList",orderRepairService.findAllByOrderId(uuid));
         modelAndView.addObject("parts", partService.getAllPartsByDeletedAtNull());
         modelAndView.addObject("repairs", repairService.getAllServicesByDeletedAtNull());
         return modelAndView;
@@ -139,16 +131,17 @@ public class OrderController extends BaseController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editOrder(@PathVariable Long id,
+    public String editOrder(@PathVariable String id,
                             @Valid EditOrderDto editOrderDto,
                             BindingResult bindingResult,
                             RedirectAttributes redirectAttributes) throws AccessDeniedException {
+        UUID uuid = UUID.fromString(id);
         if(bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("editOrderDto", editOrderDto);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.editOrderDto", bindingResult);
             return "redirect:/order/edit/" + id;
         }
-        HashMap<String,String> result = orderService.editOrder(id, editOrderDto);
+        HashMap<String,String> result = orderService.editOrder(uuid, editOrderDto);
         redirectAttributes.addFlashAttribute("status", result.get("status"));
         redirectAttributes.addFlashAttribute("message", result.get("message"));
         return "redirect:/order/list";

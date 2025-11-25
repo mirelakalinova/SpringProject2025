@@ -11,10 +11,11 @@ import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface ClientService {
 
-   Optional<Client> getById(Long id);
+   Optional<Client> getById(UUID id);
 
     HashMap<String, String> addClientWithAdditionalData(@Valid AddClientDto addClientDto,
                                                 @Valid AddCarDto addCarDto,
@@ -23,22 +24,22 @@ public interface ClientService {
 
     List<ClientListDto> getAllWithCarsAndCompanies();
 
-    void deleteClient(Long id) throws AccessDeniedException;
+    void deleteClient(UUID id) throws AccessDeniedException;
 
-    EditClientDto findClientById(Long id);
+    EditClientDto findClientById(UUID id);
 
-    HashMap<String, String> updateClient(Long id, @Valid EditClientDto editClientDto) throws AccessDeniedException;
+    HashMap<String, String> updateClient(UUID id, @Valid EditClientDto editClientDto) throws AccessDeniedException;
 
     <T> List<T> findAll(Class<T> dtoClass);
 
-    List<ClientRepairDto> findById(Long id);
+    List<ClientRepairDto> findById(UUID id);
     boolean findByPhone(String phoneNumber);
 
-    List<CarDto> getCarsByClient(Long id);
+    List<CarDto> getCarsByClient(UUID id);
 
-    HashMap<String, String> removeCar(Long id, Long clientId) throws AccessDeniedException;
+    HashMap<String, String> removeCar(UUID id, UUID clientId) throws AccessDeniedException;
 
-    HashMap<String, String> removeCompany(Long id, Long clientId) throws AccessDeniedException;
+    HashMap<String, String> removeCompany(UUID id, UUID clientId) throws AccessDeniedException;
 
     List<FetchClientListDto> fetchAllClientsByDeletedAtNull();
 }

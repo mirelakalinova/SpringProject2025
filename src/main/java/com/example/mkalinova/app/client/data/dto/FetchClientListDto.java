@@ -1,18 +1,17 @@
 package com.example.mkalinova.app.client.data.dto;
 
-import com.example.mkalinova.app.car.data.dto.CarDto;
 import com.example.mkalinova.app.car.data.dto.CarIdDto;
-import com.example.mkalinova.app.company.data.dto.CompanyClientListDto;
 import com.example.mkalinova.app.company.data.dto.CompanyIdDto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 public class FetchClientListDto {
 
-    private Long id;
+    private UUID id;
     private String firstName;
 
     private String lastName;
@@ -30,6 +29,13 @@ public class FetchClientListDto {
     public FetchClientListDto() {
     }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public List<CarIdDto> getCars() {
         return cars;
@@ -47,14 +53,6 @@ public class FetchClientListDto {
         this.companies = companies;
     }
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getFirstName() {
         return firstName;

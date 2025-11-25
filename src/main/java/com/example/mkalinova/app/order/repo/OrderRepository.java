@@ -8,11 +8,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, UUID> {
     List<Order> findAllByDeletedAtNull();
 
 //    @Query("SELECT DISTINCT о FROM Order о LEFT JOIN FETCH о.partList LEFT JOIN FETCH о.repairList WHERE о.id = :id ")
-    Order findByIdAndDeletedAtIsNull(@Param("id") Long id);
+    Order findByIdAndDeletedAtIsNull(@Param("id") UUID id);
 }

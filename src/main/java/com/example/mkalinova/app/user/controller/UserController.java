@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class UserController extends BaseController {
@@ -79,7 +80,7 @@ public class UserController extends BaseController {
 
 
     @GetMapping("/edit-user/{id}")
-    public ModelAndView editUser(@PathVariable Long id, Model model) {
+    public ModelAndView editUser(@PathVariable UUID id, Model model) {
         ModelAndView modelAndView = super.view("user/edit-user");
         if (!model.containsAttribute("editUserDto")) {
             modelAndView.addObject("editUserDto", userService.getById(id, EditUserDto.class));
@@ -110,10 +111,10 @@ public class UserController extends BaseController {
 
 
     @PostMapping("/delete/{id}")
-    public String deleteUser(@PathVariable Long id,
+    public String deleteUser(@PathVariable String id,
                              RedirectAttributes attributes) throws AccessDeniedException {
-
-       HashMap<String,String> result =  userService.deleteUser(id);
+        UUID uuid = UUID.fromString(id);
+       HashMap<String,String> result =  userService.deleteUser(uuid);
        attributes.addFlashAttribute("message", result.get("message"));
        attributes.addFlashAttribute("status", result.get("status"));
 

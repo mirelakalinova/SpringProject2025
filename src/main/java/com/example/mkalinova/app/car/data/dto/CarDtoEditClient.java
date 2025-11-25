@@ -1,19 +1,21 @@
 package com.example.mkalinova.app.car.data.dto;
 
+import java.util.UUID;
+
 public class CarDtoEditClient {
 
-    private Long carId;
+    private UUID  carId;
 
     private String registrationNumber;
 
     public CarDtoEditClient() {
     }
 
-    public Long getId() {
+    public UUID getCarId() {
         return carId;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.carId = id;
     }
 

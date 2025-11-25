@@ -1,4 +1,4 @@
-package com.example.mkalinova.service;
+package com.example.mkalinova.repair;
 
 
 import com.example.mkalinova.app.repair.data.dto.RepairDto;
@@ -8,7 +8,6 @@ import com.example.mkalinova.app.repair.data.entity.Repair;
 import com.example.mkalinova.app.repair.repo.RepairRepository;
 import com.example.mkalinova.app.repair.service.CarServiceServiceImpl;
 
-import com.example.mkalinova.app.repair.service.RepairService;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.data.entity.UsersRole;
 import com.example.mkalinova.app.user.repo.UserRepository;
@@ -28,13 +27,14 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 
-public class ServiceTest {
+public class RepairUTest {
     @Mock
     private RepairRepository repository;
     @Mock
@@ -168,7 +168,7 @@ public class ServiceTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void editServiceWithoutPrice_Success() throws AccessDeniedException {
         doNothing().when(userService).isUserLogIn();
-        repairFirst.setId(3L);
+        repairFirst.setId(UUID.randomUUID());
         repository.save(repairFirst);
         EditRepairDto dto = new EditRepairDto();
         dto.setName("TestDto");
@@ -195,7 +195,7 @@ public class ServiceTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void editServiceWithPrice_Success() throws AccessDeniedException {
         doNothing().when(userService).isUserLogIn();
-        repairFirst.setId(3L);
+        repairFirst.setId(UUID.randomUUID());
         repository.save(repairFirst);
         EditRepairDto dto = new EditRepairDto();
         dto.setName("TestDto");
@@ -226,7 +226,7 @@ public class ServiceTest {
         EditRepairDto dto = new EditRepairDto();
         dto.setName("TestDto");
         dto.setPrice(130D);
-        dto.setId(1L);
+        dto.setId(UUID.randomUUID());
         when(repository.findById(dto.getId())).thenReturn(Optional.empty());
         HashMap<String, String> result = this.service.editService(dto);
         verify(repository).findById(dto.getId());
@@ -290,9 +290,9 @@ public class ServiceTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void deleteserviceByAdmin_AccessDenied() throws AccessDeniedException {
-        repairFirst.setId(1L);
+        repairFirst.setId(UUID.randomUUID());
         repository.save(repairFirst);
-        Long id = repairFirst.getId();
+        UUID id = repairFirst.getId();
 
         doNothing().when(userService).isUserLogIn();
 

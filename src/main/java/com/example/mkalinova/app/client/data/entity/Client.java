@@ -8,13 +8,14 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "clients")
 public class Client {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -35,8 +36,6 @@ public class Client {
     // Свързване с фирми (може да има много фирми)
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL,  fetch = FetchType.EAGER)
     private List<com.example.mkalinova.app.company.data.entity.Company> companies = new ArrayList<>();
-    //todo -> safe delete - fields -> created, updated, deleted
-
 
     public List<Car> getCars() {
         return cars;
@@ -57,11 +56,11 @@ public class Client {
     public Client() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -114,14 +113,4 @@ public class Client {
         this.deleteAd = deleteAd;
     }
 
-    @Override
-    public String toString() {
-        return "Клиент \n" +
-                "================ \n" +
-                "Име: '" + firstName + '\n' +
-                "Фамилия: " + lastName + '\n' +
-                "email: '" + email + '\n' +
-                "телефон: '" + phone + '\n'
-                ;
-    }
 }

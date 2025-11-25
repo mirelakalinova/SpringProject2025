@@ -5,14 +5,15 @@ import com.example.mkalinova.app.parts.data.entity.Part;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "orders_parts")
 public class OrderPart {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
@@ -40,11 +41,11 @@ public class OrderPart {
     public OrderPart() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

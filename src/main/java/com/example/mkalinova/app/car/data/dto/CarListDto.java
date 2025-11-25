@@ -1,9 +1,10 @@
 package com.example.mkalinova.app.car.data.dto;
 
 
+import java.util.UUID;
 
 public class CarListDto {
-    public Long id;
+    public UUID id;
     public String registrationNumber;
     public String make;
     public String model;
@@ -12,11 +13,11 @@ public class CarListDto {
     public CarListDto() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

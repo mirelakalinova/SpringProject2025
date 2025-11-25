@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
@@ -84,6 +85,7 @@ public class CompanyControllerIT {
         editor.setEmail("editor@test.bg");
         editor.setPassword("Password1234!");
         editor.setRole(UsersRole.EDITOR);
+
         client = new Client();
         client.setPhone("0896619422");
         client.setFirstName("Test");
@@ -91,12 +93,14 @@ public class CompanyControllerIT {
         client.setEmail("Test@test.bg");
         clientRepository.saveAndFlush(client);
         userRepository.saveAndFlush(admin);
+        userRepository.saveAndFlush(editor);
         company = new Company();
         company.setName("test");
         company.setUic("201478523");
         company.setVatNumber("BG201478523");
         company.setAddress("Test address");
         company.setAccountablePerson("Test Test");
+
         companySecond = new Company();
         companySecond.setName("test2");
         companySecond.setUic("201478524");
@@ -190,7 +194,7 @@ public class CompanyControllerIT {
 
         Optional<Company> newCompany =companyRepository.findByName("Test133");
         assertTrue(newCompany.isPresent());
-        assertTrue(client.getId() == newCompany.get().getClient().getId());
+        assertEquals(client.getId(), newCompany.get().getClient().getId());
 
 
     }
@@ -218,8 +222,8 @@ public class CompanyControllerIT {
         Optional<Company> updatedCompany =companyRepository.findByName("SomeNewName");
         assertTrue(updatedCompany.isPresent());
 
-        assertTrue(client.getId() == updatedCompany.get().getClient().getId());
-        assertTrue(updatedCompany.get().getId().equals(company.getId()));
+        assertEquals(client.getId(), updatedCompany.get().getClient().getId());
+        assertEquals(updatedCompany.get().getId(), company.getId());
 
 
     }
@@ -255,18 +259,14 @@ public class CompanyControllerIT {
     @WithMockUser(username = "editor", roles = "EDITOR")
     public void deleteCompanyByEditor_AccessDenied() throws Exception {
 
-
-
-        mockMvc.perform(post("/company/delete/{id}", company.getId())
-
-
-                        .param("id", String.valueOf(company.getId()))
+        UUID id = company.getId();
+        mockMvc.perform(post("/company/delete/{id}", id)
+                        .param("id", String.valueOf(id))
                         .with(csrf()))
-
                 .andExpect(status().isForbidden());
 
-        Optional<Company> optCompany = companyRepository.findById(company.getId());
-        assertTrue(optCompany.get().getDeletedAt() == null);
+        Optional<Company> optCompany = companyRepository.findById(id);
+        assertNull(optCompany.get().getDeletedAt());
 
 
 
@@ -301,24 +301,22 @@ public class CompanyControllerIT {
         mockMvc.perform(post("/company/remove-client/{id}", client.getId())
 
 
-                        .param("companyId", String.valueOf(20000))
+                        .param("companyId", String.valueOf(UUID.randomUUID()))
                         .param("id", String.valueOf(client.getId()))
                         .with(csrf()))
 
                 .andExpect(status().is4xxClientError());
-
 
     }
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     public void removeClientFromCompanyByAdmin_Error_NonValidClientId() throws Exception {
-
         mockMvc.perform(post("/company/remove-client/{id}", client.getId())
 
 
                         .param("companyId", String.valueOf(company.getId()))
-                        .param("id", String.valueOf(20000))
+                        .param("id", String.valueOf(UUID.randomUUID()))
                         .with(csrf()))
 
                 .andExpect(status().is4xxClientError());

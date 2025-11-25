@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -168,7 +169,7 @@ public class PartUTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void editPartWithoutPrice_Success() throws AccessDeniedException {
         doNothing().when(userService).isUserLogIn();
-        partFirst.setId(3L);
+        partFirst.setId(UUID.randomUUID());
         partRepository.save(partFirst);
         EditPartDto dto = new EditPartDto();
         dto.setName("TestDto");
@@ -195,7 +196,7 @@ public class PartUTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void editPartWithPrice_Success() throws AccessDeniedException {
         doNothing().when(userService).isUserLogIn();
-        partFirst.setId(3L);
+        partFirst.setId(UUID.randomUUID());
         partRepository.save(partFirst);
         EditPartDto dto = new EditPartDto();
         dto.setName("TestDto");
@@ -226,7 +227,7 @@ public class PartUTest {
         EditPartDto dto = new EditPartDto();
         dto.setName("TestDto");
         dto.setPrice(130D);
-        dto.setId(1L);
+        dto.setId(UUID.randomUUID());
         when(partRepository.findById(dto.getId())).thenReturn(Optional.empty());
         HashMap<String, String> result = service.editPart(dto);
         verify(partRepository).findById(dto.getId());
@@ -290,9 +291,9 @@ public class PartUTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void deletePartByAdmin_AccessDenied() throws AccessDeniedException {
-        partFirst.setId(1L);
+        partFirst.setId(UUID.randomUUID());
         partRepository.save(partFirst);
-        Long id = partFirst.getId();
+        UUID id = partFirst.getId();
 
         doNothing().when(userService).isUserLogIn();
 

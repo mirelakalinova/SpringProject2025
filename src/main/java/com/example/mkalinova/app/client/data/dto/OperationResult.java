@@ -3,7 +3,7 @@ package com.example.mkalinova.app.client.data.dto;
 public class OperationResult {
     private boolean success;
     private String message;
-//todo -> check usage
+//todo -> TO DELETE
     public OperationResult() {
     }
 

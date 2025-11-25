@@ -7,17 +7,15 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "cars")
 public class Car {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    private UUID id;
     @Column(name = "registration_number", unique = true)
     @Size(min = 7, max = 8)
     private String registrationNumber;
@@ -25,13 +23,11 @@ public class Car {
     @Min(value = 1900)
     @Max(value = 9999)
     private int year;
-
     @Min(value = 500)
     @Max(value = 8000)
     @Column(name = "engine_capacity")
     @NotNull
     private int cube;
-
     @Column
     @Size(min = 17, max = 17)
     private String vin;
@@ -39,29 +35,16 @@ public class Car {
     private int kw;
     @Column
     private int hp;
-
     @Column
     private String make;
-
     @Column
     private String model;
-
-//    @OneToMany(mappedBy = "car", fetch = FetchType.EAGER)
-//    private List<Repair> repairs;
-    // за да могат да се променят или изтриват коли без това да се отразява на другите свързани коли с клиента на конкретната
     @ManyToOne
-//            (cascade = CascadeType.MERGE)
     @JoinColumn(name = "client_id")
     private Client client;
-    @Column(name="deleted_at")
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-
-//todo -> safe delete - fields -> created, updated, deleted
-
-//    public Car(List<Repair> repairs) {
-//        this.repairs = new ArrayList<>();
-//    }
 
     public Car() {
     }
@@ -82,11 +65,11 @@ public class Car {
         this.model = model;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -137,14 +120,6 @@ public class Car {
     public void setHp(int hp) {
         this.hp = hp;
     }
-//
-//    public List<Repair> getRepairs() {
-//        return repairs;
-//    }
-//
-//    public void setRepairs(List<Repair> repairs) {
-//        this.repairs = repairs;
-//    }
 
     public Client getClient() {
         return client;
@@ -153,6 +128,7 @@ public class Car {
     public void setClient(Client client) {
         this.client = client;
     }
+
     public LocalDateTime getDeletedAt() {
         return deletedAt;
     }
@@ -160,18 +136,5 @@ public class Car {
     public void setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
     }
-    @Override
-    public String toString() {
 
-        return "Кола \n" +
-                "================ \n" +
-                String.format("Регистрационен номер: %-15s\n", registrationNumber) +
-                String.format("Марка: %-20s\n", model) +
-                String.format("Модел: %-20s\n", make) +
-                String.format("Година на производство: %-4d\n", year) +
-                String.format("Кубатура: %-10.2f\n", cube) +
-                String.format("Шаси: %-17s\n", vin);
-
-
-    }
 }

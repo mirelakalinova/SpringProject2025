@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/repair")
@@ -58,7 +59,7 @@ public class RepairController extends BaseController {
     }
 
     @GetMapping("/edit/{id}")
-    public ModelAndView editView(@PathVariable Long id, Model model) {
+    public ModelAndView editView(@PathVariable UUID id, Model model) {
         ModelAndView modelAndView = super.view("repair/edit");
         modelAndView.addObject("repairDto", service.findById(id));
 
@@ -85,9 +86,10 @@ public class RepairController extends BaseController {
 
 
     @PostMapping("/delete/{id}")
-    public String deleteRepair(@PathVariable Long id, RepairDto repairDto,
+    public String deleteRepair(@PathVariable String id, RepairDto repairDto,
                              RedirectAttributes attributes) throws AccessDeniedException {
-        HashMap<String, String> result = service.deleteService(id);
+        UUID uuid = UUID.fromString(id);
+        HashMap<String, String> result = service.deleteService(uuid);
         attributes.addFlashAttribute("status", result.get("status"));
         attributes.addFlashAttribute("message", result.get("message"));
         return "redirect:/repair/list";

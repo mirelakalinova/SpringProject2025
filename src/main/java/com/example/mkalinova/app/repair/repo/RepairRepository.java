@@ -7,9 +7,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface RepairRepository extends JpaRepository<Repair, Long> {
+public interface RepairRepository extends JpaRepository<Repair, UUID> {
     List<Repair> findAllByDeletedAtNull();
 
     Optional<Repair> findByName(String name);

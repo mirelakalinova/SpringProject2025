@@ -1,4 +1,4 @@
-package com.example.mkalinova.service;
+package com.example.mkalinova.repair;
 
 import com.example.mkalinova.app.repair.data.dto.RepairListDto;
 import com.example.mkalinova.app.repair.data.entity.Repair;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ServiceControllerIT {
+public class RepairControllerIT {
 
     @Autowired
     private MockMvc mockMvc;

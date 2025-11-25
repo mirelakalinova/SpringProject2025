@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrderRepairServiceImpl implements OrderRepairService {
@@ -44,12 +45,12 @@ public class OrderRepairServiceImpl implements OrderRepairService {
     }
 
     @Override
-    public List<OrderRepair> findAllByOrderId(Long id) {
+    public List<OrderRepair> findAllByOrderId(UUID id) {
         return repository.findAllByOrderId(id);
     }
 
     @Override
-    public void setDeletedAtAllByOrderId(Long id) {
+    public void setDeletedAtAllByOrderId(UUID id) {
         List<OrderRepair> orderRepairs = repository.findAllByOrderId(id);
        if(orderRepairs.isEmpty()){
            return;
@@ -61,7 +62,7 @@ public class OrderRepairServiceImpl implements OrderRepairService {
     }
 
     @Override
-    public void deleteAllByOrderId(Long id) {
+    public void deleteAllByOrderId(UUID id) {
         List<OrderRepair> orderRepairs = repository.findAllByOrderId(id);
         if(orderRepairs.isEmpty()){
             return;

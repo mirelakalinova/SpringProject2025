@@ -2,9 +2,11 @@ package com.example.mkalinova.app.user.data.dto;
 
 import com.example.mkalinova.app.user.data.entity.UsersRole;
 
+import java.util.UUID;
+
 public class UserListDto {
 
-    private Long id;
+    private UUID id;
     private String username;
     private String email;
     private UsersRole role;
@@ -12,11 +14,11 @@ public class UserListDto {
     public UserListDto() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

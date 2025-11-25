@@ -2,9 +2,11 @@ package com.example.mkalinova.app.parts.data.dto;
 
 import jakarta.persistence.Column;
 
+import java.util.UUID;
+
 public class PartListDto {
 
-    private Long id;
+    private UUID id;
 
     private String name;
 
@@ -13,11 +15,11 @@ public class PartListDto {
     public PartListDto() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

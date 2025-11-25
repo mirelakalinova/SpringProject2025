@@ -9,16 +9,17 @@ import org.springframework.stereotype.Service;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 
 public interface OrderService {
 
     HashMap<String, String> saveOrder(AddOrderDto orderDto) throws AccessDeniedException;
-    HashMap<String, String> editOrder(Long id, EditOrderDto dto) throws AccessDeniedException;
-    HashMap<String, String> deleteOrder(Long id);
+    HashMap<String, String> editOrder(UUID id, EditOrderDto dto) throws AccessDeniedException;
+    HashMap<String, String> deleteOrder(UUID id);
 
 
     List<OrderListDto> getAllOrders() throws AccessDeniedException;
 
-    EditOrderDto getOrderById(Long id);
+    EditOrderDto getOrderById(UUID id);
 }

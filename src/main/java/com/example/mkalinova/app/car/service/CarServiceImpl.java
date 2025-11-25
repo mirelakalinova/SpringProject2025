@@ -8,12 +8,10 @@ import com.example.mkalinova.app.car.repo.CarRepository;
 import com.example.mkalinova.app.client.data.dto.FetchClientDto;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.service.UserServiceImpl;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.nio.file.AccessDeniedException;
 import java.util.*;
 
@@ -143,7 +141,7 @@ public class CarServiceImpl implements CarService {
 
 
     @Override
-    public HashMap<String, String> deleteCarById(Long id) throws AccessDeniedException {
+    public HashMap<String, String> deleteCarById(UUID id) throws AccessDeniedException {
         Optional<User> loggedInUser = userService.getLoggedInUser();
         if (loggedInUser.isEmpty() || !userService.isAdmin(loggedInUser.get())) {
             throw new AccessDeniedException("Нямата права да изтриете автомобил!");
@@ -166,7 +164,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public <T> Object getById(Long id, Class<T> clazz) {
+    public <T> Object getById(UUID id, Class<T> clazz) {
         Optional<Car> car = carRepository.findById(id);
         if (car.isPresent()) {
             return modelMapper.map(car.get(), clazz);
@@ -177,7 +175,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public HashMap<String, String> editCar(Long id, EditCarDto editCarDto) {
+    public HashMap<String, String> editCar(UUID id, EditCarDto editCarDto) {
         Optional<Car> car = carRepository.findById(id);
         HashMap<String, String> result = new HashMap<>();
         if (car.isEmpty()) {
@@ -199,7 +197,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public <T> Object findById(Long carId, Class<T> clazz) {
+    public <T> Object findById(UUID carId, Class<T> clazz) {
         Optional<Car> car = carRepository.findById(carId);
         // todo - if is necessary to throw NullPointer exception
         return car.<Object>map(value -> modelMapper.map(value, clazz)).orElse(null);
@@ -208,7 +206,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<Car> getAllCarByClientId(Long id) {
+    public List<Car> getAllCarByClientId(UUID id) {
         return carRepository.findAllByClientId(id);
 
     }
@@ -224,7 +222,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<FetchClientDto> fetchClientByCarId(Long id) {
+    public List<FetchClientDto> fetchClientByCarId(UUID id) {
         Optional<Car> car = carRepository.findById(id);
         if(car.isEmpty()) {
             return null;

@@ -29,6 +29,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -61,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
         HashMap<String, String> result = new HashMap<>();
         Order order = modelMapper.map(orderDto, Order.class);
 
-        if (orderDto.getCar() > 0) {
+        if (orderDto.getCar() !=null) {
             Car car = (Car) carService.getById(orderDto.getCar(), Car.class);
             if (car == null) {
                 result.put("status", "error");
@@ -71,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
             order.setCar(car);
         }
 
-        if (orderDto.getClient() > 0) {
+        if (orderDto.getClient() != null) {
             Optional<Client> client = clientService.getById(orderDto.getClient());
             if (client.isEmpty()) {
                 result.put("status", "error");
@@ -80,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
             }
             order.setClient(client.get());
         }
-        if (orderDto.getCompany() > 0) {
+        if (orderDto.getCompany() !=null) {
             Company company = (Company) companyService.getById(orderDto.getCompany(), Company.class);
             if (company == null) {
                 result.put("status", "error");
@@ -114,7 +116,7 @@ public class OrderServiceImpl implements OrderService {
         //map to OrderListDto
         List<OrderListDto> listDto = orderList.stream().map(o -> modelMapper.map(o, OrderListDto.class)).toList();
         listDto.forEach(o -> {
-            Long id = o.getId();
+            UUID id = o.getId();
             //add all parts
             orderPartService.findAllByOrderId(id).forEach(p -> o.getPartsList().add(p));
             //add all repairs
@@ -124,7 +126,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public EditOrderDto getOrderById(Long id) {
+    public EditOrderDto getOrderById(UUID id) {
 
         Optional<Order> order = orderRepository.findById(id);
         if (order.isEmpty()) {
@@ -143,7 +145,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public HashMap<String, String> editOrder(Long id, EditOrderDto dto) throws AccessDeniedException {
+    public HashMap<String, String> editOrder(UUID id, EditOrderDto dto) throws AccessDeniedException {
         userService.isUserLogIn();
         Optional<Order> order = orderRepository.findById(id);
         if (order.isEmpty()) {
@@ -156,7 +158,7 @@ public class OrderServiceImpl implements OrderService {
         orderRepairService.deleteAllByOrderId(id);
         Order newOrderData = modelMapper.map(dto, Order.class); // todo -> трябва ли ми ?
 
-        if (dto.getCar().getId() > 0) {
+        if (dto.getCar().getId() !=null) {
             Car car = (Car) carService.getById(dto.getCar().getId(), Car.class);
             if (car == null) {
                 result.put("status", "error");
@@ -166,7 +168,7 @@ public class OrderServiceImpl implements OrderService {
             order.get().setCar(car);
         }
 
-        if (dto.getClient().getId() > 0) {
+        if (dto.getClient().getId() !=null) {
             Optional<Client> client = clientService.getById(dto.getClient().getId());
             if (client.isEmpty()) {
                 result.put("status", "error");
@@ -175,7 +177,7 @@ public class OrderServiceImpl implements OrderService {
             }
             order.get().setClient(client.get());
         }
-        if (dto.getCompany().getId() > 0) {
+        if (dto.getCompany().getId() != null ) {
             Company company = (Company) companyService.getById(dto.getCompany().getId(), Company.class);
             if (company == null) {
                 result.put("status", "error");
@@ -204,7 +206,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public HashMap<String, String> deleteOrder(Long id) {
+    public HashMap<String, String> deleteOrder(UUID id) {
         HashMap<String, String> result = new HashMap<>();
         try {
             Optional<Order> orderToDelete = orderRepository.findById(id);

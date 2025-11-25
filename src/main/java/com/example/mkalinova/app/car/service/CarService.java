@@ -9,6 +9,7 @@ import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface CarService {
 
@@ -21,14 +22,14 @@ public interface CarService {
     String deleteCar(Car car);
     List<CarDto> getAll();
     List<CarRepairDto> getAllCars();
-    HashMap<String, String> deleteCarById(Long id) throws AccessDeniedException;
-    <T> Object getById(Long id, Class<T> clazz);
-    HashMap<String, String> editCar(Long id, EditCarDto editCarDto);
-    <T> Object findById(Long carId, Class<T> clazz);
+    HashMap<String, String> deleteCarById(UUID id) throws AccessDeniedException;
+    <T> Object getById(UUID id, Class<T> clazz);
+    HashMap<String, String> editCar(UUID id, EditCarDto editCarDto);
+    <T> Object findById(UUID carId, Class<T> clazz);
 
-    List<Car> getAllCarByClientId(Long id);
+    List<Car> getAllCarByClientId(UUID id);
 
      List<CarListDto> fetchAllCarsByDeletedAtNull();
 
-    List<FetchClientDto> fetchClientByCarId(Long id);
+    List<FetchClientDto> fetchClientByCarId(UUID id);
 }

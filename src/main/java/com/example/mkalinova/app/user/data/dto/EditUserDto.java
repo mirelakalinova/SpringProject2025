@@ -5,9 +5,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.UUID;
+
 public class EditUserDto {
 
-    private Long id;
+    private UUID id;
     @Length(min = 3, message = "Името трябва да е поне 3 символа")
     @NotNull
     private String firstName;
@@ -27,11 +29,11 @@ public class EditUserDto {
     public EditUserDto() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

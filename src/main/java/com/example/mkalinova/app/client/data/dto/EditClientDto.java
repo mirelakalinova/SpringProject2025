@@ -6,11 +6,12 @@ import com.example.mkalinova.app.company.data.entity.Company;
 import jakarta.validation.constraints.*;
 
 import java.util.List;
+import java.util.UUID;
 
 public class EditClientDto {
 
     @NotNull
-    private Long id;
+    private UUID id;
     @Size(min = 3)
     @NotNull
     @NotBlank
@@ -19,22 +20,29 @@ public class EditClientDto {
     private String lastName;
     @Email
     private String email;
-    @Size(min = 10, max=10)
+    @Size(min = 10, max = 10)
     @NotNull
     @NotBlank
     @Pattern(regexp = "^0\\d{9}$", message = "Телефонният номер трябва да започва с 0 и да съдържа 10 цифри")
     private String phone;
-    private Long carId;
-    private Long companyId;
+    private UUID carId;
+    private UUID companyId;
 
 
     private List<Car> cars;
     private List<Company> companies;
 
 
-
     public EditClientDto() {
 
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public List<Car> getCars() {
@@ -53,13 +61,6 @@ public class EditClientDto {
         this.companies = companies;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -93,19 +94,20 @@ public class EditClientDto {
         this.phone = phone;
     }
 
-    public Long getCarId() {
+
+    public UUID getCarId() {
         return carId;
     }
 
-    public void setCarId(Long carId) {
+    public void setCarId(UUID carId) {
         this.carId = carId;
     }
 
-    public Long getCompanyId() {
+    public UUID getCompanyId() {
         return companyId;
     }
 
-    public void setCompanyId(Long companyId) {
+    public void setCompanyId(UUID companyId) {
         this.companyId = companyId;
     }
 }

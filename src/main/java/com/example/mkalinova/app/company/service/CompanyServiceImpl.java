@@ -82,8 +82,8 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public HashMap<String, String> deleteCompany(CompanyListDto company) throws AccessDeniedException {
-
+    public HashMap<String, String> deleteCompany(String id) throws AccessDeniedException {
+        UUID uuid = UUID.fromString(id);
         Optional<User> user = userService.getLoggedInUser();
         if (user.isEmpty() || !userService.isAdmin(user.get())) {
             throw new AccessDeniedException("Нямате права да извършите тази операция!");
@@ -91,7 +91,7 @@ public class CompanyServiceImpl implements CompanyService {
         }
 
 
-        Optional<Company> companyToDelete = companyRepository.findById(company.getId());
+        Optional<Company> companyToDelete = companyRepository.findById(uuid);
 
         HashMap<String, String> result = new HashMap<>();
         if (companyToDelete.isPresent()) {
@@ -103,27 +103,13 @@ public class CompanyServiceImpl implements CompanyService {
 
             return result;
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Няма намерена фирма с #" + company.getId());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма намерена фирма с #" + uuid);
         }
 
     }
 
-//    @Override
-//    public <T> List<T> getAll(Class<T> dtoClass) {
-//        List<Company> companies =
-//                companyRepository.findAll().stream()
-//                        .sorted(Comparator.comparing(Company::getName))
-//                        .toList();
-//        List<T> dtoList = new ArrayList<>();
-//        for (Company company : companies) {
-//            T dto = modelMapper.map(company, dtoClass);
-//            dtoList.add(dto);
-//        }
-//        return dtoList;
-//    }
-
     @Override
-    public List<CompanyRepairDto> findByClientId(Long id) {
+    public List<CompanyRepairDto> findByClientId(UUID id) {
 
         List<CompanyRepairDto> companylist = new ArrayList<>();
         List<Company> companies = companyRepository.findAll();
@@ -142,23 +128,23 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public <T> Object getById(Long id, Class<T> clazz) {
+    public <T> Object getById(UUID id, Class<T> clazz) {
         if (companyRepository.findById(id).isPresent()) {
             return modelMapper.map(companyRepository.findById(id).get(), clazz);
 
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Няма фирма с подаденото #" + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма фирма с подаденото #" + id);
         }
     }
 
     @Override
-    public HashMap<String, String> updateCompany(EditCompanyDto editCompanyDto, boolean isClientPresent, Long clientId) throws AccessDeniedException {
+    public HashMap<String, String> updateCompany(EditCompanyDto editCompanyDto, boolean isClientPresent, UUID clientId) throws AccessDeniedException {
 
         userService.isUserLogIn();
 
         Optional<Company> optCompany = companyRepository.findById(editCompanyDto.getId());
         if (!optCompany.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Няма намерена фирма с #:" + editCompanyDto.getId());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма намерена фирма с #:" + editCompanyDto.getId());
         }
         HashMap<String, String> result = new HashMap<>();
         StringBuilder sb = new StringBuilder();
@@ -178,7 +164,7 @@ public class CompanyServiceImpl implements CompanyService {
                     result.put("message", "Фирмата има вече има клиент!");
 
                     return result;
-                } else if(optCompany.get().getClient() == null){
+                } else if (optCompany.get().getClient() == null) {
                     optCompany.get().setClient(client.get());
                     sb.append("Успешно добавен клиент към ").append(editCompanyDto.getName());
                     result.put("status", "success");
@@ -195,7 +181,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     @Override
-    public <T> Object findById(Long companyId, Class<T> clazz) {
+    public <T> Object findById(UUID companyId, Class<T> clazz) {
         Optional<Company> company = companyRepository.findById(companyId);
         return company.<Object>map(value -> modelMapper.map(value, clazz)).orElse(null);
 
@@ -203,12 +189,12 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<Company> getAllCompaniesByClientId(Long id) {
+    public List<Company> getAllCompaniesByClientId(UUID id) {
         return companyRepository.findAllByClientId(id);
     }
 
     @Override
-    public ClientDto getCompanyClient(Long id) {
+    public ClientDto getCompanyClient(UUID id) {
         Optional<Company> company = companyRepository.findById(id);
         if (company.isPresent()) {
             Client client = company.get().getClient();
@@ -222,33 +208,32 @@ public class CompanyServiceImpl implements CompanyService {
 
     //todo -> add UTest
     @Override
-    public HashMap<String, String> removeClient(Long id, Long companyId) throws AccessDeniedException {
+    public HashMap<String, String> removeClient(UUID id, UUID companyId) throws AccessDeniedException {
         Optional<Company> companyToUpdate = companyRepository.findById(companyId);
         Optional<Client> clientToRemove = clientRepository.findById(id);
         HashMap<String, String> result = new HashMap<>();
         if (companyToUpdate.isPresent() && clientToRemove.isPresent()) {
             Client client = companyToUpdate.get().getClient();
-            if (Objects.equals(client.getId(), clientToRemove.get().getId())) {
+            if (client != null && Objects.equals(client.getId(), clientToRemove.get().getId())) {
                 companyToUpdate.get().setClient(null);
                 companyRepository.saveAndFlush(companyToUpdate.get());
                 result.put("status", "success");
                 result.put("message", "Успешно премахнат клиент: " + clientToRemove.get().getName());
                 return result;
-            }
-
             } else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Компания с #" + companyId + " не беше намерен!");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Клиент с #" + id + " не беше намерен!");
+
             }
 
-        result.put("status", "error");
-        result.put("message", "Нещо се обърка");
-        return result;
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Компания с #" + companyId + " не беше намерена!");
+        }
     }
 
     @Override
-    public List<FetchCompaniesDto> fetchCompaniesByClientId(Long id) {
-      List<Company> companies =  companyRepository.findAllByClientIdAndDeletedAtNull(id);
-        return companies.stream().map(c-> modelMapper.map(c, FetchCompaniesDto.class)).toList();
+    public List<FetchCompaniesDto> fetchCompaniesByClientId(UUID id) {
+        List<Company> companies = companyRepository.findAllByClientIdAndDeletedAtNull(id);
+        return companies.stream().map(c -> modelMapper.map(c, FetchCompaniesDto.class)).toList();
     }
 }
 

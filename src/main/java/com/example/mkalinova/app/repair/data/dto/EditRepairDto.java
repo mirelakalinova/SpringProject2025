@@ -4,10 +4,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
+import java.util.UUID;
+
 
 public class EditRepairDto {
 
-    private Long id;
+    private UUID id;
 
     @NotNull
     @Size(min=3)
@@ -20,11 +22,11 @@ public class EditRepairDto {
 
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

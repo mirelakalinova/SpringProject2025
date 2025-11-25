@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PartServiceImpl implements PartService {
@@ -53,7 +54,7 @@ public class PartServiceImpl implements PartService {
     }
 
     @Override
-    public HashMap<String, String> deletePart(Long id) throws AccessDeniedException {
+    public HashMap<String, String> deletePart(UUID id) throws AccessDeniedException {
         userService.isUserLogIn();
         if( !userService.isAdmin(userService.getLoggedInUser().get())){
             //todo -> get message from some settings for all access denied exceptions
@@ -94,7 +95,7 @@ public class PartServiceImpl implements PartService {
     }
 
     @Override
-    public EditPartDto findById(Long id) {
+    public EditPartDto findById(UUID id) {
         Optional<Part> part = partRepository.findById(id);
         if(part.isPresent()){
 

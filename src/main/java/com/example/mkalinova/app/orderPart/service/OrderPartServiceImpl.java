@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrderPartServiceImpl implements OrderPartService{
@@ -49,13 +50,13 @@ public class OrderPartServiceImpl implements OrderPartService{
     }
 
     @Override
-    public List<OrderPart> findAllByOrderId(Long id) {
+    public List<OrderPart> findAllByOrderId(UUID id) {
 
         return repository.findAllByOrderId(id);
     }
 
     @Override
-    public void setDeletedAtAllByOrderId(Long id) {
+    public void setDeletedAtAllByOrderId(UUID id) {
         List<OrderPart> orderParts = repository.findAllByOrderId(id);
         if(orderParts.isEmpty()){
             return;
@@ -67,7 +68,7 @@ public class OrderPartServiceImpl implements OrderPartService{
     }
 
     @Override
-    public void deletedAllByOrderId(Long id) {
+    public void deletedAllByOrderId(UUID id) {
         List<OrderPart> orderParts = repository.findAllByOrderId(id);
         if(orderParts.isEmpty()){
             return;

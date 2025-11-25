@@ -23,6 +23,7 @@ import org.springframework.web.method.annotation.ModelAttributeMethodProcessor;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
@@ -142,14 +143,15 @@ public class CarControllerIT {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void DeleteCarByAdmin_ThrowResponseStatusException() throws Exception {
-        mockMvc.perform(post("/car/delete/{id}", 15)
-                        .param("id", String.valueOf(15))
+        String id = String.valueOf(UUID.randomUUID());
+        mockMvc.perform(post("/car/delete/{id}", id)
+                        .param("id", String.valueOf(id))
                         .with(csrf()))
                 .andExpect(status().is4xxClientError());
 
 
 
-        Optional<Car> car = carRepository.findById(15L);
+        Optional<Car> car = carRepository.findById(UUID.randomUUID());
         assertTrue(car.isEmpty());
 
 
@@ -244,7 +246,7 @@ public class CarControllerIT {
 
         Optional<Car> car = carRepository.findByRegistrationNumber(carFirst.getRegistrationNumber());
         assertTrue(car.isPresent());
-        Optional<Car> carById = carRepository.findById(carRepository.count() + 1 );
+        Optional<Car> carById = carRepository.findById(UUID.randomUUID() );
         assertFalse(carById.isPresent());
 
 
