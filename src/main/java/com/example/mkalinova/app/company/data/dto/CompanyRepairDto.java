@@ -1,8 +1,10 @@
 package com.example.mkalinova.app.company.data.dto;
 
+import java.util.UUID;
+
 public class CompanyRepairDto {
 
-    private Long id;
+    private UUID id;
 
     private String name;
 
@@ -17,16 +19,16 @@ public class CompanyRepairDto {
     private String accountablePerson;
 
 
-    private Long clientId;
+    private UUID clientId;
 
     public CompanyRepairDto() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -70,11 +72,11 @@ public class CompanyRepairDto {
         this.accountablePerson = accountablePerson;
     }
 
-    public Long getClientId() {
+    public UUID getClientId() {
         return clientId;
     }
 
-    public void setClientId(Long clientId) {
+    public void setClientId(UUID clientId) {
         this.clientId = clientId;
     }
 }

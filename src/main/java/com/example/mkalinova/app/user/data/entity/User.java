@@ -2,7 +2,8 @@ package com.example.mkalinova.app.user.data.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+
+import java.util.UUID;
 
 
 @Entity
@@ -12,8 +13,8 @@ public class User {
 
     @Id
     @Column
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -39,11 +40,11 @@ public class User {
     }
 
 
-    public long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

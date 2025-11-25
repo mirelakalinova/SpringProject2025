@@ -48,7 +48,7 @@ public class ClientServiceImpl implements ClientService {
 
 
     @Override
-    public Optional<Client>  getById(Long id) {
+    public Optional<Client>  getById(UUID id) {
 
         return clientRepository.findById(id);
     }
@@ -61,9 +61,6 @@ public class ClientServiceImpl implements ClientService {
                                                                boolean companyIsFill) throws AccessDeniedException {
 
         userService.isUserLogIn();
-        System.out.println(">>> addClientDto: " + addClientDto);
-        System.out.println(">>> addCarDto: " + addCarDto);
-        System.out.println(">>> addCompanyDto: " + addCompanyDto);
         HashMap<String, String> result = new HashMap<>();
         //1. Да проверим клиента
         Optional<Client> opt = clientRepository.findByPhone(addClientDto.getPhone());
@@ -79,7 +76,6 @@ public class ClientServiceImpl implements ClientService {
         boolean addCarDtoIsPresent = addCarDto != null
                 && addCarDto.getRegistrationNumber() != null
                 && !addCarDto.getRegistrationNumber().isEmpty();
-        ;
         clientToAdd = modelMapper.map(addClientDto, Client.class);
 
         //2. Да проверим колата
@@ -205,7 +201,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public void deleteClient(Long id) throws AccessDeniedException {
+    public void deleteClient(UUID id) throws AccessDeniedException {
         userService.isUserLogIn();
         Optional<User> user = userService.getLoggedInUser();
         if (user.isPresent()){
@@ -242,7 +238,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public EditClientDto findClientById(Long id) {
+    public EditClientDto findClientById(UUID id) {
         Optional<Client> client = clientRepository.findById(id);
         if (client.isPresent()) {
             return modelMapper.map(client, EditClientDto.class);
@@ -253,7 +249,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public HashMap<String, String> updateClient(Long id, EditClientDto editClientDto) throws AccessDeniedException {
+    public HashMap<String, String> updateClient(UUID id, EditClientDto editClientDto) throws AccessDeniedException {
         userService.isUserLogIn();
         HashMap<String, String> result = new HashMap<>();
         StringBuilder sb = new StringBuilder();
@@ -262,7 +258,7 @@ public class ClientServiceImpl implements ClientService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Няма намерен клиентс с #" + editClientDto.getId());
         }
         sb.append("Успешно обновен клиент").append(System.lineSeparator());
-        Long carId = editClientDto.getCarId();
+        UUID carId = editClientDto.getCarId();
         if (carId != null) {
             Car car = modelMapper.map(carService.findById(carId, Car.class), Car.class);
             if (car.getClient() == null) {
@@ -279,7 +275,7 @@ public class ClientServiceImpl implements ClientService {
                 return result;
             }
         }
-        Long companyId = editClientDto.getCompanyId();
+        UUID companyId = editClientDto.getCompanyId();
         if (companyId != null) {
             Company company =
                     modelMapper.map(companyService.findById(companyId, Company.class), Company.class);
@@ -315,7 +311,7 @@ public class ClientServiceImpl implements ClientService {
     }
 // todo -> check is unnecessary
     @Override
-    public List<ClientRepairDto> findById(Long id) {
+    public List<ClientRepairDto> findById(UUID id) {
         return List.of();
     }
     // todo -> check is unnecessary
@@ -326,7 +322,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<CarDto> getCarsByClient(Long id) {
+    public List<CarDto> getCarsByClient(UUID id) {
         Optional<Client> client = clientRepository.findById(id);
         if (client.isPresent()) {
             List<Car> cars = client.get().getCars();
@@ -337,7 +333,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public HashMap<String, String> removeCar(Long id, Long clientId) throws AccessDeniedException {
+    public HashMap<String, String> removeCar(UUID id, UUID clientId) throws AccessDeniedException {
         userService.isUserLogIn();
         Optional<Car> car = carRepository.findById(id);
         Optional<Client> clientToUpdate = clientRepository.findById(clientId);
@@ -362,7 +358,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public HashMap<String, String> removeCompany(Long id, Long clientId) throws AccessDeniedException {
+    public HashMap<String, String> removeCompany(UUID id, UUID clientId) throws AccessDeniedException {
         userService.isUserLogIn();
         Optional<Company> company = companyRepository.findById(id);
         Optional<Client> clientToUpdate = clientRepository.findById(clientId);

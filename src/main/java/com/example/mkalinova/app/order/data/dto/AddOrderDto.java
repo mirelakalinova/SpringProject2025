@@ -8,6 +8,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class AddOrderDto {
 
@@ -27,9 +28,9 @@ public class AddOrderDto {
     private String note;
 
     @NotNull
-    private long car;
-    private long client;
-    private long company;
+    private UUID car;
+    private UUID client;
+    private UUID company;
     private List<AddOrderPartDto> parts;
     @NotNull
     @NotEmpty
@@ -97,29 +98,27 @@ public class AddOrderDto {
         this.note = note;
     }
 
-
-    public long getCar() {
+    public UUID getCar() {
         return car;
     }
 
-    public void setCar(long car) {
+    public void setCar(UUID car) {
         this.car = car;
     }
 
-
-    public long getClient() {
+    public UUID getClient() {
         return client;
     }
 
-    public void setClient(long client) {
+    public void setClient(UUID client) {
         this.client = client;
     }
 
-    public long getCompany() {
+    public UUID getCompany() {
         return company;
     }
 
-    public void setCompany(long company) {
+    public void setCompany(UUID company) {
         this.company = company;
     }
 

@@ -30,6 +30,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
@@ -88,13 +90,13 @@ public class CompanyUTest {
         userRepository.saveAndFlush(admin);
         company = new Company();
         company.setName("test");
-        company.setId(1L);
+        company.setId(UUID.randomUUID());
         company.setUic("201478523");
         company.setVatNumber("BG201478523");
         company.setAddress("Test address");
         company.setAccountablePerson("Test Test");
         companySecond = new Company();
-        companySecond.setId(2L);
+        companySecond.setId(UUID.randomUUID());
         companySecond.setName("test2");
         companySecond.setUic("201478524");
         companySecond.setVatNumber("BG201478524");
@@ -169,8 +171,8 @@ public class CompanyUTest {
         client.setPhone("0896619422");
         client.setFirstName("test");
         client.setLastName("test");
-        client.setId(1L);
-        dto.setClientId(1L);
+        client.setId(UUID.randomUUID());
+        dto.setClientId(UUID.randomUUID());
         company.setClient(new Client());
         doNothing().when(userService).isUserLogIn();
         when(companyRepository
@@ -204,8 +206,8 @@ public class CompanyUTest {
         client.setPhone("0896619422");
         client.setFirstName("test");
         client.setLastName("test");
-        client.setId(1L);
-        dto.setClientId(1L);
+        client.setId(UUID.randomUUID());
+        dto.setClientId(UUID.randomUUID());
 
         doNothing().when(userService).isUserLogIn();
         when(companyRepository
@@ -237,17 +239,14 @@ public class CompanyUTest {
         clientDto.setPhone("0896619422");
         clientDto.setFirstName("test");
         clientDto.setLastName("test");
-        clientDto.setId(1L);
+        clientDto.setId(UUID.randomUUID());
         doNothing().when(userService).isUserLogIn();
         when(companyRepository
                 .findById(dto.getId())).thenReturn(Optional.of(company));
 
-//        when(clientRepository.findById(clientDto.getId())).thenReturn(Optional.of(new Client()));
         HashMap<String,String> result = service.updateCompany(dto,false, dto.getClientId());
 
         verify(companyRepository, times(1)).findById(dto.getId());
-//        verify(companyRepository).save(ArgumentMatchers.any(Company.class));
-
         assertEquals(dto.getVatNumber(), companyRepository.findById(company.getId()).get().getVatNumber());
         assertEquals("success", result.get("status"));
 
@@ -327,7 +326,7 @@ public class CompanyUTest {
         when(companyRepository.findById(dto.getId()))
                 .thenReturn(Optional.of(company));
 
-        HashMap<String,String> result = service.deleteCompany(dto);
+        HashMap<String,String> result = service.deleteCompany(String.valueOf(company.getId()));
         verify(companyRepository, times(1)).findById(dto.getId());
         verify(companyRepository, times(1)).saveAndFlush(company);
         assertNotEquals(company.getDeletedAt(), null);
@@ -350,7 +349,7 @@ public class CompanyUTest {
         when(userService.isAdmin(editor)).thenReturn(false);
 
 
-        assertThrows(AccessDeniedException.class, () -> service.deleteCompany(dto));
+        assertThrows(AccessDeniedException.class, () -> service.deleteCompany(String.valueOf(company.getId())));
 
         verify(companyRepository, never()).findById(dto.getId());
         verify(companyRepository, never()).saveAndFlush(company);

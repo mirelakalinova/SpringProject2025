@@ -1,9 +1,11 @@
 package com.example.mkalinova.app.orderRepair.data.dto;
 
 
+import java.util.UUID;
+
 public class AddOrderRepairDto {
 
-    private Long id;
+    private UUID id;
 
 
     private int quantity;
@@ -15,11 +17,11 @@ public class AddOrderRepairDto {
 
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

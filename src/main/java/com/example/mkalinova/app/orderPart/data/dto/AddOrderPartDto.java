@@ -1,16 +1,27 @@
 package com.example.mkalinova.app.orderPart.data.dto;
 
 
+import java.util.UUID;
+
 public class AddOrderPartDto {
 
 
+    private UUID id;
     private int quantity;
     private String name;
     private Double price;
     private Double total;
-    private Long id;
+
     public AddOrderPartDto() {
 
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public int getQuantity() {
@@ -45,11 +56,4 @@ public class AddOrderPartDto {
         this.total = total;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 }

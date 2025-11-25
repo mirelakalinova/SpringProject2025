@@ -4,9 +4,11 @@ package com.example.mkalinova.app.car.data.dto;
 import com.example.mkalinova.app.client.data.entity.Client;
 import jakarta.validation.constraints.*;
 
+import java.util.UUID;
+
 public class EditCarDto {
 
-    protected Long id;
+    protected UUID id;
     @NotBlank(message = "Въведете регистрационен номер")
     @NotNull
     @Size(min=7, max=8, message = "Моля въведете коректен регистрационен номер!")
@@ -48,14 +50,13 @@ public class EditCarDto {
         this.client = client;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
-
 
     public int getHp() {
         return hp;

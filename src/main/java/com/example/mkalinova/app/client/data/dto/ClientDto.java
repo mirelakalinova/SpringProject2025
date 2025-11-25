@@ -1,8 +1,10 @@
 package com.example.mkalinova.app.client.data.dto;
 
+import java.util.UUID;
+
 public class ClientDto {
 
-    private Long id;
+    private UUID id;
     private String firstName;
 
 
@@ -18,11 +20,11 @@ public class ClientDto {
     public ClientDto() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

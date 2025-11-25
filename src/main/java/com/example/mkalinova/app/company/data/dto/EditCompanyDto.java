@@ -6,10 +6,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.UUID;
+
 public class EditCompanyDto {
 
 
-    protected Long id;
+    protected UUID id;
     @NotNull(message = "Името на фирмата не трябва да е празно")
     @NotBlank(message = "Името на фирмата не трябва да е празно")
     private String name;
@@ -31,16 +33,16 @@ public class EditCompanyDto {
     @NotNull(message = "Моля въведете ДДС номер")
     private String vatNumber;
 
-    private Long clientId;
+    private UUID clientId;
 
     public EditCompanyDto() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -84,11 +86,11 @@ public class EditCompanyDto {
         this.accountablePerson = accountablePerson;
     }
 
-    public Long getClientId() {
+    public UUID getClientId() {
         return clientId;
     }
 
-    public void setClientId(Long clientId) {
+    public void setClientId(UUID clientId) {
         this.clientId = clientId;
     }
 }

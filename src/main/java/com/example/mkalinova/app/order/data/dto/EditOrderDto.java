@@ -3,20 +3,18 @@ package com.example.mkalinova.app.order.data.dto;
 import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.company.data.entity.Company;
-import com.example.mkalinova.app.orderPart.data.OrderPart;
 import com.example.mkalinova.app.orderPart.data.dto.AddOrderPartDto;
-import com.example.mkalinova.app.orderRepair.data.OrderRepair;
 import com.example.mkalinova.app.orderRepair.data.dto.AddOrderRepairDto;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class EditOrderDto {
 
-    private Long id;
+    private UUID id;
     @NotNull
     private double subtotal;
     @NotNull
@@ -44,11 +42,11 @@ public class EditOrderDto {
         this.repairs = new ArrayList<>();
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

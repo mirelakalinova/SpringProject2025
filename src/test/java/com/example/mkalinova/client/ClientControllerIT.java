@@ -82,6 +82,7 @@ public class ClientControllerIT {
         clientFirst.setLastName("Test");
         clientFirst.setEmail("projects@zashev.com");
 
+
         clientRepository.saveAndFlush(clientFirst);
         clientSecond = new Client();
         clientSecond.setPhone("0896619423");
@@ -559,20 +560,21 @@ public class ClientControllerIT {
         company.setAddress("1HGBH41JXMN109177");
         company.setAccountablePerson("Test test");
         company.setClient(clientFirst);
-
-
         companyRepository.saveAndFlush(company);
+        UUID clientId = clientFirst.getId();
+        UUID companyId = company.getId();
 
-        mockMvc.perform(post("/client/remove-company/{id}", company.getId())
-                        .param("clientId", String.valueOf(clientFirst.getId()))
+
+        mockMvc.perform(post("/client/remove-company/{id}", companyId)
+                        .param("clientId", String.valueOf(clientId))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/client/edit/" + clientFirst.getId()))
+                .andExpect(redirectedUrl("/client/edit/" + clientId))
                 .andExpect(flash().attribute("status", "success"))
                 .andExpect(flash().attributeExists("message"));
 
         // Проверка в базата дали car вече не е свързан с клиента
-        Optional<Company> optCompany = companyRepository.findById(company.getId());
+        Optional<Company> optCompany = companyRepository.findById(companyId);
         assertTrue(optCompany.isPresent());
         assertNull(optCompany.get().getClient());
     }
@@ -591,17 +593,19 @@ public class ClientControllerIT {
         car.setVin("VIN12345678901234");
         car.setClient(clientFirst);
         carRepository.saveAndFlush(car);
+        UUID carId= car.getId();
+        UUID clientId= clientFirst.getId();
 
-        mockMvc.perform(post("/client/remove-car/{id}", car.getId())
-                        .param("clientId", String.valueOf(clientFirst.getId()))
+        mockMvc.perform(post("/client/remove-car/{id}", carId)
+                        .param("clientId", String.valueOf(clientId))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/client/edit/" + clientFirst.getId()))
+                .andExpect(redirectedUrl("/client/edit/" + clientId))
                 .andExpect(flash().attribute("status", "success"))
                 .andExpect(flash().attributeExists("message"));
 
         // Проверка в базата дали car вече не е свързан с клиента
-        Optional<Car> optCar = carRepository.findById(car.getId());
+        Optional<Car> optCar = carRepository.findById(carId);
         assertTrue(optCar.isPresent());
         assertNull(optCar.get().getClient());
     }

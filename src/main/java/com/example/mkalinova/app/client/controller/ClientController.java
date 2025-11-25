@@ -28,6 +28,7 @@ import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 
 @Controller
@@ -88,11 +89,11 @@ public class ClientController extends BaseController {
     }
 
     @PostMapping("/add")
-    public String createUser(@Valid  AddClientDto addClientDto,
+    public String createUser(@Valid AddClientDto addClientDto,
                              BindingResult bindingResult,
-                             @Valid   AddCarDto addCarDto,
+                             @Valid AddCarDto addCarDto,
                              BindingResult bindingResultAddCarDto,
-                             @Valid   AddCompanyDto addCompanyDto,
+                             @Valid AddCompanyDto addCompanyDto,
                              BindingResult bindingResultAddCompanyDto,
                              RedirectAttributes attributes) throws AccessDeniedException {
 
@@ -175,12 +176,11 @@ public class ClientController extends BaseController {
     }
 
 
-
     //todo -> add dto
     @PostMapping("/delete/{id}")
-    public String deleteClientWithAllData(@PathVariable Long id, RedirectAttributes attributes) throws AccessDeniedException {
-
-        clientService.deleteClient(id);
+    public String deleteClientWithAllData(@PathVariable String id, RedirectAttributes attributes) throws AccessDeniedException {
+        UUID uuid = UUID.fromString(id);
+        clientService.deleteClient(uuid);
 
         attributes.addFlashAttribute("message", "Успещно изтрит клиент #" + id);
         attributes.addFlashAttribute("status", "success");
@@ -190,13 +190,15 @@ public class ClientController extends BaseController {
 
 
     @GetMapping("/edit/{id}")
-    public ModelAndView editClient(@PathVariable Long id) {
+    public ModelAndView editClient(@PathVariable String id) {
+        UUID uuid = UUID.fromString(id);
+
         ModelAndView modelAndView = super.view("/client/edit");
         modelAndView.addObject("companiesWithoutUser", companyService.allCompaniesWithoutClient());
-        modelAndView.addObject("carsWithoutUser",  carService.allCarsWithoutUser(CarDtoEditClient.class));
-        EditClientDto client = clientService.findClientById(id);
+        modelAndView.addObject("carsWithoutUser", carService.allCarsWithoutUser(CarDtoEditClient.class));
+        EditClientDto client = clientService.findClientById(uuid);
 
-        List<CarDto> cars = clientService.getCarsByClient(id);
+        List<CarDto> cars = clientService.getCarsByClient(uuid);
         modelAndView.addObject("client", client);
         modelAndView.addObject("cars", client.getCars());
         modelAndView.addObject("clientId", client.getId());
@@ -207,7 +209,7 @@ public class ClientController extends BaseController {
     }
 
     @PutMapping("/edit/{id}")
-    public String updateClient(@PathVariable Long id,
+    public String updateClient(@PathVariable String id,
                                @Valid EditClientDto editClientDto,
                                @Valid CompanyDtoEditClient companyDtoEditClient,
                                BindingResult bindingResultCar,
@@ -215,6 +217,7 @@ public class ClientController extends BaseController {
                                RedirectAttributes attributes
 
     ) throws AccessDeniedException {
+        UUID uuid = UUID.fromString(id);
 
         if (bindingResult.hasErrors()) {
             attributes.addFlashAttribute("editClientDto", editClientDto);
@@ -222,35 +225,40 @@ public class ClientController extends BaseController {
 
             return "redirect:/client/edit/{id}";
         }
-        HashMap<String, String> result = clientService.updateClient(id, editClientDto);
+        HashMap<String, String> result = clientService.updateClient(uuid, editClientDto);
 
-        attributes.addFlashAttribute("message", result.get("message") );
-        attributes.addFlashAttribute("status", result.get("status") );
+        attributes.addFlashAttribute("message", result.get("message"));
+        attributes.addFlashAttribute("status", result.get("status"));
         return "redirect:/client/edit/{id}";
     }
 
     @PostMapping("/remove-car/{id}")
-    public String removeCarFromClient(@PathVariable Long id,   @RequestParam("clientId")Long clientId , RedirectAttributes attributes) throws AccessDeniedException {
-        HashMap<String, String> result = clientService.removeCar(id, clientId);
+    public String removeCarFromClient(@PathVariable String id, @RequestParam("clientId") String clientId, RedirectAttributes attributes) throws AccessDeniedException {
+        UUID uuid = UUID.fromString(id);
+        UUID uuidClientId = UUID.fromString(clientId);
+        HashMap<String, String> result = clientService.removeCar(uuid, uuidClientId);
         Model model = new Model();
-        attributes.addFlashAttribute("message", result.get("message") );
-        attributes.addFlashAttribute("status", result.get("status") );
+        attributes.addFlashAttribute("message", result.get("message"));
+        attributes.addFlashAttribute("status", result.get("status"));
         return "redirect:/client/edit/" + clientId;
 
     }
 
     @PostMapping("/remove-company/{id}")
-    public String removeCompanyFromClient(@PathVariable Long id,   @RequestParam("clientId")Long clientId , RedirectAttributes attributes) throws AccessDeniedException {
-        HashMap<String, String> result = clientService.removeCompany(id, clientId);
+    public String removeCompanyFromClient(@PathVariable String id, @RequestParam("clientId") String clientId, RedirectAttributes attributes) throws AccessDeniedException {
+        UUID uuid = UUID.fromString(id);
+        UUID uuidClientId = UUID.fromString(clientId);
+        HashMap<String, String> result = clientService.removeCompany(uuid, uuidClientId);
         attributes.addFlashAttribute("status", result.get("status"));
         attributes.addFlashAttribute("message", result.get("message"));
         return "redirect:/client/edit/" + clientId;
 
 
     }
+
     @GetMapping("/fetch/clients")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> fetchAllClients(){
+    public ResponseEntity<Map<String, Object>> fetchAllClients() {
 
         HashMap<String, Object> response = new HashMap<>();
         try {
@@ -270,12 +278,12 @@ public class ClientController extends BaseController {
     @GetMapping("/fetch/companies/{id}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> fetchClientByCarId(
-            @PathVariable("id") Long id){
-
+            @PathVariable("id") String id) {
+        UUID uuid = UUID.fromString(id);
         HashMap<String, Object> response = new HashMap<>();
         try {
 
-            List<FetchCompaniesDto>  companies = companyService.fetchCompaniesByClientId(id);
+            List<FetchCompaniesDto> companies = companyService.fetchCompaniesByClientId(uuid);
             response.put("companies", companies);
             return ResponseEntity.ok(response);
         } catch (Exception e) {

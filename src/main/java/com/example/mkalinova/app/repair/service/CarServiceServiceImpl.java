@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CarServiceServiceImpl implements RepairService {
@@ -55,7 +56,7 @@ public class CarServiceServiceImpl implements RepairService {
     }
 
     @Override
-    public HashMap<String, String> deleteService(Long id) throws AccessDeniedException {
+    public HashMap<String, String> deleteService(UUID id) throws AccessDeniedException {
         userService.isUserLogIn();
         if( !userService.isAdmin(userService.getLoggedInUser().get())){
             //todo -> get message from some settings for all access denied exceptions
@@ -96,7 +97,7 @@ public class CarServiceServiceImpl implements RepairService {
     }
 
     @Override
-    public EditRepairDto findById(Long id) {
+    public EditRepairDto findById(UUID id) {
         Optional<Repair> service = carServiceRepository.findById(id);
         if(service.isPresent()){
 

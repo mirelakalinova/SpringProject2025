@@ -14,14 +14,15 @@ import org.modelmapper.internal.bytebuddy.implementation.bind.annotation.Default
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "orders")
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
 
     private double subtotal;
@@ -66,11 +67,11 @@ public class Order {
         this.repairList = new ArrayList<>();
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

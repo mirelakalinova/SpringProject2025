@@ -3,8 +3,10 @@ package com.example.mkalinova.app.car.data.dto;
 
 import com.example.mkalinova.app.client.data.entity.Client;
 
+import java.util.UUID;
+
 public class CarDto {
-    private Long id;
+    private UUID id;
 
     private String registrationNumber;
 
@@ -26,11 +28,11 @@ public class CarDto {
     public CarDto() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

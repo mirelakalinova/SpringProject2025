@@ -22,10 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.file.AccessDeniedException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/car")
@@ -79,10 +76,11 @@ public class CarController extends BaseController {
     }
 
     @GetMapping("/edit/{id}")
-    public ModelAndView editCar(@PathVariable Long id) {
+    public ModelAndView editCar(@PathVariable String id) {
+        UUID carId = UUID.fromString(id);
 
         ModelAndView modelAndView = super.view("car/edit");
-        modelAndView.addObject("editCarDto", carService.findById(id, EditCarDto.class));
+        modelAndView.addObject("editCarDto", carService.findById(carId, EditCarDto.class));
         modelAndView.addObject("clients", clientService.findAll(ClientListCarDto.class));
 
         return modelAndView;
@@ -104,8 +102,10 @@ public class CarController extends BaseController {
 
 
     @PostMapping("/delete/{id}")
-    public String deleteCar(@PathVariable Long id,  RedirectAttributes attributes) throws AccessDeniedException {
-        HashMap<String, String> result = carService.deleteCarById(id);
+    public String deleteCar(@PathVariable String id,  RedirectAttributes attributes) throws AccessDeniedException {
+        UUID uuid = UUID.fromString(id);
+
+        HashMap<String, String> result = carService.deleteCarById(uuid);
         attributes.addFlashAttribute("message", result.get("message"));
         attributes.addFlashAttribute("status", result.get("status"));
         return "redirect:/car/cars";
@@ -143,12 +143,12 @@ public class CarController extends BaseController {
     @GetMapping("/fetch/client/{id}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> fetchClientByCarId(
-            @PathVariable("id") Long id){
-
+            @PathVariable("id") String id){
+        UUID uuid = UUID.fromString(id);
         HashMap<String, Object> response = new HashMap<>();
         try {
 
-            List<FetchClientDto>  client = carService.fetchClientByCarId(id);
+            List<FetchClientDto>  client = carService.fetchClientByCarId(uuid);
             response.put("clients", client);
             return ResponseEntity.ok(response);
         } catch (Exception e) {

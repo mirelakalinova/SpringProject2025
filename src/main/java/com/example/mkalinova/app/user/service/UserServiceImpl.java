@@ -35,10 +35,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void isUserLogIn() throws AccessDeniedException {
-        Long id = getLoggedInUserId();
+        UUID id = getLoggedInUserId();
     }
 
-    public Long getLoggedInUserId() throws AccessDeniedException {
+    public UUID getLoggedInUserId() throws AccessDeniedException {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails userDetails) {
             String username = userDetails.getUsername();
@@ -96,14 +96,14 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public <T> T getById(Long id, Class<T> clazz) {
+    public <T> T getById(UUID id, Class<T> clazz) {
 
         return userRepository.findById(id)
                 .map(user -> modelMapper.map(user, clazz))
                 .orElse(null);
     }
 
-    public HashMap<String, String> editUser(Long id, EditUserDto editUserDto) throws AccessDeniedException {
+    public HashMap<String, String> editUser(UUID id, EditUserDto editUserDto) throws AccessDeniedException {
 
 
             HashMap<String, String> result = new HashMap<>();
@@ -162,7 +162,7 @@ public class UserServiceImpl implements UserService {
 
 
 
-    public HashMap<String, String> deleteUser(Long id) throws AccessDeniedException {
+    public HashMap<String, String> deleteUser(UUID id) throws AccessDeniedException {
         Optional<User> loggedInUser = this.userRepository.findById(this.getLoggedInUserId());
         HashMap<String,String > result = new HashMap<>();
         if(!isAdmin(modelMapper.map(loggedInUser, User.class))){

@@ -1,18 +1,20 @@
 package com.example.mkalinova.app.company.data.dto;
 
+import java.util.UUID;
+
 public class CompanyDtoEditClient {
-    private  Long companyId;
+    private UUID companyId;
     private String name;
     private int uic;
 
     public CompanyDtoEditClient() {
     }
 
-    public Long getCompanyId() {
+    public UUID getCompanyId() {
         return companyId;
     }
 
-    public void setCompanyId(Long companyId) {
+    public void setCompanyId(UUID companyId) {
         this.companyId = companyId;
     }
 

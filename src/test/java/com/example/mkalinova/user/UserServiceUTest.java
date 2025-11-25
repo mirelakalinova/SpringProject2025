@@ -19,10 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import java.nio.file.AccessDeniedException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -47,7 +44,7 @@ public class UserServiceUTest {
     @BeforeEach
     void setUp() {
         administrator = new User();
-        administrator.setId(1L);
+        administrator.setId(UUID.fromString("e1b27c6e-1b7a-4f69-a9e0-5f38e2c3f3a4"));
         administrator.setFirstName("Mirela");
         administrator.setLastName("Kalinova");
         administrator.setUsername("admin");
@@ -56,7 +53,7 @@ public class UserServiceUTest {
         administrator.setRole(UsersRole.ADMIN);
 
         editor = new User();
-        editor.setId(1L);
+        editor.setId(UUID.fromString("e1b27c6e-1b7a-5f69-a9e0-5f38e2c3f3a4"));
         editor.setFirstName("Mirela");
         editor.setUsername("editor");
         editor.setLastName("Kalinova");
@@ -104,8 +101,9 @@ public class UserServiceUTest {
     void getLoggedInUserIdTestSuccess() throws AccessDeniedException {
         mockLoggedInUser("test");
         when(userRepository.findByUsername("test")).thenReturn(administrator);
-        Long id = userService.getLoggedInUserId();
-        assertEquals(1L, id);
+        UUID id = userService.getLoggedInUserId();
+        UUID existingId = UUID.fromString("e1b27c6e-1b7a-4f69-a9e0-5f38e2c3f3a4");
+        assertEquals(existingId, id);
         verify(userRepository).findByUsername("test");
 
     }
@@ -114,8 +112,9 @@ public class UserServiceUTest {
     void addNewUserByAdminAndSuccess() throws AccessDeniedException {
         mockLoggedInUser("admin");
         when(userRepository.findByUsername("admin")).thenReturn(administrator);
-        Long id = userService.getLoggedInUserId();
-        assertEquals(1L, id);
+        UUID id = userService.getLoggedInUserId();
+        UUID expectedId = UUID.fromString("e1b27c6e-1b7a-4f69-a9e0-5f38e2c3f3a4");
+        assertEquals(expectedId, id);
 
         boolean result = userService.isAdmin(administrator);
         assertTrue(result);
@@ -131,8 +130,9 @@ public class UserServiceUTest {
     void addNewUserByAdminUserExist() throws AccessDeniedException {
         mockLoggedInUser("admin");
         when(userRepository.findByUsername("admin")).thenReturn(administrator);
-        Long id = userService.getLoggedInUserId();
-        assertEquals(1L, id);
+        UUID id = userService.getLoggedInUserId();
+        UUID existingId = UUID.fromString("e1b27c6e-1b7a-4f69-a9e0-5f38e2c3f3a4");
+        assertEquals(existingId, id);
         boolean result = userService.isAdmin(administrator);
         assertTrue(result);
         when(userRepository.findByUsernameOrEmail(newUserRepo.getUsername(), newUser.getEmail())).thenReturn(Optional.of(newUserRepo));
@@ -165,8 +165,9 @@ public class UserServiceUTest {
     void addNewUserByEditor() throws AccessDeniedException {
         mockLoggedInUser("editor");
         when(userRepository.findByUsername("editor")).thenReturn(editor);
-        Long id = userService.getLoggedInUserId();
-        assertEquals(1L, id);
+        UUID id = userService.getLoggedInUserId();
+        UUID expectedId = UUID.fromString("e1b27c6e-1b7a-5f69-a9e0-5f38e2c3f3a4");
+        assertEquals(expectedId, id);
         when(modelMapper.map(any(), eq(User.class))).thenReturn(editor);
         boolean result = userService.isAdmin(editor);
         assertFalse(result);
@@ -204,7 +205,7 @@ public class UserServiceUTest {
     void getByIdSuccess() {
         when(userRepository.findById(administrator.getId())).thenReturn(Optional.of(administrator));
         EditUserDto editUserDto = new EditUserDto();
-        editUserDto.setId(1L);
+        editUserDto.setId(UUID.randomUUID());
         when(modelMapper.map(administrator, EditUserDto.class)).thenReturn(editUserDto);
         EditUserDto dto = userService.getById(administrator.getId(), EditUserDto.class);
         assertNotNull(dto);
@@ -229,8 +230,9 @@ public class UserServiceUTest {
     void deleteUserByAdmin() throws AccessDeniedException {
         mockLoggedInUser("admin");
         when(userRepository.findByUsername("admin")).thenReturn(administrator);
-        Long id = userService.getLoggedInUserId();
-        assertEquals(1L, id);
+        UUID id = userService.getLoggedInUserId();
+        UUID existingId = UUID.fromString("e1b27c6e-1b7a-4f69-a9e0-5f38e2c3f3a4");
+        assertEquals(existingId, id);
     }
 
 }

@@ -4,14 +4,15 @@ import com.example.mkalinova.app.client.data.entity.Client;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Table(name = "companies")
 @Entity
 public class Company {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String name;
@@ -49,12 +50,16 @@ public class Company {
     public Company() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
     public String getName() {
@@ -108,14 +113,5 @@ public class Company {
     public void setDeleteAd(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
     }
-    //    @Override
-//    public String toString() {
-//        return "Фирма \n" +
-//                "================ \n" +
-//                "Име: '" + name + '\n'
-//                + "ЕИК: '" + uic + '\n'
-//                + "ДДС номер:  '" + vatNumber + '\n' +
-//                "Адрес: " + address + '\n' +
-//                "Мол: '" + accountablePerson + '\n';
-//    }
+
 }

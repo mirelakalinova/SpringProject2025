@@ -6,11 +6,12 @@ import com.example.mkalinova.app.company.data.dto.CompanyClientListDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 public class ClientListDto {
 
-    private Long id;
+    private UUID id;
     private String firstName;
 
     private String lastName;
@@ -45,12 +46,11 @@ public class ClientListDto {
         this.companies = new ArrayList<>();
     }
 
-
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

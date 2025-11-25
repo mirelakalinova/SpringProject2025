@@ -1,8 +1,10 @@
 package com.example.mkalinova.app.company.data.dto;
 
+import java.util.UUID;
+
 public class FetchCompaniesDto {
 
-    private  Long id;
+    private UUID id;
     private String name;
     private String uic;
     private String vatNumber;
@@ -12,11 +14,11 @@ public class FetchCompaniesDto {
     public FetchCompaniesDto() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

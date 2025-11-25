@@ -4,10 +4,11 @@ import com.example.mkalinova.app.client.data.entity.Client;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class CompanyListDto {
 
-    private Long id;
+    private UUID id;
 
     private String name;
 
@@ -25,11 +26,11 @@ public class CompanyListDto {
     public CompanyListDto() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

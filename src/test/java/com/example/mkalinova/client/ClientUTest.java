@@ -25,10 +25,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -444,27 +441,31 @@ public class ClientUTest {
     void deleteClient_WithAllData_Success()
             throws AccessDeniedException {
         doNothing().when(userService).isUserLogIn();
+        UUID clientId = UUID.randomUUID();
 
-        when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
-        client.setId(1L);
+        when(clientRepository.findById(clientId)).thenReturn(Optional.of(client));
+        client.setId(clientId);
 
         List<Car> cars = new ArrayList<>();
         Car car = new Car();
-        car.setId(1L);
+        UUID carId = UUID.randomUUID();
+        car.setId(carId);
         car.setRegistrationNumber("K2116KH");
         car.setClient(client);
         cars.add(car);
 
-        when(carService.getAllCarByClientId(1L)).thenReturn(cars);
+        when(carService.getAllCarByClientId(clientId)).thenReturn(cars);
 
         List<Company> companies = new ArrayList<>();
         Company company = new Company();
         company.setClient(client);
-        company.setId(1L);
+        UUID companyId = UUID.randomUUID();
+        company.setId(companyId);
         companies.add(company);
-        when(companyService.getAllCompaniesByClientId(1L))
+
+        when(companyService.getAllCompaniesByClientId(clientId))
                 .thenReturn(companies);
-        clientService.deleteClient(1L);
+        clientService.deleteClient(clientId);
         assertNotNull(car.getDeletedAt(), "Car should have deletedAt set");
         assertNotNull(company.getDeletedAt(), "Company should have deleteAd set");
         assertNotNull(client.getDeleteAd(), "Client should have deleteAd set");

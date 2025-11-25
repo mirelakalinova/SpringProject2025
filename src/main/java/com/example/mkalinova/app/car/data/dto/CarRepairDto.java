@@ -2,9 +2,11 @@ package com.example.mkalinova.app.car.data.dto;
 
 import jakarta.validation.constraints.*;
 
+import java.util.UUID;
+
 public class CarRepairDto {
 
-    private Long id;
+    private UUID id;
     @NotBlank(message = "Въведете регистрационен номер")
     @NotNull
     @Size(min=7, max=8, message = "Моля въведете коректен регистрационен номер!")
@@ -30,13 +32,13 @@ public class CarRepairDto {
     @Size(min=17, max=17, message = "Номер на шаси трябва да е точно 17 символа!")
     @Pattern(regexp = "[A-Z0-9]+", message = "Номер на шаси може да съдържа само букви и цифри.")
     private String vin;
-    private Long clientId;
+    private UUID clientId;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -104,11 +106,11 @@ public class CarRepairDto {
         this.vin = vin;
     }
 
-    public Long getClientId() {
+    public UUID getClientId() {
         return clientId;
     }
 
-    public void setClientId(Long clientId) {
+    public void setClientId(UUID clientId) {
         this.clientId = clientId;
     }
 }

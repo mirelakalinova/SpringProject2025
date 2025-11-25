@@ -7,21 +7,22 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface CompanyRepository extends JpaRepository<Company, Long> {
+public interface CompanyRepository extends JpaRepository<Company, UUID> {
     Optional<Company> findByName(String name);
 
     Optional<Company> findByUic(String uic);
 
     List<Company> findByClientIsNull();
 
-    List<Company> findByClientId(Long id);
+    List<Company> findByClientId(UUID id);
 
 
-    List<Company> findAllByClientId(Long id);
+    List<Company> findAllByClientId(UUID id);
 
     List<Company> findAllByDeletedAtNull();
 
-    List<Company> findAllByClientIdAndDeletedAtNull(Long id);
+    List<Company> findAllByClientIdAndDeletedAtNull(UUID id);
 }

@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/company")
@@ -70,10 +71,11 @@ public class CompanyController extends BaseController {
     }
     //todo IT
     @GetMapping("/edit/{id}")
-    public ModelAndView editCompany(@PathVariable Long id, Model model) {
+    public ModelAndView editCompany(@PathVariable String id, Model model) {
+        UUID uuid = UUID.fromString(id);
         ModelAndView modelAndView = super.view("company/edit");
-        EditCompanyDto editCompanyDto = (EditCompanyDto) companyService.getById(id, EditCompanyDto.class);
-        ClientDto client = companyService.getCompanyClient(id);
+        EditCompanyDto editCompanyDto = (EditCompanyDto) companyService.getById(uuid, EditCompanyDto.class);
+        ClientDto client = companyService.getCompanyClient(uuid);
         modelAndView.addObject("existingClient", client);
 
         modelAndView.addObject("clients", clientService.getAllWithCarsAndCompanies());
@@ -96,17 +98,16 @@ public class CompanyController extends BaseController {
             return "redirect:/company/edit/" + editCompanyDto.getId();
         }
         boolean isClientPresent = editCompanyDto.getClientId() != null;
-//        if(!isClientPresent) {
-//            client = 0L;
-//        }
         companyService.updateCompany(editCompanyDto, isClientPresent ,editCompanyDto.getClientId());
         return "redirect:/company/list";
     }
 
     @PostMapping("/remove-client/{id}")
-    public String removeClient(@PathVariable Long id, @RequestParam("companyId") Long companyId,
+    public String removeClient(@PathVariable String id, @RequestParam("companyId") String companyId,
                                RedirectAttributes attributes) throws AccessDeniedException {
-        HashMap<String, String> result = companyService.removeClient(id, companyId);
+        UUID uuid = UUID.fromString(id);
+        UUID uuidCompany = UUID.fromString(companyId);
+        HashMap<String, String> result = companyService.removeClient(uuid, uuidCompany);
         attributes.addFlashAttribute("status", result.get("status"));
         attributes.addFlashAttribute("message", result.get("message"));
         return "redirect:/company/list";
@@ -115,8 +116,8 @@ public class CompanyController extends BaseController {
     }
 
     @PostMapping("delete/{id}")
-    public String deleteCompany(@PathVariable Long id, CompanyListDto companyListDto, RedirectAttributes attributes) throws AccessDeniedException {
-        HashMap<String, String> result = companyService.deleteCompany(companyListDto);
+    public String deleteCompany(@PathVariable String id, RedirectAttributes attributes) throws AccessDeniedException {
+        HashMap<String, String> result = companyService.deleteCompany(id);
         attributes.addFlashAttribute("status", result.get("status"));
         attributes.addFlashAttribute("message", result.get("message"));
         return "redirect:/company/list";

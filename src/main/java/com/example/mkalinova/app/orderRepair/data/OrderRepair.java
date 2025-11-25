@@ -6,14 +6,15 @@ import com.example.mkalinova.app.repair.data.entity.Repair;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "orders_repairs")
 public class OrderRepair {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
@@ -33,11 +34,11 @@ public class OrderRepair {
     public OrderRepair() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
