@@ -9,7 +9,10 @@ import com.example.mkalinova.app.company.repo.CompanyRepository;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.service.UserService;
 
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,9 +21,10 @@ import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.*;
 
-
+@Slf4j
 @Service
 public class CompanyServiceImpl implements CompanyService {
+    private static final Logger log = LoggerFactory.getLogger(CompanyServiceImpl.class);
     private final CompanyRepository companyRepository;
     private final ModelMapper modelMapper;
     private final UserService userService;
@@ -37,22 +41,26 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<CompanyListDto> getAllActiveCompanies() {
-
+        log.debug("Attempt to fetch all companies..");
         return companyRepository.findAllByDeletedAtNull().stream().map(c -> modelMapper.map(c, CompanyListDto.class)).toList();
     }
 
     @Override
     public List<Company> allCompaniesWithoutClient() {
+        log.debug("Attempt to fetch all companies without a client..");
         return companyRepository.findByClientIsNull();
     }
 
     @Override
     public HashMap<String, String> saveCompany(AddCompanyDto addCompanyDto) throws AccessDeniedException {
+        log.debug("Attempt to add company with uic {}", addCompanyDto.getUic());
+
         userService.isUserLogIn();
         HashMap<String, String> result = new HashMap<>();
         if (companyRepository.findByName(addCompanyDto.getName()).isPresent()) {
             result.put("status", "error");
             result.put("message", "Компания с име: " + addCompanyDto.getName() + " вече съществува!");
+            log.warn("Return error message: the company's name is present {}", addCompanyDto.getName());
             return result;
         }
 
@@ -61,6 +69,7 @@ public class CompanyServiceImpl implements CompanyService {
             companyRepository.save(company);
             result.put("status", "success");
             result.put("Message", "Успешно добавена компания: " + addCompanyDto.getName());
+            log.info("Successfully added company with name: {}", addCompanyDto.getName());
             return result;
         } catch (Exception e) {
             throw new RuntimeException("Нещо се обърка при добавянето на компания!");
@@ -70,6 +79,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public Optional<Company> findCompany(String name) {
+        log.debug("Attempt to find company by name {}", name);
         return companyRepository.findByName(name);
 
 
@@ -78,16 +88,17 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public boolean findByCompanyNameOrUic(String name, String uic) {
+        log.debug("Attempt to find company by name {} or uic {}", name, uic);
         return companyRepository.findByUic(uic).isPresent() || companyRepository.findByName(name).isPresent();
     }
 
     @Override
     public HashMap<String, String> deleteCompany(String id) throws AccessDeniedException {
         UUID uuid = UUID.fromString(id);
+        log.debug("Attempt to delete company by id {}", id);
         Optional<User> user = userService.getLoggedInUser();
         if (user.isEmpty() || !userService.isAdmin(user.get())) {
             throw new AccessDeniedException("Нямате права да извършите тази операция!");
-
         }
 
 
@@ -100,6 +111,7 @@ public class CompanyServiceImpl implements CompanyService {
             companyRepository.saveAndFlush(companyToDelete.get());
             result.put("status", "success");
             result.put("message", "Успешно изтрита фирма с ЕИК: " + companyToDelete.get().getUic());
+            log.info("Successfully deleted company with uic: {}", companyToDelete.get().getUic());
 
             return result;
         } else {
@@ -110,7 +122,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<CompanyRepairDto> findByClientId(UUID id) {
-
+        log.debug("Attempt to find a company by client id {}", id);
         List<CompanyRepairDto> companylist = new ArrayList<>();
         List<Company> companies = companyRepository.findAll();
 
@@ -121,7 +133,7 @@ public class CompanyServiceImpl implements CompanyService {
                 companylist.add(modelMapper.map(company, CompanyRepairDto.class));
             }
         }
-
+        log.info("Successfully return a list with companies for client id {}", id);
         return companylist;
 
 
@@ -129,6 +141,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public <T> Object getById(UUID id, Class<T> clazz) {
+        //todo check usage
         if (companyRepository.findById(id).isPresent()) {
             return modelMapper.map(companyRepository.findById(id).get(), clazz);
 
@@ -139,7 +152,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public HashMap<String, String> updateCompany(EditCompanyDto editCompanyDto, boolean isClientPresent, UUID clientId) throws AccessDeniedException {
-
+        log.debug("Attempt to update a company with id {}", editCompanyDto.getId());
         userService.isUserLogIn();
 
         Optional<Company> optCompany = companyRepository.findById(editCompanyDto.getId());
@@ -162,26 +175,29 @@ public class CompanyServiceImpl implements CompanyService {
                         optCompany.get().getClient().getId() != clientId) {
                     result.put("status", "error");
                     result.put("message", "Фирмата има вече има клиент!");
-
+                    log.warn("Returned error message : client with id {} is present in another relation", client.get().getId());
                     return result;
                 } else if (optCompany.get().getClient() == null) {
                     optCompany.get().setClient(client.get());
                     sb.append("Успешно добавен клиент към ").append(editCompanyDto.getName());
                     result.put("status", "success");
                     result.put("message", sb.toString());
-
+                    log.info("Successfully added client with id {} to company with id {}", client.get().getId(), editCompanyDto.getId());
                 }
             }
         }
         companyRepository.saveAndFlush(optCompany.get());
         result.put("status", "success");
         result.put("message", sb.toString());
+        log.info("Successfully updated company with id {}", editCompanyDto.getId());
         return result;
     }
 
 
     @Override
     public <T> Object findById(UUID companyId, Class<T> clazz) {
+        //todo check usage
+        log.debug("Attempt to find company by id {}", companyId);
         Optional<Company> company = companyRepository.findById(companyId);
         return company.<Object>map(value -> modelMapper.map(value, clazz)).orElse(null);
 
@@ -190,17 +206,20 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<Company> getAllCompaniesByClientId(UUID id) {
+        log.debug("Attempt to find all companies by client id {}", id);
         return companyRepository.findAllByClientId(id);
     }
 
     @Override
     public ClientDto getCompanyClient(UUID id) {
+        log.debug("Attempt to find client of a company with id {}", id);
         Optional<Company> company = companyRepository.findById(id);
         if (company.isPresent()) {
             Client client = company.get().getClient();
             if (client == null) {
                 return null;
             }
+            log.info("Successfully found client of a company with id {}", id);
             return modelMapper.map(company.get().getClient(), ClientDto.class);
         }
         return null;
@@ -209,6 +228,7 @@ public class CompanyServiceImpl implements CompanyService {
     //todo -> add UTest
     @Override
     public HashMap<String, String> removeClient(UUID id, UUID companyId) throws AccessDeniedException {
+        log.debug("Attempt to remove client with id {} of a company with id {}", id, companyId);
         Optional<Company> companyToUpdate = companyRepository.findById(companyId);
         Optional<Client> clientToRemove = clientRepository.findById(id);
         HashMap<String, String> result = new HashMap<>();
@@ -219,6 +239,7 @@ public class CompanyServiceImpl implements CompanyService {
                 companyRepository.saveAndFlush(companyToUpdate.get());
                 result.put("status", "success");
                 result.put("message", "Успешно премахнат клиент: " + clientToRemove.get().getName());
+                log.info("Successfully removed client with id {} of a company with id {}", id, companyId);
                 return result;
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Клиент с #" + id + " не беше намерен!");
@@ -232,6 +253,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<FetchCompaniesDto> fetchCompaniesByClientId(UUID id) {
+        log.debug("Attempt to fetch all companies by client id {}", id);
         List<Company> companies = companyRepository.findAllByClientIdAndDeletedAtNull(id);
         return companies.stream().map(c -> modelMapper.map(c, FetchCompaniesDto.class)).toList();
     }

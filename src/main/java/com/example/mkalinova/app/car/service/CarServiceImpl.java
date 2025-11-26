@@ -8,16 +8,22 @@ import com.example.mkalinova.app.car.repo.CarRepository;
 import com.example.mkalinova.app.client.data.dto.FetchClientDto;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.service.UserServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.nio.file.AccessDeniedException;
 import java.util.*;
 
+@Slf4j
 @Service
 public class CarServiceImpl implements CarService {
 
+    private static final Logger log = LoggerFactory.getLogger(CarServiceImpl.class);
     private final CarRepository carRepository;
     private final ModelMapper modelMapper;
     private final ApiService apiService;
@@ -59,6 +65,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public HashMap<String, String> addCarAndReturnMessage(AddCarDto addCarDto) throws AccessDeniedException {
+        log.debug("Attempt to create car with registration number {}", addCarDto.getRegistrationNumber());
         Optional<User> user = userService.getLoggedInUser();
         if (user.isEmpty()) {
             throw new AccessDeniedException("Нямате права да изпълните тази операция!");
@@ -67,6 +74,8 @@ public class CarServiceImpl implements CarService {
         if (carRepository.getByRegistrationNumber(addCarDto.getRegistrationNumber()).isPresent()) {
             result.put("status", "error");
             result.put("message", "Автомобил с рег. номер: " + addCarDto.getRegistrationNumber() + " вече съществува");
+            log.warn("Return error message: Car with registration number {} already exists", addCarDto.getRegistrationNumber());
+
             return result;
         }
 
@@ -76,6 +85,7 @@ public class CarServiceImpl implements CarService {
         carRepository.save(car);
         result.put("status", "success");
         result.put("message", "Успешно добавен автомобил с рег. номер: " + addCarDto.getRegistrationNumber());
+        log.info("Created car with registration number " + addCarDto.getRegistrationNumber());
         return result;
     }
 
@@ -98,11 +108,13 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public String deleteCar(Car car) {
+        log.debug("Attempt to create car...");
         Optional<Car> carToDelete = carRepository.findById(car.getId());
         StringBuilder sb = new StringBuilder();
         if (carToDelete.isPresent()) {
             sb.append(carToDelete.get().getRegistrationNumber());
             carRepository.deleteById(carToDelete.get().getId());
+            log.info("Successfully deleted car...");
             return sb.toString();
         } else {
             return "Няма намерена кола с това Id!";
@@ -111,6 +123,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<CarDto> getAll() {
+        log.debug("Attempt to get all cars...");
         List<Car> cars = carRepository.findAllByDeletedAtNull();
 
         List<CarDto> carList = new ArrayList<>();
@@ -119,12 +132,14 @@ public class CarServiceImpl implements CarService {
             CarDto carDto = modelMapper.map(car, CarDto.class);
             carList.add(carDto);
         }
-
+        log.info("Successfully get all cars...");
         return carList;
     }
 
     @Override
     public List<CarRepairDto> getAllCars() {
+        //todo -> unite 2 methods
+        log.debug("Attempt to get all cars...");
         List<Car> cars = carRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Car::getRegistrationNumber)).toList();
@@ -135,13 +150,14 @@ public class CarServiceImpl implements CarService {
             carDto.setModel(car.getModel());
             carListDto.add(carDto);
         }
-
+        log.info("Successfully get all cars...");
         return carListDto;
     }
 
 
     @Override
     public HashMap<String, String> deleteCarById(UUID id) throws AccessDeniedException {
+        log.debug("Attempt to delete a car with id {}", id);
         Optional<User> loggedInUser = userService.getLoggedInUser();
         if (loggedInUser.isEmpty() || !userService.isAdmin(loggedInUser.get())) {
             throw new AccessDeniedException("Нямата права да изтриете автомобил!");
@@ -154,10 +170,10 @@ public class CarServiceImpl implements CarService {
                 carRepository.deleteById(id);
                 result.put("status", "success");
                 result.put("message", "Успешно изтрита кола с рег.#: " + registrationNumber);
+                log.info("Successfully deleted car with id {}", id);
                 return result;
             } else {
-
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Няма намерен автомобил с #" + id);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма намерен автомобил с #" + id);
 
             }
         }
@@ -165,21 +181,25 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public <T> Object getById(UUID id, Class<T> clazz) {
+        log.debug("Attempt to get a car with id {}", id);
         Optional<Car> car = carRepository.findById(id);
         if (car.isPresent()) {
+            log.info("Successfully get car with id {}", id);
+
             return modelMapper.map(car.get(), clazz);
 
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Автомобил #" + id + " не съществува!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Автомобил #" + id + " не съществува!");
         }
     }
 
     @Override
     public HashMap<String, String> editCar(UUID id, EditCarDto editCarDto) {
+        log.debug("Attempt to edit a car with id {}", id);
         Optional<Car> car = carRepository.findById(id);
         HashMap<String, String> result = new HashMap<>();
         if (car.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Автомобил с #" + id + "и рег.# " + editCarDto.getRegistrationNumber() + " не съществува!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Автомобил с #" + id + "и рег.# " + editCarDto.getRegistrationNumber() + " не съществува!");
         }
 
         Car carToUpdate = modelMapper.map(editCarDto, Car.class);
@@ -192,7 +212,7 @@ public class CarServiceImpl implements CarService {
         String message = "Успешно обновен автомобил: " + carToUpdate.getRegistrationNumber();
         result.put("status", "success");
         result.put("message", message);
-
+        log.info("Successfully edit car with id {}", id);
         return result;
     }
 
@@ -207,6 +227,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<Car> getAllCarByClientId(UUID id) {
+        log.debug("Attempt to get all cars by client with id {}", id);
         return carRepository.findAllByClientId(id);
 
     }
@@ -218,21 +239,25 @@ public class CarServiceImpl implements CarService {
         carList.forEach(car -> listDto.add(modelMapper.map(car, CarListDto.class)));
 
 
+        log.debug("Attempt to fetch all cars by deleted field is null");
         return listDto;
     }
 
     @Override
     public List<FetchClientDto> fetchClientByCarId(UUID id) {
         Optional<Car> car = carRepository.findById(id);
-        if(car.isEmpty()) {
+        log.debug("Attempt to fetch client by car id {}", id);
+        if (car.isEmpty()) {
+            //todo -> throw
             return null;
         }
-        if(car.get().getClient() == null){
+        if (car.get().getClient() == null) {
             return null;
         }
 
         List<FetchClientDto> list = new ArrayList<>();
         list.add(modelMapper.map(car.get().getClient(), FetchClientDto.class));
+        log.info("Successfully fetch client by car id {}", id);
         return list;
     }
 
