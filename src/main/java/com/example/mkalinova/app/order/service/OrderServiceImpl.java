@@ -19,7 +19,10 @@ import com.example.mkalinova.app.orderRepair.data.dto.AddOrderRepairDto;
 import com.example.mkalinova.app.orderRepair.service.OrderRepairService;
 import com.example.mkalinova.app.user.service.UserService;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -31,10 +34,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-
+@Slf4j
 @Service
 public class OrderServiceImpl implements OrderService {
 
+    private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
     private final OrderRepository orderRepository;
     private final CarService carService;
     private final CompanyService companyService;
@@ -58,6 +62,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public HashMap<String, String> saveOrder(AddOrderDto orderDto) throws AccessDeniedException {
+
+        log.debug("Attempt to save new order..");
         userService.isUserLogIn();
 
         HashMap<String, String> result = new HashMap<>();
@@ -68,9 +74,11 @@ public class OrderServiceImpl implements OrderService {
             if (car == null) {
                 result.put("status", "error");
                 result.put("message", "Кола с #" + orderDto.getCar() + " не съществува!");
+                log.warn("Return error message in save order: Car with id {} is not present", orderDto.getCar());
                 return result;
             }
             order.setCar(car);
+          log.info("Successfully added a car with id {} to the order", orderDto.getCar());
         }
 
         if (orderDto.getClient() != null) {
@@ -78,19 +86,23 @@ public class OrderServiceImpl implements OrderService {
             if (client.isEmpty()) {
                 result.put("status", "error");
                 result.put("message", "Клиент с #" + orderDto.getCar() + " не съществува!");
+                log.warn("Return error message in save order: Client with id {} is not present", orderDto.getClient());
                 return result;
             }
             order.setClient(client.get());
+            log.info("Successfully added a client with id {} to the order", orderDto.getClient());
         }
         if (orderDto.getCompany() !=null) {
             Company company = (Company) companyService.getById(orderDto.getCompany(), Company.class);
             if (company == null) {
                 result.put("status", "error");
                 result.put("message", "Фирма с #" + orderDto.getCar() + " не съществува!");
+                log.warn("Return error message in save order: Company with id {} is not present", orderDto.getCompany());
                 return result;
             }
 
             order.setCompany(company);
+            log.info("Successfully added a company with id {} to the order", orderDto.getCompany());
         }
 
 
@@ -105,12 +117,14 @@ public class OrderServiceImpl implements OrderService {
 
         result.put("status", "success");
         result.put("message", "Успешно добавен ремонт!");
+        log.info("Successfully added new order");
         return result;
     }
 
 
     @Override
     public List<OrderListDto> getAllOrders() throws AccessDeniedException {
+        log.debug("Attempt to get all cars...");
         userService.isUserLogIn();
         List<Order> orderList = orderRepository.findAllByDeletedAtNull();
         //map to OrderListDto
@@ -122,12 +136,13 @@ public class OrderServiceImpl implements OrderService {
             //add all repairs
             orderRepairService.findAllByOrderId(id).forEach(r -> o.getRepairsList().add(r));
         });
+        log.info("Successfully get all orders...");
         return listDto;
     }
 
     @Override
     public EditOrderDto getOrderById(UUID id) {
-
+        log.debug("Attempt to get order with id {}", id);
         Optional<Order> order = orderRepository.findById(id);
         if (order.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Поръчка с #" + id + " не съществува!");
@@ -140,12 +155,13 @@ public class OrderServiceImpl implements OrderService {
         if (!orderRepairs.isEmpty()) {
             order.get().setRepairList(orderRepairs);
         }
-        System.out.println();
+        log.info("Successfully get order with id {}", id);
         return modelMapper.map(orderRepository.findByIdAndDeletedAtIsNull(id), EditOrderDto.class);
     }
 
     @Override
     public HashMap<String, String> editOrder(UUID id, EditOrderDto dto) throws AccessDeniedException {
+        log.debug("Attempt to edit order with id {}", id);
         userService.isUserLogIn();
         Optional<Order> order = orderRepository.findById(id);
         if (order.isEmpty()) {
@@ -163,9 +179,11 @@ public class OrderServiceImpl implements OrderService {
             if (car == null) {
                 result.put("status", "error");
                 result.put("message", "Кола с #" + dto.getCar().getId() + " не съществува!");
+                log.warn("Return error message in update order: Car with id {} is not present", dto.getCar().getId());
                 return result;
             }
             order.get().setCar(car);
+            log.info("Successfully set car with id {} to order with id {}", car.getId(), id);
         }
 
         if (dto.getClient().getId() !=null) {
@@ -173,19 +191,22 @@ public class OrderServiceImpl implements OrderService {
             if (client.isEmpty()) {
                 result.put("status", "error");
                 result.put("message", "Клиент с #" + dto.getCar().getId() + " не съществува!");
+                log.warn("Return error message in update order: Client with id {} is not present", dto.getCar().getId());
                 return result;
             }
             order.get().setClient(client.get());
+            log.info("Successfully set client with id {} to order with id {}", client.get().getId(), id);
         }
         if (dto.getCompany().getId() != null ) {
             Company company = (Company) companyService.getById(dto.getCompany().getId(), Company.class);
             if (company == null) {
                 result.put("status", "error");
                 result.put("message", "Фирма с #" + dto.getCar().getId() + " не съществува!");
+               log.warn("Return error message in update order: Company with id {} is not present", dto.getCar().getId());
                 return result;
             }
-
             order.get().setCompany(company);
+            log.info("Successfully set company with id {} to order with id {}", company.getId(), id);
         }
 
 
@@ -200,13 +221,14 @@ public class OrderServiceImpl implements OrderService {
 
         result.put("status", "success");
         result.put("message", "Успешно добавен ремонт!");
-        // save на новите
+        log.info("Successfully edit order with id {}", id);
         return result;
     }
 
     @Override
     @Transactional
     public HashMap<String, String> deleteOrder(UUID id) {
+        log.debug("Attempt to delete order with id {}" , id);
         HashMap<String, String> result = new HashMap<>();
         try {
             Optional<Order> orderToDelete = orderRepository.findById(id);
@@ -220,10 +242,10 @@ public class OrderServiceImpl implements OrderService {
             orderRepository.save(orderToDelete.get());
             result.put("status", "success");
             result.put("message", "Успешно изтрита поръчка с # " + id);
+            log.info("Successfully deleted order with id {}", id);
             return result;
         } catch (Exception e) {
             e.printStackTrace();
-
             result.put("status", "error");
             result.put("message", e.getMessage());
             return result;
