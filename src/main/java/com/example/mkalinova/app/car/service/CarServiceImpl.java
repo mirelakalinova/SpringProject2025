@@ -9,9 +9,14 @@ import com.example.mkalinova.app.client.data.dto.FetchClientDto;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.service.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Cascade;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,13 +33,15 @@ public class CarServiceImpl implements CarService {
     private final ModelMapper modelMapper;
     private final ApiService apiService;
     private final UserServiceImpl userService;
+    private final CacheManager cacheManager;
 
 
-    public CarServiceImpl(CarRepository carRepository, ModelMapper modelMapper, ApiService apiService, UserServiceImpl userService) {
+    public CarServiceImpl(CarRepository carRepository, ModelMapper modelMapper, ApiService apiService, UserServiceImpl userService, CacheManager cacheManager) {
         this.carRepository = carRepository;
         this.modelMapper = modelMapper;
         this.apiService = apiService;
         this.userService = userService;
+        this.cacheManager = cacheManager;
     }
 
     @Override
@@ -89,12 +96,15 @@ public class CarServiceImpl implements CarService {
         return result;
     }
 
+
     @Override
+    @Cacheable(value = "findCarByRegNum", key = "#registrationNumber",  unless = "#result == null")
     public Optional<Car> findCar(String registrationNumber) {
 
 
         return carRepository.findByRegistrationNumber(registrationNumber);
     }
+
 
     @Override
     public boolean findByRegistrationNumber(String registrationNumber) {
@@ -102,6 +112,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Cacheable(value = "findCarByVin", key = "#vin",  unless = "#result == null")
     public boolean findByVin(String vin) {
         return carRepository.findByVin(vin).isPresent();
     }
@@ -156,6 +167,10 @@ public class CarServiceImpl implements CarService {
 
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "car", key = "#id"),
+            @CacheEvict(value = "clientByCar", key = "#id")
+    })
     public HashMap<String, String> deleteCarById(UUID id) throws AccessDeniedException {
         log.debug("Attempt to delete a car with id {}", id);
         Optional<User> loggedInUser = userService.getLoggedInUser();
@@ -166,7 +181,16 @@ public class CarServiceImpl implements CarService {
             Optional<Car> carToDelete = carRepository.findById(id);
             if (carToDelete.isPresent()) {
                 String registrationNumber = carToDelete.get().getRegistrationNumber();
-
+                if (cacheManager.getCache("findCarByRegNum") != null) {
+                    cacheManager.getCache("findCarByRegNum").evict(carToDelete.get().getRegistrationNumber());
+                }
+                if (cacheManager.getCache("findCarByVin") != null) {
+                    cacheManager.getCache("findCarByVin").evict(carToDelete.get().getVin());
+                }
+                // евикт по id
+                if (cacheManager.getCache("car") != null) {
+                    cacheManager.getCache("car").evict(id);
+                }
                 carRepository.deleteById(id);
                 result.put("status", "success");
                 result.put("message", "Успешно изтрита кола с рег.#: " + registrationNumber);
@@ -180,6 +204,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Cacheable(value = "car", key = "#id", unless = "#result == null")
     public <T> Object getById(UUID id, Class<T> clazz) {
         log.debug("Attempt to get a car with id {}", id);
         Optional<Car> car = carRepository.findById(id);
@@ -194,6 +219,12 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "findCarByRegNum", key = "#editCarDto.registrationNumber"),
+            @CacheEvict(value = "findCarByVin", key = "#editCarDto.vin"),
+            @CacheEvict(value = "car", key = "#id"),
+            @CacheEvict(value = "clientByCar", key = "#id")
+    })
     public HashMap<String, String> editCar(UUID id, EditCarDto editCarDto) {
         log.debug("Attempt to edit a car with id {}", id);
         Optional<Car> car = carRepository.findById(id);
@@ -217,7 +248,9 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Cacheable(value = "car", key = "#carId",  unless = "#result == null")
     public <T> Object findById(UUID carId, Class<T> clazz) {
+        log.debug("Attempt to find car by id {}", carId);
         Optional<Car> car = carRepository.findById(carId);
         // todo - if is necessary to throw NullPointer exception
         return car.<Object>map(value -> modelMapper.map(value, clazz)).orElse(null);
@@ -244,6 +277,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Cacheable(value = "clientByCar", key = "#id",  unless = "#result == null")
     public List<FetchClientDto> fetchClientByCarId(UUID id) {
         Optional<Car> car = carRepository.findById(id);
         log.debug("Attempt to fetch client by car id {}", id);
