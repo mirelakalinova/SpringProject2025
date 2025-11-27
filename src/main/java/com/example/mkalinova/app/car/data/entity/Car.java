@@ -2,6 +2,7 @@ package com.example.mkalinova.app.car.data.entity;
 
 
 import com.example.mkalinova.app.client.data.entity.Client;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -41,6 +42,7 @@ public class Car {
     private String model;
     @ManyToOne
     @JoinColumn(name = "client_id")
+    @JsonBackReference
     private Client client;
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
