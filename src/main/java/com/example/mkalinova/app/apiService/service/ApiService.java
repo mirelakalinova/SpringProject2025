@@ -5,6 +5,7 @@ import com.example.mkalinova.app.apiService.data.dto.SaveMakeModelDto;
 
 public interface ApiService {
 
-    String saveMakeAndModel(SaveMakeModelDto saveMakeModelDto);
-    MakeListDto allMakes();
+    void saveMakeAndModel(SaveMakeModelDto saveMakeModelDto);
+    MakeListDto getAllMakes();
+
 }

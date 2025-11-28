@@ -36,7 +36,7 @@
                                 <span th:if="${formType == 'edit'}" class="change-span">Променете: </span>
 
 
-                                <input name="make" id="make" type="text" v-model="searchMake" @input="searchMakes"
+                                <input th:field="*{make}" name="make" id="make" type="text" v-model="searchMake" @input="searchMakes"
                                        class="form-control" placeholder="Започнете да пишете марката...">
 
                                 <!-- Падащо меню за марки -->
@@ -123,8 +123,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="client">Клиент</label><br/>
-                        <select th:field="*{client}" class="d-none form-select select2" id="client" name="client"
+                        <label for="clientId">Клиент</label><br/>
+                        <select th:field="*{clientId}" class="d-none form-select select2" id="clientId" name="clientId"
                                 onblur="selectSearch()" >
                             <option value="">Избери</option>
                             <option th:if="${clients.empty}" disabled th:value="null">Няма налични клиенти</option>
