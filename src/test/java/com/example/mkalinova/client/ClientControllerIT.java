@@ -155,7 +155,7 @@ public class ClientControllerIT {
                         .param("email", "projects23@gmail.com")
                         .param("phone", "0898819422")
                         //Car
-                        .param("registrationNumber", "CB2125KO")
+                        .param("registrationNumber", "CB2126KO")
                         .param("cube", String.valueOf(1200))
                         .param("year", String.valueOf(2020))
                         .param("hp", String.valueOf(120))
@@ -171,7 +171,7 @@ public class ClientControllerIT {
                 .andExpect(redirectedUrl("/client/clients"));
         Optional<Client> client = clientRepository.findByPhone("0898819422");
         assertTrue(client.isPresent());
-        Optional<Car> car = carRepository.findByRegistrationNumber("CB2125KO");
+        Optional<Car> car = carRepository.findByRegistrationNumber("CB2126KO");
         assertTrue(car.isPresent());
 
 
@@ -213,25 +213,23 @@ public class ClientControllerIT {
     public void createUser_WithValidClientDtoAndValidCarDtoAndCompany_Success() throws Exception {
 
         mockMvc.perform(post("/client/add")
-
                         .param("firstName", "Test")
                         .param("lastName", "Testov")
                         .param("email", "projects23@gmail.com")
-                        .param("phone", "0898819422")
-                        //Car
-                        .param("registrationNumber", "CB2125KO")
+                        .param("phone", "0898819455")
+                        .param("registrationNumber", "CB2125KP")
                         .param("cube", String.valueOf(1200))
                         .param("year", String.valueOf(2020))
                         .param("hp", String.valueOf(120))
                         .param("make", "Audi")
                         .param("model", "tt")
                         .param("kw", String.valueOf(120))
-                        .param("vin", "1HGBH41JXMN109177")
+                        .param("vin", "1HGBH41JXMN109188")
                         .param("checked", String.valueOf(true))
                         .param("name", "Audi")
-                        .param("uic", "201799236")
-                        .param("vatNumber", "BG201799236")
-                        .param("address", "1HGBH41JXMN109177")
+                        .param("uic", "201799238")
+                        .param("vatNumber", "BG201799238")
+                        .param("address", "1HGBH41JXMN109188")
                         .param("accountablePerson", "Test test")
 
 
@@ -240,11 +238,11 @@ public class ClientControllerIT {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/client/clients"));
 
-        Optional<Client> client = clientRepository.findByPhone("0898819422");
+        Optional<Client> client = clientRepository.findByPhone("0898819455");
         assertTrue(client.isPresent());
-        Optional<Car> car = carRepository.findByRegistrationNumber("CB2125KO");
+        Optional<Car> car = carRepository.findByRegistrationNumber("CB2125KP");
         assertTrue(car.isPresent());
-        Optional<Company> company = companyRepository.findByUic("201799236");
+        Optional<Company> company = companyRepository.findByUic("201799238");
         assertTrue(company.isPresent());
     }
 
@@ -365,9 +363,8 @@ public class ClientControllerIT {
 
                         .param("firstName", "Test")
                         .param("lastName", "Testov")
-                        .param("email", "projects@gmail.com")
-                        .param("phone", "0898819422")
-                        //Car
+                        .param("email", "projects1@gmail.com")
+                        .param("phone", "0898819433")
                         .param("registrationNumber", "CB2125KO")
                         .param("cube", String.valueOf(1200))
                         .param("year", String.valueOf(2020))
@@ -376,6 +373,7 @@ public class ClientControllerIT {
                         .param("model", "tt")
                         .param("kw", String.valueOf(120))
                         .param("vin", "1HGBH41JXMN109177")
+                        .param("clientId", String.valueOf(car.getClient().getId()))
                         .param("checked", String.valueOf(true))
                         .param("name", "Audi")
                         .param("uic", "201799236")
@@ -387,7 +385,7 @@ public class ClientControllerIT {
                         .with(csrf()))
 
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/client/add"));
+                .andExpect(redirectedUrl("/client/clients"));
 
     }
 
@@ -593,8 +591,8 @@ public class ClientControllerIT {
         car.setVin("VIN12345678901234");
         car.setClient(clientFirst);
         carRepository.saveAndFlush(car);
-        UUID carId= car.getId();
-        UUID clientId= clientFirst.getId();
+        UUID carId = car.getId();
+        UUID clientId = clientFirst.getId();
 
         mockMvc.perform(post("/client/remove-car/{id}", carId)
                         .param("clientId", String.valueOf(clientId))
