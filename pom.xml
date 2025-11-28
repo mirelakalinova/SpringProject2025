@@ -115,6 +115,12 @@
 			<artifactId>lombok</artifactId>
 			<version>0.10.1</version>
 		</dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-openfeign -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>4.2.2</version>
+        </dependency>
 	</dependencies>
 	<build>
 		<plugins>
