@@ -120,8 +120,8 @@ class CarServiceUTest {
         assertEquals("A4", result.get(0).getModel());
         assertEquals("Audi", result.get(0).getMake());
         assertEquals("Audi", result.get(1).getMake());
-        assertEquals(null, result.get(0).getClient());
-        assertEquals(null, result.get(1).getClient());
+        assertEquals(null, result.get(0).getClientId());
+        assertEquals(null, result.get(1).getClientId());
         verify(carRepository, times(1)).findByClientIsNull();
         verify(modelMapper, times(2)).map(any(Car.class), eq(AddCarDto.class));
     }

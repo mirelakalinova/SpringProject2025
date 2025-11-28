@@ -36,18 +36,18 @@ public class EditCarDto {
     @Size(min=17, max=17, message = "Номер на шаси трябва да е точно 17 символа!")
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Номер на шаси може да съдържа само букви и цифри.")
     private String vin;
-    private Client client;
+    private UUID clientId;
 
 
     public EditCarDto() {
     }
 
-    public Client getClient() {
-        return client;
+    public UUID getClientId() {
+        return clientId;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setClientId(UUID clientId) {
+        this.clientId = clientId;
     }
 
     public UUID getId() {

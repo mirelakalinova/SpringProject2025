@@ -4,6 +4,8 @@ package com.example.mkalinova.app.car.data.dto;
 import com.example.mkalinova.app.client.data.entity.Client;
 import jakarta.validation.constraints.*;
 
+import java.util.UUID;
+
 
 public class AddCarDto {
     @NotBlank(message = "Въведете регистрационен номер")
@@ -32,17 +34,17 @@ public class AddCarDto {
     @Size(min=17, max=17, message = "Номер на шаси трябва да е точно 17 символа!")
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Номер на шаси може да съдържа само букви и цифри.")
     private String vin;
-    private Client client;
+    private UUID clientId;
 
     public AddCarDto() {
     }
 
-    public Client getClient() {
-        return client;
+    public UUID getClientId() {
+        return clientId;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setClientId(UUID clientId) {
+        this.clientId = clientId;
     }
 
     public String getModel() {
