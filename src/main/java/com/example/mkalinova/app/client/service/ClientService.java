@@ -2,7 +2,10 @@ package com.example.mkalinova.app.client.service;
 
 import com.example.mkalinova.app.car.data.dto.AddCarDto;
 import com.example.mkalinova.app.car.data.dto.CarDto;
-import com.example.mkalinova.app.client.data.dto.*;
+import com.example.mkalinova.app.client.data.dto.AddClientDto;
+import com.example.mkalinova.app.client.data.dto.ClientListDto;
+import com.example.mkalinova.app.client.data.dto.EditClientDto;
+import com.example.mkalinova.app.client.data.dto.FetchClientListDto;
 import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
 import jakarta.validation.Valid;

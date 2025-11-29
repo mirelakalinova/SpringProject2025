@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Repository
 public interface RepairRepository extends JpaRepository<Repair, UUID> {
-    List<Repair> findAllByDeletedAtNull();
-
-    Optional<Repair> findByName(String name);
+	List<Repair> findAllByDeletedAtNull();
+	
+	Optional<Repair> findByName(String name);
 }

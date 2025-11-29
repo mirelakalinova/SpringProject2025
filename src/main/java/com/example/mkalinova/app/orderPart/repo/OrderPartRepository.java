@@ -9,6 +9,6 @@ import java.util.UUID;
 
 @Repository
 public interface OrderPartRepository extends JpaRepository<OrderPart, UUID> {
-    List<OrderPart> findAllByOrderId(UUID id);
-
+	List<OrderPart> findAllByOrderId(UUID id);
+	
 }

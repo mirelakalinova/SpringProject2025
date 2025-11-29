@@ -1,41 +1,39 @@
 package com.example.mkalinova.app.parts.data.dto;
 
-import jakarta.persistence.Column;
-
 import java.util.UUID;
 
 public class PartListDto {
-
-    private UUID id;
-
-    private String name;
-
-    private double price;
-
-    public PartListDto() {
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
+	
+	private UUID id;
+	
+	private String name;
+	
+	private double price;
+	
+	public PartListDto() {
+	}
+	
+	public UUID getId() {
+		return id;
+	}
+	
+	public void setId(UUID id) {
+		this.id = id;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public double getPrice() {
+		return price;
+	}
+	
+	public void setPrice(double price) {
+		this.price = price;
+	}
 }

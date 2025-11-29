@@ -106,7 +106,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
 
-        order.setDate(LocalDateTime.now());
+        order.setCreated_at(LocalDateTime.now());
         orderRepository.save(order);
 
         List<AddOrderPartDto> partList = orderDto.getParts();
