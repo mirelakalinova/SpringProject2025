@@ -3,7 +3,6 @@ package com.example.mkalinova.car;
 import com.example.mkalinova.app.car.data.dto.CarDto;
 import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.car.repo.CarRepository;
-import com.example.mkalinova.app.user.data.dto.UserListDto;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.data.entity.UsersRole;
 import com.example.mkalinova.app.user.repo.UserRepository;
@@ -13,13 +12,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.SpringVersion;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.method.annotation.ModelAttributeMethodProcessor;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -118,7 +114,8 @@ public class CarControllerIT {
 
 
         Optional<Car> car = carRepository.findByRegistrationNumber(carFirst.getRegistrationNumber());
-        assertTrue(car.isEmpty());
+       assertTrue(car.isPresent());
+        assertNotNull(car.get().getDeletedAt());
 
 
     }
@@ -135,7 +132,7 @@ public class CarControllerIT {
 
         Optional<Car> car = carRepository.findByRegistrationNumber(carFirst.getRegistrationNumber());
         assertTrue(car.isPresent());
-        assertTrue(car.get().getRegistrationNumber().equals(carFirst.getRegistrationNumber()));
+        assertNull(car.get().getDeletedAt());
 
 
     }

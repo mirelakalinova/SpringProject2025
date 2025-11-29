@@ -50,17 +50,6 @@ import java.nio.file.AccessDeniedException;
             return modelAndView;
         }
 
-
-    //    @ExceptionHandler
-    //    @ResponseStatus(HttpStatus.NOT_FOUND)
-    //    public ModelAndView ResourceNotFoundException(ResourceNotFoundException ex) {
-    //        ModelAndView modelAndView = super.view(ERROR_VIEW);
-    //            modelAndView.addObject("heading","Няма намерен такъв ресуср!");
-    //        modelAndView.addObject("message", ex.getMessage());
-    //        modelAndView.addObject("image", NO_SUCH_RESOURCE);
-    //        return modelAndView;
-    //    }
-
         @ExceptionHandler
         @ResponseStatus(HttpStatus.NOT_FOUND)
         public ModelAndView ResponseStatusException(ResponseStatusException ex,  HttpServletRequest request) {

@@ -1,7 +1,6 @@
 package com.example.mkalinova.company;
 
 
-import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.client.repo.ClientRepository;
 import com.example.mkalinova.app.company.data.dto.CompanyListDto;
@@ -23,12 +22,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -182,6 +179,7 @@ public class CompanyControllerIT {
                         .param("vatNumber", "bg207207207")
                         .param("accountablePerson", "Test")
                         .param("address", "Test")
+                        .param("clientId", String.valueOf(client.getId()))
                         .param("client.id",String.valueOf(client.getId()))
                         .param("client.firstName", client.getFirstName())
                         .param("client.lastName", client.getLastName())
@@ -249,8 +247,8 @@ public class CompanyControllerIT {
         Optional<Company> updatedCompany =companyRepository.findByName("SomeNewName");
         assertTrue(updatedCompany.isPresent());
 
-        assertTrue( updatedCompany.get().getClient()==null);
-        assertTrue(updatedCompany.get().getId().equals(company.getId()));
+        assertNull(updatedCompany.get().getClient());
+        assertEquals(updatedCompany.get().getId(), company.getId());
 
 
     }
@@ -289,7 +287,7 @@ public class CompanyControllerIT {
 
 
         Optional<Company> optCompany = companyRepository.findById(company.getId());
-        assertTrue(optCompany.get().getDeletedAt() != null);
+        assertNotNull(optCompany.get().getDeletedAt());
 
 
     }

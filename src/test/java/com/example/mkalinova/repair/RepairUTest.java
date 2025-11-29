@@ -6,7 +6,7 @@ import com.example.mkalinova.app.repair.data.dto.EditRepairDto;
 import com.example.mkalinova.app.repair.data.dto.RepairListDto;
 import com.example.mkalinova.app.repair.data.entity.Repair;
 import com.example.mkalinova.app.repair.repo.RepairRepository;
-import com.example.mkalinova.app.repair.service.CarServiceServiceImpl;
+import com.example.mkalinova.app.repair.service.RepairServiceServiceImpl;
 
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.data.entity.UsersRole;
@@ -45,7 +45,7 @@ public class RepairUTest {
     @Mock
     private UserRepository userRepository;
     @InjectMocks
-    private CarServiceServiceImpl service;
+    private RepairServiceServiceImpl service;
     private User admin;
     private User editor;
     private Repair repairFirst;
@@ -268,7 +268,7 @@ public class RepairUTest {
         assertThrows(AccessDeniedException.class, () -> this.service.deleteService(repairFirst.getId()));
         verify(repository, times(0)).findById(repairFirst.getId());
         verify(repository, times(0)).save(repairFirst);
-        assertEquals(null, repairFirst.getDeletedAt());
+        assertNull(repairFirst.getDeletedAt());
 
 
     }
@@ -282,7 +282,7 @@ public class RepairUTest {
         assertThrows(AccessDeniedException.class, () -> this.service.deleteService(repairFirst.getId()));
         verify(repository, times(0)).findById(repairFirst.getId());
         verify(repository, times(0)).save(repairFirst);
-        assertEquals(null, repairFirst.getDeletedAt());
+        assertNull(repairFirst.getDeletedAt());
 
 
     }

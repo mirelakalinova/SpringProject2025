@@ -107,7 +107,7 @@ button {
     border-radius: 10px;
     color: white;
     background-color: #d42d2f;
-    margin-top: 20px;
+
 }
 
 .add-user-btn {
@@ -279,7 +279,7 @@ h2.subheading {
 label.header-label {
     font-weight: 800;
     color: #d42d2f;
-    padding: 20px 0;
+    padding: 0 0 10px;
 }
 
 select#car {
@@ -287,6 +287,24 @@ select#car {
     padding: 0 20px;
     height: 40px;
 }
+
+.dynamic-content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    background: #e8e9ed59;
+    padding: 15px 10px;
+    max-width: 70%;
+}
+
+
+.submit {
+    margin: 20px 0;
+    padding: 10px 40px;
+}
+
 
 .form-check-input:checked {
     background-color: #d13733 ;

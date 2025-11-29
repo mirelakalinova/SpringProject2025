@@ -196,7 +196,7 @@ public class RepairControllerIT {
                 .andExpect(redirectedUrl("/repair/list"));
 
         Optional<Repair> repair = repository.findById(repairFirst.getId());
-        assertTrue(repair.get().getDeletedAt() != null);
+        assertNotNull(repair.get().getDeletedAt());
 
 
     }
@@ -211,7 +211,7 @@ public class RepairControllerIT {
                 .andExpect(status().isForbidden());
 
         Optional<Repair> repair = repository.findById(repairFirst.getId());
-        assertTrue(repair.get().getDeletedAt() == null);
+        assertNull(repair.get().getDeletedAt());
 
 
     }
@@ -226,7 +226,7 @@ public class RepairControllerIT {
                 .andExpect(status().isForbidden());
 
         Optional<Repair> repair = repository.findById(repairFirst.getId());
-        assertTrue(repair.get().getDeletedAt() == null);
+        assertNull(repair.get().getDeletedAt());
 
 
     }

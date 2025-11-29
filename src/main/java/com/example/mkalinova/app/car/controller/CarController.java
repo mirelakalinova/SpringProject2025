@@ -2,25 +2,20 @@ package com.example.mkalinova.app.car.controller;
 
 import com.example.mkalinova.app.car.data.dto.CarListDto;
 import com.example.mkalinova.app.client.data.dto.FetchClientDto;
-import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.land.Controller.BaseController;
 import com.example.mkalinova.app.car.data.dto.AddCarDto;
-
 import com.example.mkalinova.app.car.data.dto.CarDto;
 import com.example.mkalinova.app.car.data.dto.EditCarDto;
 import com.example.mkalinova.app.car.service.CarService;
-
 import com.example.mkalinova.app.client.data.dto.ClientListCarDto;
 import com.example.mkalinova.app.client.service.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.nio.file.AccessDeniedException;
 import java.util.*;
 
@@ -115,7 +110,7 @@ public class CarController extends BaseController {
     public ModelAndView carList(){
         ModelAndView modelAndView = super.view("car/cars");
 
-        List<CarDto> carList = carService.getAll();
+        List<CarDto> carList = carService.getAll(CarDto.class);
         modelAndView.addObject("cars", carList);
 
         return modelAndView;

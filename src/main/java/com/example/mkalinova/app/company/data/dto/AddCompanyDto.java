@@ -1,11 +1,10 @@
 package com.example.mkalinova.app.company.data.dto;
 
-import com.example.mkalinova.app.client.data.entity.Client;
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
+import java.util.UUID;
 
 public class AddCompanyDto {
     private boolean checked;
@@ -30,7 +29,8 @@ public class AddCompanyDto {
     @NotNull
     private String vatNumber;
 
-    private Client client;
+
+    private UUID clientId;
 
     public AddCompanyDto() {
     }
@@ -94,11 +94,11 @@ public class AddCompanyDto {
                 (accountablePerson == null || accountablePerson.isEmpty());
     }
 
-    public Client getClient() {
-        return client;
+    public UUID getClientId() {
+        return clientId;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setClientId(UUID clientId) {
+        this.clientId = clientId;
     }
 }

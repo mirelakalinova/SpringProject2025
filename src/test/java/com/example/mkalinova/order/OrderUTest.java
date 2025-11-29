@@ -3,16 +3,12 @@ package com.example.mkalinova.order;
 
 import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.car.repo.CarRepository;
-import com.example.mkalinova.app.car.service.CarService;
 import com.example.mkalinova.app.car.service.CarServiceImpl;
 import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.client.repo.ClientRepository;
-import com.example.mkalinova.app.client.service.ClientService;
 import com.example.mkalinova.app.client.service.ClientServiceImpl;
-import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
 import com.example.mkalinova.app.company.data.entity.Company;
 import com.example.mkalinova.app.company.repo.CompanyRepository;
-import com.example.mkalinova.app.company.service.CompanyService;
 import com.example.mkalinova.app.company.service.CompanyServiceImpl;
 import com.example.mkalinova.app.order.data.dto.AddOrderDto;
 import com.example.mkalinova.app.order.data.dto.EditOrderDto;
@@ -37,22 +33,17 @@ import com.example.mkalinova.app.order.data.entity.Order;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.*;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -106,7 +97,7 @@ public class OrderUTest {
         companyRepository.deleteAll();
         carRepository.deleteAll();
         partRepository.deleteAll();
-        ;
+
         repairRepository.deleteAll();
         admin = new User();
         admin.setFirstName("Mirela");
@@ -321,8 +312,8 @@ public class OrderUTest {
 
         List<OrderListDto> result = service.getAllOrders();
 
-        assertFalse(dtoList.size() == result.size());
-        assertTrue(result.size() == 1);
+        assertNotEquals(dtoList.size(), result.size());
+        assertEquals(1, result.size());
 
 
     }

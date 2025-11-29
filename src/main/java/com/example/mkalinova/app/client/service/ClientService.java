@@ -26,14 +26,11 @@ public interface ClientService {
 
     void deleteClient(UUID id) throws AccessDeniedException;
 
-    EditClientDto findClientById(UUID id);
+    <T> T findClientById(UUID id, Class<T> clazz);
 
     HashMap<String, String> updateClient(UUID id, @Valid EditClientDto editClientDto) throws AccessDeniedException;
 
     <T> List<T> findAll(Class<T> dtoClass);
-
-    List<ClientRepairDto> findById(UUID id);
-    boolean findByPhone(String phoneNumber);
 
     List<CarDto> getCarsByClient(UUID id);
 
