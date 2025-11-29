@@ -31,7 +31,7 @@
 
 					<div class="form-group">
 						<label for="carToAdd">Добави кола</label>
-						<select th:field="*{carId}" class="d-none form-select select2" id="carToAdd" name="client"
+						<select th:field="*{carId}" class="d-none form-select select2" id="carToAdd" name="carId"
 								onblur="selectSearch()">
 							<option value="">Избери</option>
 							<option th:if="${carsWithoutUser.empty}" disabled th:value="null">Няма налични коли</option>
