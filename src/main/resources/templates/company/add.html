@@ -43,11 +43,11 @@
                         <span th:text="${#fields.errors('accountablePerson').get(0)}"></span>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group gray-background">
                     <label for="client">Клиент</label>
 <!--                    <input th:field="*{client}"  class="form-control" type="hidden" id="client"-->
 <!--                           name="client">-->
-                    <select th:field="*{client}" class="d-none form-select select2" id="client" name="client"
+                    <select th:field="*{clientId}" class="d-none form-select select2" id="client" name="clientId"
                             onblur="selectSearch()" >
                         <option value="">Избери</option>
                         <option th:if="${clients.empty}" disabled th:value="null">Няма налични клиенти</option>
@@ -55,11 +55,11 @@
                                 th:text="${client.firstName} + ' - ' + ${client.phone} "
                                 th:value="${client.id}"></option>
                     </select>
-                    <div class="error-message" th:if="${#fields.hasErrors('client')}">
-                        <span th:text="${#fields.errors('client').get(0)}"></span>
+                    <div class="error-message" th:if="${#fields.hasErrors('clientId')}">
+                        <span th:text="${#fields.errors('clientId').get(0)}"></span>
                     </div>
                 </div>
-                <button type="submit">Запиши</button>
+                <button class="submit" type="submit">Запиши</button>
             </div>
 
         </div>

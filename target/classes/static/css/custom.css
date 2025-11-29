@@ -51,6 +51,8 @@ a.nav-link:hover {
     font-weight: 500;
 }
 
+
+
 .error-message {
     font-size: 18px;
     font-weight:600;
@@ -107,7 +109,7 @@ button {
     border-radius: 10px;
     color: white;
     background-color: #d42d2f;
-    margin-top: 20px;
+
 }
 
 .add-user-btn {
@@ -249,6 +251,14 @@ ul.dropdown-menu {
     padding: 20px 0;
     align-items: center;
 }
+
+.btn-change {
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    width: 100%;
+}
+
 span.change-span {
     background: #d42d2f;
     padding: 5px 8px;
@@ -266,6 +276,19 @@ span.span-info {
 
 }
 
+.gray-background{
+    background: #E8E9ED;
+    padding: 24px 20px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
 /* clients */
 
 h2.subheading {
@@ -279,7 +302,7 @@ h2.subheading {
 label.header-label {
     font-weight: 800;
     color: #d42d2f;
-    padding: 20px 0;
+    padding: 0 0 10px;
 }
 
 select#car {
@@ -287,6 +310,37 @@ select#car {
     padding: 0 20px;
     height: 40px;
 }
+
+.dynamic-content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    background: #e8e9ed59;
+    padding: 15px 10px;
+    max-width: 70%;
+}
+
+
+.submit {
+    margin: 20px 0;
+    padding: 10px 40px;
+    width: 200px;
+    border-radius: 5px;
+    border: none;
+}
+
+.submit:hover {
+    margin: 20px 0;
+    padding: 10px 40px;
+    width: 200px;
+    border-radius: 5px;
+    border: none;
+    background: #d42d2fba;
+    transition: 0.2s;
+}
+
 
 .form-check-input:checked {
     background-color: #d13733 ;

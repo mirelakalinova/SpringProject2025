@@ -1,7 +1,7 @@
 <div class="container align-content-center home"
 	 xmlns:th="http://www.w3.org/1999/xhtml"
 	 xmlns="http://www.w3.org/1999/html">
-	<h1>Редакция автомобил <span th:text="*{registrationNumber}"></span> </h1>
+	<h1>Редакция автомобил <span th:text="*{registrationNumber}"></span></h1>
 	<!--  <h1 th:if="${heading == 'edit'}">Редакция автомобил</h1>-->
 
 	<div class="row row-view">
@@ -13,73 +13,78 @@
 			<div th:fragment="form-car" xmlns:th="http://www.w3.org/1999/xhtml">
 
 
-				<div th:if="${message}" th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"></div>
+				<div th:if="${message}"
+					 th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"></div>
 				<form th:method="POST"
 					  th:action="@{/car/edit/{id}(id=${editCarDto.id})}"
 					  th:object="${editCarDto}">
 					<div class="form-group">
-						<div class="row">
 
-						</div>
-						<label for="registrationNumber">Регистрационен номер</label>
-						<input class="form-control" th:field="*{registrationNumber}" type="text" id="registrationNumber"
-							   name="registrationNumber">
-						<div class="error-message" th:if="${#fields.hasErrors('registrationNumber')}">
-							<span th:text="${#fields.errors('registrationNumber').get(0)}"></span>
-						</div>
+
 					</div>
+					<label for="registrationNumber">Регистрационен номер</label>
+					<input class="form-control" th:field="*{registrationNumber}" type="text" id="registrationNumber"
+						   name="registrationNumber">
+					<div class="error-message" th:if="${#fields.hasErrors('registrationNumber')}">
+						<span th:text="${#fields.errors('registrationNumber').get(0)}"></span>
+					</div>
+
 					<div class="form-group">
-						<div class="row">
-							<div id="app" th:attr="data-initial='${editCarDto != null} ? ${editCarDto} : {}'">
-	<div class="car-make-model">
+
+						<div id="app" class="gray-background">
+							<div class="btn-change">
+								<span class="change-span" id="change-make">Промени марка и модел</span>
+							</div>
+							<div class="car-make-model">
 								<label for="make">Марка
 								</label>
-								<input type="text" readonly  th:field="*{make}" th:value="*{make}" id="make" name="make">
-								<span class="change-span" id="change-make">Промени марка </span>
-	</div>
-								<input name="searchMake"  id="searchMake" type="text" v-model="searchMake" @input="searchMakes"
-									   class="form-control d-none" placeholder="Започнете да пишете марката...">
+								<input type="text" class="form-control" readonly th:field="*{make}"
+									   th:value="*{make}" id="make" name="make">
+							</div>
+							<input name="searchMake" id="searchMake" type="text" v-model="searchMake"
+								   @input="searchMakes"
+								   @blur="handleMakeBlur" class="form-control d-none"
+								   placeholder="Започнете да пишете марката...">
 
-								<!-- Падащо меню за марки -->
-								<ul v-if="filteredMakes.length > 0 && searchMake"
-									class="dropdown-menu">
-									<li v-for="make in filteredMakes" :key="make.id" @click="selectMake(make)">
-										{{ make.name }}
+							<!-- Падащо меню за марки -->
+							<ul v-if="filteredMakes.length > 0 && searchMake"
+								class="dropdown-menu">
+								<li v-for="make in filteredMakes" :key="make.id" @click="selectMake(make)">
+									{{ make.name }}
+								</li>
+							</ul>
+
+
+							<div class="error-message" th:if="${#fields.hasErrors('make')}">
+								<span th:text="${#fields.errors('make').get(0)}"></span>
+							</div>
+
+							<div class="form-group">
+								<div class="car-make-model">
+									<label for="model">Модел
+									</label>
+									<input type="text" readonly class="form-control" th:field="*{model}"
+										   th:value="*{model}" id="model" name="model">
+
+								</div>
+
+								<!-- Поле за търсене на модели -->
+								<input id="searchModel" name="searchModel"
+									   type="text" v-model="searchModel"
+									   @blur="handleModelBlur" @input="searchModels" class="form-control d-none"
+									   placeholder="Започнете да пишете за модела...">
+
+								<!-- Падащо меню за модели (ще се показва винаги, без да е нужно да се въвеждат букви) -->
+								<ul v-if="filteredModels.length > 0" class="dropdown-menu" id="model-list">
+									<li v-for="model in filteredModels" :key="model.id" @click="selectModel(model)">
+										{{ model.name }}
 									</li>
 								</ul>
 
 
-								<div class="error-message" th:if="${#fields.hasErrors('make')}">
-									<span th:text="${#fields.errors('make').get(0)}"></span>
+								<div class="error-message" th:if="${#fields.hasErrors('model')}">
+									<span th:text="${#fields.errors('model').get(0)}"></span>
 								</div>
-
-								<div class="form-group">
-									<div class="car-make-model">
-								<label for="model">Модел
-								</label>
-										<input type="text" readonly  th:field="*{model}" th:value="*{model}" id="model" name="model">
-
-									</div>
-
-									<!-- Поле за търсене на модели -->
-									<input  id="searchModel" name="searchModel"
-										   type="text" v-model="searchModel"
-										   @input="searchModels" class="form-control d-none"
-										   placeholder="Започнете да пишете за модела...">
-
-									<!-- Падащо меню за модели (ще се показва винаги, без да е нужно да се въвеждат букви) -->
-									<ul v-if="filteredModels.length > 0" class="dropdown-menu" id="model-list">
-										<li v-for="model in filteredModels" :key="model.id" @click="selectModel(model)">
-											{{ model.name }}
-										</li>
-									</ul>
-
-
-									<div class="error-message" th:if="${#fields.hasErrors('model')}">
-										<span th:text="${#fields.errors('model').get(0)}"></span>
-									</div>
-								</div>
-
 							</div>
 
 						</div>
@@ -126,8 +131,8 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="client">Клиент</label><br/>
-						<select th:field="*{client}" class="d-none form-select select2" id="client" name="client"
+						<label for="client">Клиент</label>
+						<select th:field="*{clientId}" class="d-none form-select select2" id="client" name="clientId"
 								onblur="selectSearch()">
 							<option value="">Избери</option>
 							<option th:if="${clients.empty}" disabled th:value="null">Няма налични клиенти</option>
@@ -137,9 +142,9 @@
 						</select>
 
 					</div>
-					<div class="form-group">
-						<button type="submit">Запиши</button>
-					</div>
+
+						<button class="submit" type="submit">Запиши</button>
+
 				</form>
 			</div>
 

@@ -1,13 +1,3 @@
-
-//$('select.form-select').on('change', function() {
-//    const selectId = $(this).attr('id'); // уникален id на селекта
-//    const selectedVal = $(this).val();
-//    if(selectId == "order-car"){
-//        this.handleCarChange();
-//    }
-//    console.log('Селектът с ID:', selectId, 'е променен. Нов избор:', selectedVal);
-//});
-
 new Vue({
     el: '#app',
     data: {
@@ -20,38 +10,74 @@ new Vue({
         selectedMake: null,
         selectedModel: null,
 
+
     },
     mounted() {
-        // Попълваме searchMake само ако Vue data е празна и има стойност в DOM (value или attribute)
-        try {
-            const makeInput = document.getElementById('make');
-            if (makeInput) {
-                const domVal = (makeInput.value && makeInput.value.trim()) ? makeInput.value.trim()
-                    : (makeInput.getAttribute('value') || '').trim();
-                if ((!this.searchMake || this.searchMake.trim() === '') && domVal) {
-                    this.searchMake = domVal;
-                }
-            }
+        document.addEventListener('click', this.onDocumentClick);
 
-            const modelInput = document.getElementById('model');
-            if (modelInput) {
-                const domValModel = (modelInput.value && modelInput.value.trim()) ? modelInput.value.trim()
-                    : (modelInput.getAttribute('value') || '').trim();
-                if ((!this.searchModel || this.searchModel.trim() === '') && domValModel) {
-                    this.searchModel = domValModel;
-                }
-            }
-        } catch (e) {
-            // безопасен fallback — не прекъсва приложението
-            console.error('Init from DOM failed', e);
-        }
+    },
+    beforeDestroy() {
+        document.removeEventListener('click', this.onDocumentClick);
     },
     created() {
-        // Зареждаме всички марки
         this.fetchMakes();
 
     },
     methods: {
+        onDocumentClick(event) {
+            if (this.$refs.makeWrapper && this.$refs.makeWrapper.contains(event.target)) {
+                return;
+            }
+
+            this.filteredMakes = [];
+            this.filteredModels =[];
+
+        },
+        onMakeBlur() {
+            if (this.searchMake && (!this.selectedMake || this.selectedMake.name !== this.searchMake)) {
+                this.selectedMake = { id: null, name: this.searchMake };
+            }
+            this.filteredMakes = [];
+
+        },
+
+        handleMakeBlur() {
+            this.filteredMakes = [];
+            if (!this.selectedMake || this.selectedMake.name !== this.searchMake) {
+                console.log("влиза");
+                this.selectedMake = { id: null, name: this.searchMake };
+
+                const makeInput = document.getElementById('make');
+                if (makeInput) {
+                    makeInput.value = this.searchMake;
+                    makeInput.setAttribute('value', this.searchMake);
+                }
+
+            }
+        },
+
+        onModelBlur() {
+            if (this.searchModel && (!this.selectedModel || this.selectedModel.name !== this.searchModel)) {
+                this.selectedModel = { id: null, name: this.searchModel };
+            }
+            this.filteredModels = [];
+
+        },
+
+        handleModelBlur() {
+            this.filteredModels = [];
+            if (!this.selectedModel || this.selectedModel.name !== this.searchModel) {
+                this.selectedModel = { id: null, name: this.searchModel };
+
+                const modelInput = document.getElementById('model');
+                if (modelInput) {
+                    modelInput.value = this.searchModel;
+                    modelInput.setAttribute('value', this.searchModel);
+                }
+
+            }
+        },
+
         handleCarChange(event) {
             var selectedCar = event.target.selectedOptions[0];
 
@@ -90,14 +116,12 @@ new Vue({
             );
         }, 500),
 
-        // Зареждане на марките от сървъра
         async fetchMakes() {
             try {
                 const response = await fetch(`http://localhost:8080/api/makes`);
 
                 if (!response.ok) {
                     alert('Неуспешен отговор от сървъра за марки автомобили!');
-                    //                    throw new Error('Неуспешен отговор от сървъра за марки автомобили!');
                 }
 
                 const data = await response.json();;
@@ -118,20 +142,20 @@ new Vue({
                     throw new Error('Неуспешен отговор от сървъра за модели автомобили!');
                 }
                 const data = await response.json();
-                this.models = data.models || []; // Задаваме моделите
-                this.filteredModels = this.models; // Инициализираме филтрираните модели
+                this.models = data.models || [];
+                this.filteredModels = this.models;
             } catch (error) {
                 console.error('Грешка при зареждането на моделите автомобили!', error);
             }
         },
 
-        // Избиране на марка
+
         selectMake(make) {
 
-            this.selectedMake = make; // Задаваме избраната марка
-            this.searchMake = make.name; // Поставяме името на марката в полето за търсене
-            this.filteredMakes = []; // Изчистваме филтрираните марки
-            this.fetchModels(); // Зареждаме моделите за избраната марка
+            this.selectedMake = make;
+            this.searchMake = make.name;
+            this.filteredMakes = [];
+            this.fetchModels();
             const isEditView = window.location.pathname.startsWith('/car/edit') || window.location.pathname.startsWith('/car/add')
             || window.location.pathname.startsWith('/client/add') ;
             if(isEditView){
@@ -142,11 +166,11 @@ new Vue({
             }
         },
 
-        // Избиране на модел
+
         selectModel(model) {
-            this.selectedModel = model; // Задаваме избрания модел
-            this.searchModel = model.name; // Поставяме името на модела в полето за търсене
-            this.filteredModels = []; // Изчистваме филтрираните модели
+            this.selectedModel = model;
+            this.searchModel = model.name;
+            this.filteredModels = [];
             const isEditView = window.location.pathname.startsWith('/car/edit');
             if(isEditView){
                 const modelName = document.getElementById('model');
