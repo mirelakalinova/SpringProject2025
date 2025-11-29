@@ -17,22 +17,21 @@ import java.util.Collections;
 @Slf4j
 @Service
 public class MyUserDetailsService implements UserDetailsService {
-    private static final Logger log = LoggerFactory.getLogger(MyUserDetailsService.class);
-    private final UserRepository userRepository;
-
-    public MyUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.debug("Attempt to load user by username: {}", username);
-        User user = userRepository.findByUsername(username);
-
-        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole());
-
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
-                // Създаваме колекция с 1 елемент
-                Collections.singletonList(authority));
-    }
+	private static final Logger log = LoggerFactory.getLogger(MyUserDetailsService.class);
+	private final UserRepository userRepository;
+	
+	public MyUserDetailsService(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
+	
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		log.debug("Attempt to load user by username: {}", username);
+		User user = userRepository.findByUsername(username);
+		
+		GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole());
+		
+		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+				Collections.singletonList(authority));
+	}
 }

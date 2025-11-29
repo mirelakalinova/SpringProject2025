@@ -8,10 +8,11 @@ import java.util.List;
 import java.util.UUID;
 
 public interface OrderRepairService {
-    void saveOrderRepair(AddOrderRepairDto addOrderRepairDto, Order order);
-
-    List<OrderRepair> findAllByOrderId(UUID id);
-
-    void setDeletedAtAllByOrderId(UUID id);
-    void deleteAllByOrderId(UUID id);
+	void saveOrderRepair(AddOrderRepairDto addOrderRepairDto, Order order);
+	
+	List<OrderRepair> findAllByOrderId(UUID id);
+	
+	void setDeletedAtAllByOrderId(UUID id);
+	
+	void deleteAllByOrderId(UUID id);
 }

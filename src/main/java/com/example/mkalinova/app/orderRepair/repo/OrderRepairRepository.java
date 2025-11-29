@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface OrderRepairRepository  extends JpaRepository<OrderRepair, UUID> {
-    List<OrderRepair> findAllByOrderId(UUID id);
-
+public interface OrderRepairRepository extends JpaRepository<OrderRepair, UUID> {
+	List<OrderRepair> findAllByOrderId(UUID id);
+	
 }

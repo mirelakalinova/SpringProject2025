@@ -8,17 +8,18 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CarRepository extends JpaRepository<Car, UUID> {
-
-    Optional<Car> getByRegistrationNumber(String registrationNumber);
-    List<Car> findByClientIsNull();
-
-    Optional<Car> findByRegistrationNumber(String name);
-
-    Optional<Car> findByVin(String vin);
-
-    List<Car> findAllByClientId(UUID id);
-
-    List<Car> findAllByDeletedAtNull();
-
-    List<Car> getAllByDeletedAtNull();
+	
+	Optional<Car> getByRegistrationNumber(String registrationNumber);
+	
+	List<Car> findByClientIsNull();
+	
+	Optional<Car> findByRegistrationNumber(String name);
+	
+	Optional<Car> findByVin(String vin);
+	
+	List<Car> findAllByClientId(UUID id);
+	
+	List<Car> findAllByDeletedAtNull();
+	
+	List<Car> getAllByDeletedAtNull();
 }

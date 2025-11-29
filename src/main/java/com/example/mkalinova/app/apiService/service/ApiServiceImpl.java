@@ -9,23 +9,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ApiServiceImpl implements ApiService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApiServiceImpl.class);  // Статично инициализиране на логгера
-    private final ApiFeignClient apiFeignClient;
-
-    public ApiServiceImpl(
-            ApiFeignClient apiFeignClient) {
-        this.apiFeignClient = apiFeignClient;
-    }
-
-
-    @Override
-    public void saveMakeAndModel(SaveMakeModelDto saveMakeModelDto) {
-        apiFeignClient.saveMakeAndModel(saveMakeModelDto);
-
-    }
-
-    @Override
-    public MakeListDto getAllMakes() {
-        return apiFeignClient.getAllMakes();
-    }
+	private static final Logger LOGGER = LoggerFactory.getLogger(ApiServiceImpl.class);  // Статично инициализиране на логгера
+	private final ApiFeignClient apiFeignClient;
+	
+	public ApiServiceImpl(ApiFeignClient apiFeignClient) {
+		this.apiFeignClient = apiFeignClient;
+	}
+	
+	@Override
+	public void saveMakeAndModel(SaveMakeModelDto saveMakeModelDto) {
+		apiFeignClient.saveMakeAndModel(saveMakeModelDto);
+		
+	}
+	
 }

@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "apiClient", url = "${api.base}")
 public interface ApiFeignClient {
-    @PostMapping(value = "/api/save", consumes = "application/json")
-    void saveMakeAndModel(@RequestBody SaveMakeModelDto saveMakeModelDto);
-
-    @GetMapping(value = "/api/makes", produces = "application/json")
-    MakeListDto getAllMakes();
-
+	@PostMapping(value = "/api/save", consumes = "application/json")
+	void saveMakeAndModel(@RequestBody SaveMakeModelDto saveMakeModelDto);
+	
+	@GetMapping(value = "/api/makes", produces = "application/json")
+	MakeListDto getAllMakes();
+	
 }

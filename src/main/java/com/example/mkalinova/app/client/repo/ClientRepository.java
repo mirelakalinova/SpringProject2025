@@ -8,9 +8,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ClientRepository extends JpaRepository<Client, UUID> {
-    Optional<Client> findByPhone(String phoneNumber);
-
-    List<Client> findAllByDeleteAdNull();
-
-
+	Optional<Client> findByPhone(String phoneNumber);
+	
+	List<Client> findAllByDeleteAdNull();
+	
+	
 }

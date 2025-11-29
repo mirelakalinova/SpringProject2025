@@ -8,21 +8,21 @@ import java.nio.file.AccessDeniedException;
 import java.util.*;
 
 public interface UserService {
-    UUID getLoggedInUserId() throws AccessDeniedException;
-
-    ArrayList<String> addNewUser(AddUserDto addUserDto) throws AccessDeniedException;
-
-    boolean userByUsernameOrEmail(String username, String email);
-
-    <T> List<T> getAll(Class<T> clazz);
-
-    <T> T getById(UUID id, Class<T> clazz);
-
-    HashMap<String, String> editUser(UUID id, EditUserDto editUserDto) throws AccessDeniedException;
-
-    boolean isAdmin(User user) throws AccessDeniedException;
-
-    Optional<User> getLoggedInUser() throws AccessDeniedException;
-
-    void isUserLogIn() throws AccessDeniedException;
+	UUID getLoggedInUserId() throws AccessDeniedException;
+	
+	ArrayList<String> addNewUser(AddUserDto addUserDto) throws AccessDeniedException;
+	
+	boolean userByUsernameOrEmail(String username, String email);
+	
+	<T> List<T> getAll(Class<T> clazz);
+	
+	<T> T getById(UUID id, Class<T> clazz);
+	
+	HashMap<String, String> editUser(UUID id, EditUserDto editUserDto) throws AccessDeniedException;
+	
+	boolean isAdmin(User user) throws AccessDeniedException;
+	
+	Optional<User> getLoggedInUser() throws AccessDeniedException;
+	
+	void isUserLogIn() throws AccessDeniedException;
 }

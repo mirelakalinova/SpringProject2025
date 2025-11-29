@@ -12,20 +12,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class Config {
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public ModelMapper modelMapper() {
-        ModelMapper mapper = new ModelMapper();
-        mapper.typeMap(AddCarDto.class, Car.class)
-                .addMappings(m -> m.skip(Car::setId));
-        mapper.typeMap(AddCompanyDto.class, Company.class)
-                .addMappings(m -> m.skip(Company::setId));
-        return mapper;
-
-    }
+	
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	public ModelMapper modelMapper() {
+		ModelMapper mapper = new ModelMapper();
+		mapper.typeMap(AddCarDto.class, Car.class)
+				.addMappings(m -> m.skip(Car::setId));
+		mapper.typeMap(AddCompanyDto.class, Company.class)
+				.addMappings(m -> m.skip(Company::setId));
+		return mapper;
+		
+	}
 }
