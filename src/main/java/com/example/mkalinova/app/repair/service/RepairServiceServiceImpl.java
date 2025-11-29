@@ -27,13 +27,13 @@ import java.util.UUID;
 //todo refactor!!! rename!!!!
 @Slf4j
 @Service
-public class CarServiceServiceImpl implements RepairService {
-    private static final Logger log = LoggerFactory.getLogger(CarServiceServiceImpl.class);
+public class RepairServiceServiceImpl implements RepairService {
+    private static final Logger log = LoggerFactory.getLogger(RepairServiceServiceImpl.class);
     private final RepairRepository carServiceRepository;
     private final ModelMapper modelMapper;
     private final UserService userService;
 
-    public CarServiceServiceImpl(RepairRepository carServiceRepository, ModelMapper modelMapper, UserService userService) {
+    public RepairServiceServiceImpl(RepairRepository carServiceRepository, ModelMapper modelMapper, UserService userService) {
         this.carServiceRepository = carServiceRepository;
         this.modelMapper = modelMapper;
         this.userService = userService;
@@ -51,7 +51,6 @@ public class CarServiceServiceImpl implements RepairService {
     public HashMap<String, String> addService(RepairDto dto) throws AccessDeniedException {
         log.debug("Attempt to add repair with name {}", dto.getName());
         userService.isUserLogIn();
-        ;
         HashMap<String, String> result = new HashMap<>();
         Optional<Repair> optService = carServiceRepository.findByName(dto.getName());
         if (optService.isPresent()) {
@@ -93,7 +92,6 @@ public class CarServiceServiceImpl implements RepairService {
     public HashMap<String, String> editService(EditRepairDto dto) throws AccessDeniedException {
         log.debug("Attempt to edit repair with id {}", dto.getId());
         userService.isUserLogIn();
-        ;
         HashMap<String, String> result = new HashMap<>();
         Optional<Repair> optService = carServiceRepository.findById(dto.getId());
         if (!optService.isPresent()) {

@@ -105,7 +105,6 @@ public class ClientController extends BaseController {
         Map<String, Object> validationResults = new HashMap<>();
         validateClient = validateDto(addClientDto, bindingResult, attributes, "addClientDto");
         validationResults.put("addClientDto", validateClient);
-        // boolean carIsEmpty = validator.validate(addCarDto).isEmpty();
         if (!isCarDtoEmpty) {
             validateCar = validateDto(addCarDto, bindingResultAddCarDto, attributes, "addCarDto");
             validationResults.put("car", validateCar);
@@ -116,14 +115,14 @@ public class ClientController extends BaseController {
         }
 
 
-        // Ако има грешки -> редирект
+
         if (validationResults.containsValue(false)) {
             addFlashAttributes(addClientDto, bindingResult, addCarDto, bindingResultAddCarDto, addCompanyDto, bindingResultAddCompanyDto, attributes, isCarDtoEmpty);
             return "redirect:/client/add";
 
         }
         HashMap<String, String> result = clientService.addClientWithAdditionalData(addClientDto, addCarDto, addCompanyDto, addCompanyDto.isShowForm());
-        // Ако някой от методите в контролера е върнал статус error, редирект към адд
+
         if (result.get("status").equals("error")) {
             attributes.addFlashAttribute("addClientDto", addClientDto);
             if (addCarDto != null) {
@@ -176,7 +175,6 @@ public class ClientController extends BaseController {
     }
 
 
-    //todo -> add dto
     @PostMapping("/delete/{id}")
     public String deleteClientWithAllData(@PathVariable String id, RedirectAttributes attributes) throws AccessDeniedException {
         UUID uuid = UUID.fromString(id);
@@ -196,7 +194,7 @@ public class ClientController extends BaseController {
         ModelAndView modelAndView = super.view("/client/edit");
         modelAndView.addObject("companiesWithoutUser", companyService.allCompaniesWithoutClient());
         modelAndView.addObject("carsWithoutUser", carService.allCarsWithoutUser(CarDtoEditClient.class));
-        EditClientDto client = clientService.findClientById(uuid);
+        EditClientDto client = clientService.findClientById(uuid, EditClientDto.class);
 
         List<CarDto> cars = clientService.getCarsByClient(uuid);
         modelAndView.addObject("client", client);
@@ -229,7 +227,7 @@ public class ClientController extends BaseController {
 
         attributes.addFlashAttribute("message", result.get("message"));
         attributes.addFlashAttribute("status", result.get("status"));
-        return "redirect:/client/edit/{id}";
+        return "redirect:/client/clients";
     }
 
     @PostMapping("/remove-car/{id}")

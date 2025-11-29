@@ -127,13 +127,10 @@ public class OrderServiceImpl implements OrderService {
         log.debug("Attempt to get all cars...");
         userService.isUserLogIn();
         List<Order> orderList = orderRepository.findAllByDeletedAtNull();
-        //map to OrderListDto
         List<OrderListDto> listDto = orderList.stream().map(o -> modelMapper.map(o, OrderListDto.class)).toList();
         listDto.forEach(o -> {
             UUID id = o.getId();
-            //add all parts
             orderPartService.findAllByOrderId(id).forEach(p -> o.getPartsList().add(p));
-            //add all repairs
             orderRepairService.findAllByOrderId(id).forEach(r -> o.getRepairsList().add(r));
         });
         log.info("Successfully get all orders...");
@@ -169,10 +166,8 @@ public class OrderServiceImpl implements OrderService {
         }
         HashMap<String, String> result = new HashMap<>();
 
-        //delete na всички части и извършени ремонти
         orderPartService.deletedAllByOrderId(id);
         orderRepairService.deleteAllByOrderId(id);
-        Order newOrderData = modelMapper.map(dto, Order.class); // todo -> трябва ли ми ?
 
         if (dto.getCar().getId() !=null) {
             Car car = (Car) carService.getById(dto.getCar().getId(), Car.class);

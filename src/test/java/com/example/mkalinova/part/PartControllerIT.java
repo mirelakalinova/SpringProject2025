@@ -197,7 +197,7 @@ public class PartControllerIT {
                 .andExpect(redirectedUrl("/part/list"));
 
         Optional<Part> part = partRepository.findById(partFirst.getId());
-        assertTrue(part.get().getDeletedAt() != null);
+        assertNotNull(part.get().getDeletedAt());
 
 
     }
@@ -212,7 +212,7 @@ public class PartControllerIT {
                 .andExpect(status().isForbidden());
 
         Optional<Part> part = partRepository.findById(partFirst.getId());
-        assertTrue(part.get().getDeletedAt() == null);
+        assertNull(part.get().getDeletedAt());
 
 
     }
@@ -227,7 +227,7 @@ public class PartControllerIT {
                 .andExpect(status().isForbidden());
 
         Optional<Part> part = partRepository.findById(partFirst.getId());
-        assertTrue(part.get().getDeletedAt() == null);
+        assertNull(part.get().getDeletedAt());
 
 
     }

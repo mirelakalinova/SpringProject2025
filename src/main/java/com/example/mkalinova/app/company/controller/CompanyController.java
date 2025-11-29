@@ -5,7 +5,6 @@ import com.example.mkalinova.app.client.data.dto.ClientDto;
 import com.example.mkalinova.app.client.data.dto.ClientListCarDto;
 import com.example.mkalinova.app.client.service.ClientService;
 import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
-import com.example.mkalinova.app.company.data.dto.CompanyListDto;
 import com.example.mkalinova.app.company.data.dto.EditCompanyDto;
 import com.example.mkalinova.app.company.service.CompanyService;
 import jakarta.validation.Valid;
@@ -38,7 +37,6 @@ public class CompanyController extends BaseController {
     }
 
 
-    //todo IT
     @GetMapping("/add")
     public ModelAndView addCompany() {
         ModelAndView modelAndView = super.view("company/add");
@@ -69,7 +67,7 @@ public class CompanyController extends BaseController {
 
         return modelAndView;
     }
-    //todo IT
+
     @GetMapping("/edit/{id}")
     public ModelAndView editCompany(@PathVariable String id, Model model) {
         UUID uuid = UUID.fromString(id);
@@ -91,14 +89,14 @@ public class CompanyController extends BaseController {
     public String editCompany(@Valid EditCompanyDto editCompanyDto,
                               BindingResult bindingResult,
                               RedirectAttributes redirectAttributes
-                            ) throws AccessDeniedException {
+    ) throws AccessDeniedException {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("editCompanyDto", editCompanyDto);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.editCompanyDto", bindingResult);
             return "redirect:/company/edit/" + editCompanyDto.getId();
         }
         boolean isClientPresent = editCompanyDto.getClientId() != null;
-        companyService.updateCompany(editCompanyDto, isClientPresent ,editCompanyDto.getClientId());
+        companyService.updateCompany(editCompanyDto, isClientPresent, editCompanyDto.getClientId());
         return "redirect:/company/list";
     }
 

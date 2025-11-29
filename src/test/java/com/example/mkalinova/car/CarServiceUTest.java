@@ -120,8 +120,8 @@ class CarServiceUTest {
         assertEquals("A4", result.get(0).getModel());
         assertEquals("Audi", result.get(0).getMake());
         assertEquals("Audi", result.get(1).getMake());
-        assertEquals(null, result.get(0).getClientId());
-        assertEquals(null, result.get(1).getClientId());
+        assertNull(result.get(0).getClientId());
+        assertNull(result.get(1).getClientId());
         verify(carRepository, times(1)).findByClientIsNull();
         verify(modelMapper, times(2)).map(any(Car.class), eq(AddCarDto.class));
     }
@@ -141,9 +141,10 @@ class CarServiceUTest {
     }
 
     @Test
-    void getAllCar_ReturnList()  {
-        List<Car> cars = Arrays.asList(carFirst,carSecond);
-        when(carRepository.findAll()).thenReturn(cars);
+    void getAllCar_ReturnList() {
+        List<Car> cars = Arrays.asList(carFirst, carSecond);
+
+        when(carRepository.findAllByDeletedAtNull()).thenReturn(cars);
         when(modelMapper.map(any(Car.class), eq(CarRepairDto.class)))
                 .thenAnswer(invocation -> {
                     Car c = invocation.getArgument(0);
@@ -152,11 +153,10 @@ class CarServiceUTest {
                     dto.setModel(c.getModel());
                     return dto;
                 });
-        List<CarRepairDto> result = service.getAllCars();
+        List<CarRepairDto> result = service.getAll(CarRepairDto.class);
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals("Audi", result.get(1).getMake());
-
 
 
     }
@@ -175,10 +175,8 @@ class CarServiceUTest {
     }
 
 
-
-
     @Test
-    void findCar_Success(){
+    void findCar_Success() {
         when(carRepository.findByRegistrationNumber(carFirst.getRegistrationNumber())).thenReturn(Optional.of(carFirst));
         Optional<Car> car = service.findCar(carFirst.getRegistrationNumber());
         assertNotNull(car);
@@ -188,7 +186,7 @@ class CarServiceUTest {
     }
 
     @Test
-    void findByVin_ReturnTrue(){
+    void findByVin_ReturnTrue() {
         when(carRepository.findByVin(carFirst.getVin()))
                 .thenReturn(Optional.of(carFirst));
         boolean car = service.findByVin(carFirst.getVin());
@@ -198,7 +196,7 @@ class CarServiceUTest {
     }
 
     @Test
-    void findByVin_ReturnFalse(){
+    void findByVin_ReturnFalse() {
         when(carRepository.findByVin(carFirst.getVin()))
                 .thenReturn(Optional.empty());
         boolean car = service.findByVin(carFirst.getVin());
@@ -220,7 +218,7 @@ class CarServiceUTest {
 
 
     @Test
-    void findByRegistrationNumber_True(){
+    void findByRegistrationNumber_True() {
         when(carRepository.findByRegistrationNumber(carFirst.getRegistrationNumber())).thenReturn(Optional.of(carFirst));
         boolean result = service.findByRegistrationNumber(carFirst.getRegistrationNumber());
         assertTrue(result);
@@ -230,7 +228,7 @@ class CarServiceUTest {
     }
 
     @Test
-    void findByRegistrationNumber_False(){
+    void findByRegistrationNumber_False() {
         when(carRepository.findByRegistrationNumber(carFirst.getRegistrationNumber())).thenReturn(Optional.empty());
         boolean result = service.findByRegistrationNumber(carFirst.getRegistrationNumber());
         assertFalse(result);

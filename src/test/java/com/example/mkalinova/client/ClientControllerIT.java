@@ -3,7 +3,6 @@ package com.example.mkalinova.client;
 import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.car.repo.CarRepository;
 import com.example.mkalinova.app.car.service.CarService;
-import com.example.mkalinova.app.client.data.dto.AddClientDto;
 import com.example.mkalinova.app.client.data.dto.ClientListCarDto;
 import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.client.repo.ClientRepository;
@@ -11,7 +10,6 @@ import com.example.mkalinova.app.client.service.ClientService;
 import com.example.mkalinova.app.company.data.entity.Company;
 import com.example.mkalinova.app.company.repo.CompanyRepository;
 import com.example.mkalinova.app.company.service.CompanyService;
-
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.data.entity.UsersRole;
 import com.example.mkalinova.app.user.repo.UserRepository;
@@ -27,7 +25,6 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -385,7 +382,7 @@ public class ClientControllerIT {
                         .with(csrf()))
 
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/client/clients"));
+                .andExpect(redirectedUrl("/client/add"));
 
     }
 
@@ -431,6 +428,7 @@ public class ClientControllerIT {
                         .param("vatNumber", "BG201799236")
                         .param("address", "1HGBH41JXMN109177")
                         .param("accountablePerson", "Test test")
+                        .param("clientId", String.valueOf(UUID.randomUUID()))
 
 
                         .with(csrf()))
@@ -486,13 +484,13 @@ public class ClientControllerIT {
 
 
         Optional<Car> optCar = carRepository.findById(car.getId());
-        assertTrue(optCar.get().getDeletedAt() != null);
+        assertNotNull(optCar.get().getDeletedAt());
 
         Optional<Company> optCompnay = companyRepository.findById(compnay.getId());
-        assertTrue(optCompnay.get().getDeletedAt() != null);
+        assertNotNull(optCompnay.get().getDeletedAt());
 
         Optional<Client> optClient = clientRepository.findById(clientFirst.getId());
-        assertTrue(optClient.get().getDeleteAd() != null);
+        assertNotNull(optClient.get().getDeleteAd());
     }
 
     @Test
@@ -538,13 +536,13 @@ public class ClientControllerIT {
                 .andExpect(status().isForbidden());
 
         Optional<Client> optClient = clientRepository.findById(client.getId());
-        assertTrue(optClient.get().getDeleteAd() == null);
+        assertNull(optClient.get().getDeleteAd());
 
         Optional<Car> optCar = carRepository.findById(car.getId());
-        assertTrue(optCar.get().getDeletedAt() == null);
+        assertNull(optCar.get().getDeletedAt());
 
         Optional<Company> optCompnay = companyRepository.findById(compnay.getId());
-        assertTrue(optCompnay.get().getDeletedAt() == null);
+        assertNull(optCompnay.get().getDeletedAt());
 
     }
 
@@ -629,7 +627,5 @@ public class ClientControllerIT {
                 .andExpect(model().attributeExists("companiesWithoutUser"));
 
     }
-
-    //todo -> add more tests
 }
 

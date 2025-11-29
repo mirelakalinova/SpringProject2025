@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -65,7 +64,6 @@ public class ClientServiceImpl implements ClientService {
         log.debug("Attempt to add client with car and / or company");
         userService.isUserLogIn();
         HashMap<String, String> result = new HashMap<>();
-        //1. Да проверим клиента
         Optional<Client> opt = clientRepository.findByPhone(addClientDto.getPhone());
 
         if (opt.isPresent()) {
@@ -75,98 +73,39 @@ public class ClientServiceImpl implements ClientService {
             return result;
         }
 
-        Client clientToAdd;
-        Optional<Car> car = Optional.empty();
+        Client clientToAdd = modelMapper.map(addClientDto, Client.class);
+        clientRepository.save(clientToAdd);
+
         boolean addCarDtoIsPresent = addCarDto != null && addCarDto.getRegistrationNumber() != null && !addCarDto.getRegistrationNumber().isEmpty();
-        clientToAdd = modelMapper.map(addClientDto, Client.class);
-
-        //2. Да проверим колата
-        if (addCarDtoIsPresent) {
-
-            car = carService.findCar(addCarDto.getRegistrationNumber());
-            if (car.isPresent()) {
-                if (car.get().getClient() != null) {
-                    result.put("status", "error");
-                    result.put("message", "Кола с регистрационен номер: " + addCarDto.getRegistrationNumber() + " принадлежи вече на клиент!");
-                    log.warn("Return error message: the car's registration number is present {}", car.get().getRegistrationNumber());
-                    return result;
-                }
-            }
-        }
-        Optional<Company> company = Optional.empty();
-        //3. Да проверим компанията, ако не е null
-        if (companyIsFill) {
-            company = companyService.findCompany(addCompanyDto.getName());
-            if (company.isPresent()) {
-                if (company.get().getClient() != null) {
-                    result.put("status", "error");
-                    result.put("message", "Фирма с ЕИК:" + addCompanyDto.getUic() + " вече принадлижи на клиент!");
-                    log.warn("Return error message: the company's uci number is present {}", company.get().getUic());
-                    return result;
-                }
-            }
-        }
 
         StringBuilder sb = new StringBuilder();
 
         sb.append("Успешно добавен клиент: ").append(addClientDto.getFirstName()).append(" ").append(addClientDto.getLastName()).append(" с тел.: ").append(addClientDto.getPhone()).append(System.lineSeparator());
-        boolean isCarSaved = false;
-        boolean isCompanySaved = false;
-        clientRepository.save(clientToAdd);
+
         if (addCarDtoIsPresent) {
-            if (car.isEmpty()) {
-                HashMap<String, String> saveCarResult = carService.addCarAndReturnMessage(addCarDto);
+            addCarDto.setClientId(clientToAdd.getId());
+            HashMap<String, String> saveCarResult = carService.addCarAndReturnMessage(addCarDto);
+
+            if (saveCarResult.get("status").equals("error")) {
+                result.put("status", saveCarResult.get("status"));
+                result.put("message", saveCarResult.get("message"));
+                return result;
+            } else {
                 sb.append(saveCarResult.get("message")).append(System.lineSeparator());
-                if (saveCarResult.get("status").equals("success")) {
-                    isCarSaved = true;
-                }
-            } else {
-                car.get().setClient(clientToAdd);
-//                carRepository.save(car.get());
-                isCarSaved = true;
-
-            }
-
-        }
-        if (companyIsFill) {
-            if (company.isEmpty()) {
-                HashMap<String, String> saveCompanyResult = companyService.saveCompany(addCompanyDto);
-                sb.append(saveCompanyResult.get("message")).append(System.lineSeparator());
-                if (saveCompanyResult.get("status").equals("success")) {
-                    isCompanySaved = true;
-
-                }
-            } else {
-
-                isCompanySaved = true;
-
-
             }
         }
 
         if (companyIsFill) {
-            Optional<Company> newCompany = companyRepository.findByName(addCompanyDto.getName());
-            if (newCompany.isPresent()) {
-                newCompany.get().setClient(clientToAdd);
-                companyRepository.save(newCompany.get());
+            addCompanyDto.setClientId(clientToAdd.getId());
+            HashMap<String, String> saveCompanyResult = companyService.saveCompany(addCompanyDto);
+            if (saveCompanyResult.get("status").equals("success")) {
                 sb.append("Успешно закачена фирма: ").append(addCompanyDto.getName()).append(" с ЕИК: ").append(addCompanyDto.getUic()).append(" към клиент ").append(addClientDto.getFirstName()).append(" ").append(addClientDto.getLastName()).append(System.lineSeparator());
             } else {
-                //todo -> check throw ex
-                throw new RuntimeException();
+                result.put("status", "error");
+                result.put("message", "Фирма с име: " + addCompanyDto.getName() + " или ЕИК:" + addCompanyDto.getUic() + " вече принадлижи на клиент!");
+                return result;
             }
-        }
 
-        if (addCarDtoIsPresent) {
-            Optional<Car> newCar = carRepository.findByRegistrationNumber(addCarDto.getRegistrationNumber());
-            if (newCar.isPresent()) {
-                newCar.get().setClient(clientToAdd);
-                //  carRepository.save(newCar.get());
-                sb.append("Успешно закачена кола: ").append(addCarDto.getRegistrationNumber()).append(" към клиент ").append(addClientDto.getFirstName()).append(" ").append(addClientDto.getLastName()).append(System.lineSeparator());
-
-            } else {
-                //todo -> check throw ex
-                throw new RuntimeException("Нещо се обърка при добавянето на автомобил");
-            }
         }
         result.put("status", "success");
         result.put("message", sb.toString());
@@ -209,7 +148,6 @@ public class ClientServiceImpl implements ClientService {
         }
         Optional<Client> client = clientRepository.findById(id);
         if (client.isPresent()) {
-            //check cars
             List<Car> cars = carService.getAllCarByClientId(id);
             if (!cars.isEmpty()) {
                 cars.forEach(c -> {
@@ -219,7 +157,6 @@ public class ClientServiceImpl implements ClientService {
                 });
 
             }
-            //check companies
             List<Company> companies = companyService.getAllCompaniesByClientId(id);
             if (!companies.isEmpty()) {
                 companies.forEach(c -> {
@@ -237,12 +174,12 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public EditClientDto findClientById(UUID id) {
+    public <T> T findClientById(UUID id, Class<T> clazz) {
         log.debug("Attempt to find client by id {}", id);
         Optional<Client> client = clientRepository.findById(id);
         if (client.isPresent()) {
             log.info("Successfully found client with id {}", id);
-            return modelMapper.map(client, EditClientDto.class);
+            return modelMapper.map(client, clazz);
 
 
         }
@@ -313,19 +250,6 @@ public class ClientServiceImpl implements ClientService {
         return dtoClientList;
     }
 
-    // todo -> check is unnecessary
-    @Override
-    public List<ClientRepairDto> findById(UUID id) {
-        return List.of();
-    }
-
-    // todo -> check is unnecessary
-    @Override
-    public boolean findByPhone(String phoneNumber) {
-        Optional<Client> client = clientRepository.findByPhone(phoneNumber);
-        return client.isPresent();
-    }
-
     @Override
     public List<CarDto> getCarsByClient(UUID id) {
         log.debug("Attempt to find all cars by client id {}", id);
@@ -360,7 +284,6 @@ public class ClientServiceImpl implements ClientService {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Автомобил с #" + id + " не беше намерен!");
         }
-        //todo check if is neccessary to throw an exception
         result.put("status", "error");
         result.put("message", "Нещо се обърка");
         log.warn("Unsuccessfully removed car with id {} from  client id {}", id, clientId);

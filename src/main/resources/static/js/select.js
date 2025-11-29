@@ -24,7 +24,19 @@ $(document).ready(function() {
         });
     }
 
-
+    $('.form-select').select2({
+        theme: 'bootstrap-5',
+                placeholder: "Избери...",
+                allowClear: true,
+                width: '100%',
+    language: {
+                    noResults: function() {
+                        return "Няма намерени клиенти";
+                    }
+                }
+    }).on('select2:open', function() {
+                $('.select2-search__field').attr('placeholder', 'Пиши за търсене...');
+            });
 
 
 
@@ -252,13 +264,13 @@ $('select.form-select').on('select2:select', function(e) {
 });
 
 
-
-
-$(document).ready(function () {
-    $('select.form-select').each(function() {
-        $(this).select2({
-            placeholder: 'Избери опция',
-            allowClear: true
-        });
-    });  });
+//
+//
+//$(document).ready(function () {
+//    $('select.form-select').each(function() {
+//        $(this).select2({
+//            placeholder: 'Избери опция',
+//            allowClear: true
+//        });
+//    });  });
 

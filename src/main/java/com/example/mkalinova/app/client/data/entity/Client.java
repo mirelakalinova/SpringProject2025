@@ -30,12 +30,10 @@ public class Client {
     private LocalDateTime deleteAd;
     private String name;
 
-    // Persist -> за да може да се изтриват данните за всичко към клиента. После с поръчките ще стане мазало :)
-    @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST,  fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "client",fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<Car> cars = new ArrayList<>();
 
-    // Свързване с фирми (може да има много фирми)
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL,  fetch = FetchType.EAGER)
     private List<com.example.mkalinova.app.company.data.entity.Company> companies = new ArrayList<>();
 

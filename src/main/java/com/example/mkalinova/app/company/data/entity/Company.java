@@ -28,12 +28,11 @@ public class Company {
     private String accountablePerson;
 
     @ManyToOne
-    @JoinColumn(name = "client_id") // Един клиент има много фирми
+    @JoinColumn(name = "client_id")
     private Client client;
 
-    @Column(name="deleted_at")
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
-
 
 
     public Client getClient() {
@@ -43,8 +42,6 @@ public class Company {
     public void setClient(Client client) {
         this.client = client;
     }
-    //todo -> safe delete - fields -> created, updated, deleted
-
 
 
     public Company() {

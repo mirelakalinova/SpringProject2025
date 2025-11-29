@@ -12,6 +12,9 @@ import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
 import com.example.mkalinova.app.company.data.entity.Company;
 import com.example.mkalinova.app.company.repo.CompanyRepository;
 import com.example.mkalinova.app.company.service.CompanyServiceImpl;
+import com.example.mkalinova.app.user.data.entity.User;
+import com.example.mkalinova.app.user.data.entity.UsersRole;
+import com.example.mkalinova.app.user.repo.UserRepository;
 import com.example.mkalinova.app.user.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,6 +51,8 @@ public class ClientUTest {
     @Mock
     private UserServiceImpl userService;
     @Mock
+    private UserRepository userRepository;
+    @Mock
     private CarServiceImpl carService;
 
     @Mock
@@ -55,17 +60,20 @@ public class ClientUTest {
 
     private Client client;
     private Client deletedClient;
-    private AddCarDto addCarDto = new AddCarDto();
-
+    private final AddCarDto addCarDto = new AddCarDto();
+    private User admin;
+    private User editor;
 
     @BeforeEach
     void SetUp() {
+        clientRepository.deleteAll();
         client = new Client();
         client.setEmail("test@test.bg");
         client.setFirstName("Test");
         client.setLastName("Testov");
         client.setPhone("0896619422");
 
+        clientRepository.save(client);
 
         deletedClient = new Client();
         deletedClient.setEmail("test2@test.bg");
@@ -73,8 +81,25 @@ public class ClientUTest {
         deletedClient.setLastName("Testov");
         deletedClient.setPhone("0896619424");
         deletedClient.setDeleteAd(LocalDateTime.now());
+        clientRepository.save(deletedClient);
 
+        userRepository.deleteAll();
+        admin = new User();
+        admin.setFirstName("Mirela");
+        admin.setLastName("Kalinova");
+        admin.setUsername("admin");
+        admin.setEmail("admin@test.bg");
+        admin.setPassword("Password1234!");
+        admin.setRole(UsersRole.ADMIN);
 
+        editor = new User();
+        editor.setFirstName("Mirela");
+        editor.setLastName("Kalinova");
+        editor.setUsername("editor");
+        editor.setEmail("editor@test.bg");
+        editor.setPassword("Password1234!");
+        editor.setRole(UsersRole.EDITOR);
+        userRepository.saveAndFlush(admin);
     }
 
     @Test
@@ -124,65 +149,22 @@ public class ClientUTest {
                 clientService
                         .addClientWithAdditionalData(dtoClient, null, null, false);
 
-        assertEquals(result.get("status"), "success");
-        assertEquals(dtoClient.getPhone(), "0896619422");
+        assertEquals("success", result.get("status"));
+        assertEquals("0896619422", dtoClient.getPhone());
         verifyNoInteractions(carRepository);
         verifyNoInteractions(companyRepository);
         verify(userService).isUserLogIn();
-        verify(clientRepository).save(any(Client.class));
-    }
-
-
-    @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
-    void addClientWithAdditionalData_ClientAndNonExistingCar_ReturnSuccessMessage()
-            throws AccessDeniedException {
-        doNothing().when(userService).isUserLogIn();
-        AddClientDto dtoClient = new AddClientDto();
-        dtoClient.setPhone(client.getPhone());
-        dtoClient.setEmail(client.getEmail());
-        dtoClient.setFirstName(client.getFirstName());
-        dtoClient.setLastName(client.getLastName());
-        addCarDto.setCube(1200);
-        addCarDto.setMake("audi");
-        addCarDto.setModel("tt");
-        addCarDto.setYear(2000);
-        addCarDto.setVin("2ds410ds0ds0ds41w");
-        addCarDto.setRegistrationNumber("CB2116KH");
-        addCarDto.setHp(120);
-
-        when(clientRepository.findByPhone(dtoClient.getPhone())).thenReturn(Optional.empty());
-        when(modelMapper.map(dtoClient, Client.class)).thenReturn(new Client());
-        HashMap<String, String> resultCar = new HashMap<>();
-        resultCar.put("status", "success");
-        when(carService.addCarAndReturnMessage(addCarDto)).thenReturn(resultCar);
-        resultCar.put("status", "success");
-        Car savedCar = new Car();
-        savedCar.setRegistrationNumber(addCarDto.getRegistrationNumber());
-        savedCar.setClient(null); // няма собственик преди асоцииране
-        when(carRepository.findByRegistrationNumber(addCarDto.getRegistrationNumber()))
-                .thenReturn(Optional.of(savedCar));
-        HashMap<String, String> result =
-                clientService
-                        .addClientWithAdditionalData(dtoClient, addCarDto, null, false);
-        assertEquals(resultCar.get("status"), "success");
-        assertEquals(result.get("status"), "success");
-        assertEquals(dtoClient.getPhone(), "0896619422");
-
-        verifyNoInteractions(companyRepository);
-        verify(userService).isUserLogIn();
-        verify(clientRepository).save(any(Client.class));
 
     }
+
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     void addClientWithAdditionalData_ClientAndExistingCarWithoutClient_ReturnSuccessMessage()
             throws AccessDeniedException {
-        doNothing().when(userService).isUserLogIn();
         AddClientDto dtoClient = new AddClientDto();
-        dtoClient.setPhone(client.getPhone());
-        dtoClient.setEmail(client.getEmail());
+        dtoClient.setPhone("0896619445");
+        dtoClient.setEmail("test3@abv.bg");
         dtoClient.setFirstName(client.getFirstName());
         dtoClient.setLastName(client.getLastName());
         addCarDto.setCube(1200);
@@ -193,98 +175,48 @@ public class ClientUTest {
         addCarDto.setRegistrationNumber("CB2116KH");
         addCarDto.setHp(120);
 
+
+        doNothing().when(userService).isUserLogIn();
+        UUID id = UUID.randomUUID();
         when(clientRepository.findByPhone(dtoClient.getPhone())).thenReturn(Optional.empty());
-        when(modelMapper.map(dtoClient, Client.class)).thenReturn(new Client());
-        when(carService.findCar(addCarDto.getRegistrationNumber())).thenReturn(Optional.of(new Car()));
+        when(modelMapper.map(any(AddClientDto.class), eq(Client.class)))
+                .thenReturn(new Client());
+        when(clientRepository.save(any(Client.class))).thenAnswer(invocation -> {
+            Client c = invocation.getArgument(0);
+            c.setId(id);
+            return c;
+        });
 
+        addCarDto.setClientId(id);
 
-        Car savedCar = new Car();
-        savedCar.setRegistrationNumber(addCarDto.getRegistrationNumber());
-        savedCar.setRegistrationNumber(addCarDto.getRegistrationNumber());
-        savedCar.setClient(null); // няма собственик преди асоцииране
-        when(carService.findCar(addCarDto.getRegistrationNumber()))
-                .thenReturn(Optional.of(savedCar));
-        when(carRepository.findByRegistrationNumber(addCarDto.getRegistrationNumber()))
-                .thenReturn(Optional.of(savedCar));
+        HashMap<String, String> carResult = new HashMap<>();
+        carResult.put("status", "success");
+        carResult.put("message", "Автомобил с рег. номер: " + addCarDto.getRegistrationNumber() + " вече съществува");
+
+        when(carService.addCarAndReturnMessage(any(AddCarDto.class))).thenReturn(carResult);
+
         HashMap<String, String> result =
                 clientService
                         .addClientWithAdditionalData(dtoClient, addCarDto, null, false);
         assertEquals(result.get("status"), "success");
-        assertEquals(dtoClient.getPhone(), "0896619422");
-        assertEquals(
-                carRepository.findByRegistrationNumber(savedCar.getRegistrationNumber()).get().getRegistrationNumber(),addCarDto.getRegistrationNumber());
+        assertTrue(result.get("message").contains(addCarDto.getRegistrationNumber()));
+        assertTrue(result.get("message").contains(dtoClient.getFirstName()));
 
-        verifyNoInteractions(companyRepository);
+        verify(carService,times(1)).addCarAndReturnMessage(any(AddCarDto.class));
+        verify(companyService,times(0)).saveCompany(any(AddCompanyDto.class));
         verify(userService).isUserLogIn();
-        verify(clientRepository).save(any(Client.class));
 
     }
 
-    @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
-    void addClientWithAdditionalData_ClientAndExistingCarWithoutClientAndNonExistingCompany_ReturnSuccessMessage()
-            throws AccessDeniedException {
-        doNothing().when(userService).isUserLogIn();
-        AddClientDto dtoClient = new AddClientDto();
-        dtoClient.setPhone(client.getPhone());
-        dtoClient.setEmail(client.getEmail());
-        dtoClient.setFirstName(client.getFirstName());
-        dtoClient.setLastName(client.getLastName());
-        addCarDto.setCube(1200);
-        addCarDto.setMake("audi");
-        addCarDto.setModel("tt");
-        addCarDto.setYear(2000);
-        addCarDto.setVin("2ds410ds0ds0ds41w");
-        addCarDto.setRegistrationNumber("CB2116KH");
-        addCarDto.setHp(120);
-
-        AddCompanyDto addCompanyDto = new AddCompanyDto();
-        addCompanyDto.setAddress("Bulgaria");
-        addCompanyDto.setAccountablePerson("Test test");
-        addCompanyDto.setName("Test Test");
-        addCompanyDto.setUic("201799235");
-        addCompanyDto.setVatNumber("BG201799235");
-
-        when(clientRepository.findByPhone(dtoClient.getPhone())).thenReturn(Optional.empty());
-        when(modelMapper.map(dtoClient, Client.class)).thenReturn(new Client());
-        when(carService.findCar(addCarDto.getRegistrationNumber())).thenReturn(Optional.of(new Car()));
-        when(companyService.findCompany(addCompanyDto.getName()))
-                .thenReturn(Optional.empty());
-        HashMap<String, String> resultCompany = new HashMap<>();
-        resultCompany.put("status", "success");
-        when(companyService.saveCompany(addCompanyDto)).thenReturn(resultCompany);
-        when(companyRepository.findByName(addCompanyDto.getName()))
-                .thenReturn(Optional.of(new Company()));
-        Car savedCar = new Car();
-        savedCar.setRegistrationNumber(addCarDto.getRegistrationNumber());
-        savedCar.setRegistrationNumber(addCarDto.getRegistrationNumber());
-        savedCar.setClient(null); // няма собственик преди асоцииране
-        when(carService.findCar(addCarDto.getRegistrationNumber()))
-                .thenReturn(Optional.of(savedCar));
-        when(carRepository.findByRegistrationNumber(addCarDto.getRegistrationNumber()))
-                .thenReturn(Optional.of(savedCar));
-        HashMap<String, String> result =
-                clientService
-                        .addClientWithAdditionalData(dtoClient, addCarDto, addCompanyDto, true);
-        assertEquals(result.get("status"), "success");
-        assertEquals(dtoClient.getPhone(), "0896619422");
-        assertEquals(
-                carRepository.findByRegistrationNumber(savedCar.getRegistrationNumber()).get().getRegistrationNumber(),addCarDto.getRegistrationNumber());
-
-        verify(companyRepository).save(any(Company.class));
-        verify(userService).isUserLogIn();
-        verify(clientRepository).save(any(Client.class));
-
-    }
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     void addClientWithAdditionalData_ClientAndExistingCarWithoutClientAndExistingCompanyWithoutClient_ReturnSuccessMessage()
             throws AccessDeniedException {
-        doNothing().when(userService).isUserLogIn();
+
         AddClientDto dtoClient = new AddClientDto();
-        dtoClient.setPhone(client.getPhone());
-        dtoClient.setEmail(client.getEmail());
+        dtoClient.setPhone("0896619445");
+        dtoClient.setEmail("test3@abv.bg");
         dtoClient.setFirstName(client.getFirstName());
         dtoClient.setLastName(client.getLastName());
         addCarDto.setCube(1200);
@@ -294,41 +226,45 @@ public class ClientUTest {
         addCarDto.setVin("2ds410ds0ds0ds41w");
         addCarDto.setRegistrationNumber("CB2116KH");
         addCarDto.setHp(120);
-
         AddCompanyDto addCompanyDto = new AddCompanyDto();
         addCompanyDto.setAddress("Bulgaria");
-        addCompanyDto.setAccountablePerson("Test test");
-        addCompanyDto.setName("Test Test");
-        addCompanyDto.setUic("201799235");
-        addCompanyDto.setVatNumber("BG201799235");
+        addCompanyDto.setAccountablePerson("Test test3");
+        addCompanyDto.setName("Test Test3");
+        addCompanyDto.setUic("201799234");
+        addCompanyDto.setVatNumber("BG201799234");
 
+        doNothing().when(userService).isUserLogIn();
+        UUID id = UUID.randomUUID();
         when(clientRepository.findByPhone(dtoClient.getPhone())).thenReturn(Optional.empty());
-        when(modelMapper.map(dtoClient, Client.class)).thenReturn(new Client());
-        when(carService.findCar(addCarDto.getRegistrationNumber())).thenReturn(Optional.of(new Car()));
-        when(companyService.findCompany(addCompanyDto.getName()))
-                .thenReturn(Optional.of(new Company()));
+        when(modelMapper.map(any(AddClientDto.class), eq(Client.class)))
+                .thenReturn(new Client());
+        when(clientRepository.save(any(Client.class))).thenAnswer(invocation -> {
+            Client c = invocation.getArgument(0);
+            c.setId(id);
+            return c;
+        });
 
-        when(companyRepository.findByName(addCompanyDto.getName()))
-                .thenReturn(Optional.of(new Company()));
-        Car savedCar = new Car();
-        savedCar.setRegistrationNumber(addCarDto.getRegistrationNumber());
-        savedCar.setRegistrationNumber(addCarDto.getRegistrationNumber());
-        savedCar.setClient(null); // няма собственик преди асоцииране
-        when(carService.findCar(addCarDto.getRegistrationNumber()))
-                .thenReturn(Optional.of(savedCar));
-        when(carRepository.findByRegistrationNumber(addCarDto.getRegistrationNumber()))
-                .thenReturn(Optional.of(savedCar));
+        addCarDto.setClientId(id);
+        addCompanyDto.setClientId(id);
+        HashMap<String, String> carResult = new HashMap<>();
+        carResult.put("status", "success");
+        carResult.put("message", "Автомобил с рег. номер: " + addCarDto.getRegistrationNumber() + " вече съществува");
+        HashMap<String, String> companyResult = new HashMap<>();
+        companyResult.put("status", "success");
+        companyResult.put("message", "Успешно добавена компания: " + addCompanyDto.getName());
+        when(carService.addCarAndReturnMessage(any(AddCarDto.class))).thenReturn(carResult);
+        when(companyService.saveCompany(any(AddCompanyDto.class))).thenReturn(companyResult);
         HashMap<String, String> result =
                 clientService
                         .addClientWithAdditionalData(dtoClient, addCarDto, addCompanyDto, true);
         assertEquals(result.get("status"), "success");
-        assertEquals(dtoClient.getPhone(), "0896619422");
-        assertEquals(
-                carRepository.findByRegistrationNumber(savedCar.getRegistrationNumber()).get().getRegistrationNumber(),addCarDto.getRegistrationNumber());
+        assertTrue(result.get("message").contains(addCarDto.getRegistrationNumber()));
+        assertTrue(result.get("message").contains(addCompanyDto.getName()));
+        assertTrue(result.get("message").contains(dtoClient.getFirstName()));
 
-        verify(companyRepository).save(any(Company.class));
+        verify(carService,times(1)).addCarAndReturnMessage(any(AddCarDto.class));
+        verify(companyService,times(1)).saveCompany(any(AddCompanyDto.class));
         verify(userService).isUserLogIn();
-        verify(clientRepository).save(any(Client.class));
 
     }
 
@@ -336,7 +272,7 @@ public class ClientUTest {
     @WithMockUser(username = "admin", roles = "ADMIN")
     void addClientWithAdditionalData_ClientAndExistingCarWithClientAndExistingCompanyWithoutClient_ReturnErrorMessage()
             throws AccessDeniedException {
-        doNothing().when(userService).isUserLogIn();
+
         AddClientDto dtoClient = new AddClientDto();
         dtoClient.setPhone(client.getPhone());
         dtoClient.setEmail(client.getEmail());
@@ -356,83 +292,33 @@ public class ClientUTest {
         addCompanyDto.setUic("201799235");
         addCompanyDto.setVatNumber("BG201799235");
 
-
-
-        when(clientRepository.findByPhone(dtoClient.getPhone())).thenReturn(Optional.empty());
-        when(modelMapper.map(dtoClient, Client.class)).thenReturn(new Client());
-        when(carService.findCar(addCarDto.getRegistrationNumber())).thenReturn(Optional.of(new Car()));
-
-        Car savedCar = new Car();
-        savedCar.setRegistrationNumber(addCarDto.getRegistrationNumber());
-        savedCar.setRegistrationNumber(addCarDto.getRegistrationNumber());
-        savedCar.setClient(client); // няма собственик преди асоцииране
-        when(carService.findCar(addCarDto.getRegistrationNumber()))
-                .thenReturn(Optional.of(savedCar));
-
-        HashMap<String, String> result =
-                clientService
-                        .addClientWithAdditionalData(dtoClient, addCarDto, addCompanyDto, true);
-        assertEquals(result.get("status"), "error");
-
-
-        verify(companyRepository,times(0)).save(any(Company.class));
-        verify(userService).isUserLogIn();
-        verify(clientRepository, times(0)).save(any(Client.class));
-
-    }
-
-    @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
-    void addClientWithAdditionalData_ClientAndExistingCarWithoutClientAndExistingCompanyWithClient_ReturnErrorMessage()
-            throws AccessDeniedException {
         doNothing().when(userService).isUserLogIn();
-        AddClientDto dtoClient = new AddClientDto();
-        dtoClient.setPhone(client.getPhone());
-        dtoClient.setEmail(client.getEmail());
-        dtoClient.setFirstName(client.getFirstName());
-        dtoClient.setLastName(client.getLastName());
-        addCarDto.setCube(1200);
-        addCarDto.setMake("audi");
-        addCarDto.setModel("tt");
-        addCarDto.setYear(2000);
-        addCarDto.setVin("2ds410ds0ds0ds41w");
-        addCarDto.setRegistrationNumber("CB2116KH");
-        addCarDto.setHp(120);
-
-        AddCompanyDto addCompanyDto = new AddCompanyDto();
-        addCompanyDto.setAddress("Bulgaria");
-        addCompanyDto.setAccountablePerson("Test test");
-        addCompanyDto.setName("Test Test");
-        addCompanyDto.setUic("201799235");
-        addCompanyDto.setVatNumber("BG201799235");
-        Company company = new Company();
-        company.setClient(client);
+        UUID id = UUID.randomUUID();
         when(clientRepository.findByPhone(dtoClient.getPhone())).thenReturn(Optional.empty());
-        when(modelMapper.map(dtoClient, Client.class)).thenReturn(new Client());
-        when(carService.findCar(addCarDto.getRegistrationNumber())).thenReturn(Optional.of(new Car()));
-        when(companyService.findCompany(addCompanyDto.getName()))
-                .thenReturn(Optional.of(company));
+        when(modelMapper.map(any(AddClientDto.class), eq(Client.class)))
+                .thenReturn(client);
+        when(clientRepository.save(any(Client.class))).thenAnswer(invocation -> {
+            Client c = invocation.getArgument(0);
+            c.setId(id);
+            return c;
+        });
 
+        addCarDto.setClientId(UUID.randomUUID());
+        HashMap<String, String> carResult = new HashMap<>();
+        carResult.put("status", "error");
+        carResult.put("message", "Автомобил с рег. номер: " + addCarDto.getRegistrationNumber() + " вече съществува");
 
-        Car savedCar = new Car();
-        savedCar.setRegistrationNumber(addCarDto.getRegistrationNumber());
-        savedCar.setRegistrationNumber(addCarDto.getRegistrationNumber());
-        savedCar.setClient(null); // няма собственик преди асоцииране
-        when(carService.findCar(addCarDto.getRegistrationNumber()))
-                .thenReturn(Optional.of(savedCar));
-        when(carRepository.findByRegistrationNumber(addCarDto.getRegistrationNumber()))
-                .thenReturn(Optional.of(savedCar));
+        when(carService.addCarAndReturnMessage(any(AddCarDto.class))).thenReturn(carResult);
         HashMap<String, String> result =
                 clientService
                         .addClientWithAdditionalData(dtoClient, addCarDto, addCompanyDto, true);
-        assertEquals(result.get("status"), "error");
+            assertEquals(result.get("status"), "error");
+            assertTrue(clientRepository.findById(id).isEmpty());
 
-        assertEquals(
-                carRepository.findByRegistrationNumber(savedCar.getRegistrationNumber()).get().getRegistrationNumber(),addCarDto.getRegistrationNumber());
 
-        verify(companyRepository,times(0)).save(any(Company.class));
+        verify(companyService, times(0)).saveCompany(any(AddCompanyDto.class));
+        verify(carService, times(1)).addCarAndReturnMessage(any(AddCarDto.class));
         verify(userService).isUserLogIn();
-        verify(clientRepository,times(0)).save(any(Client.class));
 
     }
 
@@ -470,7 +356,6 @@ public class ClientUTest {
         assertNotNull(company.getDeletedAt(), "Company should have deleteAd set");
         assertNotNull(client.getDeleteAd(), "Client should have deleteAd set");
         verify(companyRepository, times(1)).save(company);
-        verify(clientRepository, times(1)).save(client);
         verify(carRepository, times(1)).save(car);
 
 

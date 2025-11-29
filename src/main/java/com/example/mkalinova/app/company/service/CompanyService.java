@@ -20,14 +20,12 @@ public interface CompanyService {
 
     HashMap<String, String> saveCompany(AddCompanyDto addCompanyDto) throws AccessDeniedException;
 
-    Optional<Company> findCompany(String name);
+    Optional<Company> findCompanyByNameOrUic(String name, String uic);
 
-    boolean findByCompanyNameOrUic(String name, String uic);
 
     HashMap<String, String> deleteCompany(String id) throws AccessDeniedException;
 
 
-    List<CompanyRepairDto> findByClientId(UUID id);
 
     <T> Object getById(UUID id, Class<T> clazz);
 
@@ -38,7 +36,7 @@ public interface CompanyService {
     List<Company> getAllCompaniesByClientId(UUID id);
 
     ClientDto getCompanyClient(UUID id);
-    HashMap<String, String> removeClient(UUID id, UUID companyId) throws AccessDeniedException;
+    HashMap<String, String> removeClient(UUID id, UUID companyId);
 
     List<FetchCompaniesDto> fetchCompaniesByClientId(UUID id);
 

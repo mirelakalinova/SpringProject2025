@@ -269,7 +269,7 @@ public class PartUTest {
         assertThrows(AccessDeniedException.class, () -> service.deletePart(partFirst.getId()));
         verify(partRepository, times(0)).findById(partFirst.getId());
         verify(partRepository, times(0)).save(partFirst);
-        assertEquals(null, partFirst.getDeletedAt());
+        assertNull(partFirst.getDeletedAt());
 
 
     }
@@ -283,7 +283,7 @@ public class PartUTest {
         assertThrows(AccessDeniedException.class, () -> service.deletePart(partFirst.getId()));
         verify(partRepository, times(0)).findById(partFirst.getId());
         verify(partRepository, times(0)).save(partFirst);
-        assertEquals(null, partFirst.getDeletedAt());
+        assertNull(partFirst.getDeletedAt());
 
 
     }

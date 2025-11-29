@@ -9,6 +9,7 @@ import com.example.mkalinova.app.company.repo.CompanyRepository;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.service.UserService;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -52,6 +53,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    @Transactional
     public HashMap<String, String> saveCompany(AddCompanyDto addCompanyDto) throws AccessDeniedException {
         log.debug("Attempt to add company with uic {}", addCompanyDto.getUic());
 
@@ -66,9 +68,20 @@ public class CompanyServiceImpl implements CompanyService {
 
         try {
             Company company = modelMapper.map(addCompanyDto, Company.class);
+            if(addCompanyDto.getClientId() !=null){
+                Optional<Client> client = clientRepository.findById(addCompanyDto.getClientId());
+                if (client.isPresent()) {
+                    company.setClient(client.get());
+                }else {
+                    result.put("status", "error");
+                    result.put("message", "Нещо се обърка при добавяне на компания и закаченето ѝ към клиент! ");
+                    log.error("Unsuccessfully add new company with uic number: {}. The client with id {} does not exist!", addCompanyDto.getUic(), addCompanyDto.getClientId());
+                    return result;
+                }
+            }
             companyRepository.save(company);
             result.put("status", "success");
-            result.put("Message", "Успешно добавена компания: " + addCompanyDto.getName());
+            result.put("message", "Успешно добавена компания: " + addCompanyDto.getName());
             log.info("Successfully added company with name: {}", addCompanyDto.getName());
             return result;
         } catch (Exception e) {
@@ -78,18 +91,23 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Optional<Company> findCompany(String name) {
-        log.debug("Attempt to find company by name {}", name);
-        return companyRepository.findByName(name);
+    public Optional<Company> findCompanyByNameOrUic(String name, String uic) {
+        log.info("Attempt to find company by name {}", name);
+        Optional<Company> companyByName = companyRepository.findByName(name);
+        if(companyByName.isPresent()){
+            log.info("Successfully find company name {}", name);
+            return companyByName;
+        }
+        Optional<Company> companyByUic=companyRepository.findByUic(uic);
+        if(companyByUic.isPresent()){
+            log.info("Successfully find company uic {}", uic);
+            return companyByUic;
+        }
+        log.info("No company with name {} and uic {} is present", name, uic);
+
+        return Optional.empty();
 
 
-    }
-
-
-    @Override
-    public boolean findByCompanyNameOrUic(String name, String uic) {
-        log.debug("Attempt to find company by name {} or uic {}", name, uic);
-        return companyRepository.findByUic(uic).isPresent() || companyRepository.findByName(name).isPresent();
     }
 
     @Override
@@ -120,28 +138,9 @@ public class CompanyServiceImpl implements CompanyService {
 
     }
 
-    @Override
-    public List<CompanyRepairDto> findByClientId(UUID id) {
-        log.debug("Attempt to find a company by client id {}", id);
-        List<CompanyRepairDto> companylist = new ArrayList<>();
-        List<Company> companies = companyRepository.findAll();
-
-        for (Company company : companies) {
-
-            if (Objects.equals(company.getClient().getId(), id)) {
-
-                companylist.add(modelMapper.map(company, CompanyRepairDto.class));
-            }
-        }
-        log.info("Successfully return a list with companies for client id {}", id);
-        return companylist;
-
-
-    }
 
     @Override
     public <T> Object getById(UUID id, Class<T> clazz) {
-        //todo check usage
         if (companyRepository.findById(id).isPresent()) {
             return modelMapper.map(companyRepository.findById(id).get(), clazz);
 
@@ -156,7 +155,7 @@ public class CompanyServiceImpl implements CompanyService {
         userService.isUserLogIn();
 
         Optional<Company> optCompany = companyRepository.findById(editCompanyDto.getId());
-        if (!optCompany.isPresent()) {
+        if (optCompany.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма намерена фирма с #:" + editCompanyDto.getId());
         }
         HashMap<String, String> result = new HashMap<>();
@@ -196,7 +195,6 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public <T> Object findById(UUID companyId, Class<T> clazz) {
-        //todo check usage
         log.debug("Attempt to find company by id {}", companyId);
         Optional<Company> company = companyRepository.findById(companyId);
         return company.<Object>map(value -> modelMapper.map(value, clazz)).orElse(null);
@@ -225,9 +223,8 @@ public class CompanyServiceImpl implements CompanyService {
         return null;
     }
 
-    //todo -> add UTest
     @Override
-    public HashMap<String, String> removeClient(UUID id, UUID companyId) throws AccessDeniedException {
+    public HashMap<String, String> removeClient(UUID id, UUID companyId) {
         log.debug("Attempt to remove client with id {} of a company with id {}", id, companyId);
         Optional<Company> companyToUpdate = companyRepository.findById(companyId);
         Optional<Client> clientToRemove = clientRepository.findById(id);
@@ -243,9 +240,7 @@ public class CompanyServiceImpl implements CompanyService {
                 return result;
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Клиент с #" + id + " не беше намерен!");
-
             }
-
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Компания с #" + companyId + " не беше намерена!");
         }

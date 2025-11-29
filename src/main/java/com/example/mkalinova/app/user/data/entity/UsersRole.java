@@ -6,7 +6,7 @@ public enum UsersRole {
 
     public final String label;
 
-    private UsersRole(String label) {
+    UsersRole(String label) {
         this.label = label;
     }
 

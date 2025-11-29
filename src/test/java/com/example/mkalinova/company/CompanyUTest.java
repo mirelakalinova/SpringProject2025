@@ -31,7 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
@@ -353,7 +352,7 @@ public class CompanyUTest {
 
         verify(companyRepository, never()).findById(dto.getId());
         verify(companyRepository, never()).saveAndFlush(company);
-        assertEquals(null, company.getDeletedAt());
+        assertNull(company.getDeletedAt());
 
 
 
