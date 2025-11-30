@@ -37,7 +37,7 @@
 							<option th:if="${carsWithoutUser.empty}" disabled th:value="null">Няма налични коли</option>
 							<option th:each="car : ${carsWithoutUser}"
 									th:text="${car.registrationNumber} "
-									th:value="${car.id}"></option>
+									th:value="${car.carId}"></option>
 						</select>
 
 					</div>
