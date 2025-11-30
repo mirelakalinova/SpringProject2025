@@ -133,8 +133,7 @@ public class ClientUTest {
 	
 	@Test
 	@WithMockUser(username = "admin", roles = "ADMIN")
-	void addClientWithAdditionalData_Client_ReturnSuccessMessage()
-			throws AccessDeniedException {
+	void addClientWithAdditionalData_Client_ReturnSuccessMessage() throws AccessDeniedException {
 		doNothing().when(userService).isUserLogIn();
 		AddClientDto dtoClient = new AddClientDto();
 		dtoClient.setPhone(client.getPhone());
@@ -145,9 +144,7 @@ public class ClientUTest {
 		
 		when(clientRepository.findByPhone(dtoClient.getPhone())).thenReturn(Optional.empty());
 		when(modelMapper.map(dtoClient, Client.class)).thenReturn(new Client());
-		HashMap<String, String> result =
-				clientService
-						.addClientWithAdditionalData(dtoClient, null, null, false);
+		HashMap<String, String> result = clientService.addClientWithAdditionalData(dtoClient, null, null, false);
 		
 		assertEquals("success", result.get("status"));
 		assertEquals("0896619422", dtoClient.getPhone());
@@ -160,8 +157,7 @@ public class ClientUTest {
 	
 	@Test
 	@WithMockUser(username = "admin", roles = "ADMIN")
-	void addClientWithAdditionalData_ClientAndExistingCarWithoutClient_ReturnSuccessMessage()
-			throws AccessDeniedException {
+	void addClientWithAdditionalData_ClientAndExistingCarWithoutClient_ReturnSuccessMessage() throws AccessDeniedException {
 		AddClientDto dtoClient = new AddClientDto();
 		dtoClient.setPhone("0896619445");
 		dtoClient.setEmail("test3@abv.bg");
@@ -179,8 +175,7 @@ public class ClientUTest {
 		doNothing().when(userService).isUserLogIn();
 		UUID id = UUID.randomUUID();
 		when(clientRepository.findByPhone(dtoClient.getPhone())).thenReturn(Optional.empty());
-		when(modelMapper.map(any(AddClientDto.class), eq(Client.class)))
-				.thenReturn(new Client());
+		when(modelMapper.map(any(AddClientDto.class), eq(Client.class))).thenReturn(new Client());
 		when(clientRepository.save(any(Client.class))).thenAnswer(invocation -> {
 			Client c = invocation.getArgument(0);
 			c.setId(id);
@@ -195,9 +190,7 @@ public class ClientUTest {
 		
 		when(carService.addCarAndReturnMessage(any(AddCarDto.class))).thenReturn(carResult);
 		
-		HashMap<String, String> result =
-				clientService
-						.addClientWithAdditionalData(dtoClient, addCarDto, null, false);
+		HashMap<String, String> result = clientService.addClientWithAdditionalData(dtoClient, addCarDto, null, false);
 		assertEquals(result.get("status"), "success");
 		assertTrue(result.get("message").contains(addCarDto.getRegistrationNumber()));
 		assertTrue(result.get("message").contains(dtoClient.getFirstName()));
@@ -211,8 +204,7 @@ public class ClientUTest {
 	
 	@Test
 	@WithMockUser(username = "admin", roles = "ADMIN")
-	void addClientWithAdditionalData_ClientAndExistingCarWithoutClientAndExistingCompanyWithoutClient_ReturnSuccessMessage()
-			throws AccessDeniedException {
+	void addClientWithAdditionalData_ClientAndExistingCarWithoutClientAndExistingCompanyWithoutClient_ReturnSuccessMessage() throws AccessDeniedException {
 		
 		AddClientDto dtoClient = new AddClientDto();
 		dtoClient.setPhone("0896619445");
@@ -236,8 +228,7 @@ public class ClientUTest {
 		doNothing().when(userService).isUserLogIn();
 		UUID id = UUID.randomUUID();
 		when(clientRepository.findByPhone(dtoClient.getPhone())).thenReturn(Optional.empty());
-		when(modelMapper.map(any(AddClientDto.class), eq(Client.class)))
-				.thenReturn(new Client());
+		when(modelMapper.map(any(AddClientDto.class), eq(Client.class))).thenReturn(new Client());
 		when(clientRepository.save(any(Client.class))).thenAnswer(invocation -> {
 			Client c = invocation.getArgument(0);
 			c.setId(id);
@@ -254,9 +245,7 @@ public class ClientUTest {
 		companyResult.put("message", "Успешно добавена компания: " + addCompanyDto.getName());
 		when(carService.addCarAndReturnMessage(any(AddCarDto.class))).thenReturn(carResult);
 		when(companyService.saveCompany(any(AddCompanyDto.class))).thenReturn(companyResult);
-		HashMap<String, String> result =
-				clientService
-						.addClientWithAdditionalData(dtoClient, addCarDto, addCompanyDto, true);
+		HashMap<String, String> result = clientService.addClientWithAdditionalData(dtoClient, addCarDto, addCompanyDto, true);
 		assertEquals(result.get("status"), "success");
 		assertTrue(result.get("message").contains(addCarDto.getRegistrationNumber()));
 		assertTrue(result.get("message").contains(addCompanyDto.getName()));
@@ -270,8 +259,7 @@ public class ClientUTest {
 	
 	@Test
 	@WithMockUser(username = "admin", roles = "ADMIN")
-	void addClientWithAdditionalData_ClientAndExistingCarWithClientAndExistingCompanyWithoutClient_ReturnErrorMessage()
-			throws AccessDeniedException {
+	void addClientWithAdditionalData_ClientAndExistingCarWithClientAndExistingCompanyWithoutClient_ReturnErrorMessage() throws AccessDeniedException {
 		
 		AddClientDto dtoClient = new AddClientDto();
 		dtoClient.setPhone(client.getPhone());
@@ -295,8 +283,7 @@ public class ClientUTest {
 		doNothing().when(userService).isUserLogIn();
 		UUID id = UUID.randomUUID();
 		when(clientRepository.findByPhone(dtoClient.getPhone())).thenReturn(Optional.empty());
-		when(modelMapper.map(any(AddClientDto.class), eq(Client.class)))
-				.thenReturn(client);
+		when(modelMapper.map(any(AddClientDto.class), eq(Client.class))).thenReturn(client);
 		when(clientRepository.save(any(Client.class))).thenAnswer(invocation -> {
 			Client c = invocation.getArgument(0);
 			c.setId(id);
@@ -309,9 +296,7 @@ public class ClientUTest {
 		carResult.put("message", "Автомобил с рег. номер: " + addCarDto.getRegistrationNumber() + " вече съществува");
 		
 		when(carService.addCarAndReturnMessage(any(AddCarDto.class))).thenReturn(carResult);
-		HashMap<String, String> result =
-				clientService
-						.addClientWithAdditionalData(dtoClient, addCarDto, addCompanyDto, true);
+		HashMap<String, String> result = clientService.addClientWithAdditionalData(dtoClient, addCarDto, addCompanyDto, true);
 		assertEquals(result.get("status"), "error");
 		assertTrue(clientRepository.findById(id).isEmpty());
 		
@@ -324,8 +309,7 @@ public class ClientUTest {
 	
 	@Test
 	@WithMockUser(username = "admin", roles = "ADMIN")
-	void deleteClient_WithAllData_Success()
-			throws AccessDeniedException {
+	void deleteClient_WithAllData_Success() throws AccessDeniedException {
 		doNothing().when(userService).isUserLogIn();
 		UUID clientId = UUID.randomUUID();
 		
@@ -349,8 +333,7 @@ public class ClientUTest {
 		company.setId(companyId);
 		companies.add(company);
 		
-		when(companyService.getAllCompaniesByClientId(clientId))
-				.thenReturn(companies);
+		when(companyService.getAllCompaniesByClientId(clientId)).thenReturn(companies);
 		clientService.deleteClient(clientId);
 		assertNotNull(car.getDeletedAt(), "Car should have deletedAt set");
 		assertNotNull(company.getDeletedAt(), "Company should have deleteAd set");
@@ -363,8 +346,7 @@ public class ClientUTest {
 	
 	@Test
 	@WithMockUser(username = "admin", roles = "ADMIN")
-	void deleteClient_ReturnResponseStatusException()
-			throws AccessDeniedException {
+	void deleteClient_ReturnResponseStatusException() throws AccessDeniedException {
 		doNothing().when(userService).isUserLogIn();
 		UUID clientId = UUID.randomUUID();
 		
@@ -401,8 +383,7 @@ public class ClientUTest {
 	
 	@Test
 	@WithMockUser(username = "admin", roles = "ADMIN")
-	void updateClient_ReturnResponseStatusException()
-			throws AccessDeniedException {
+	void updateClient_ReturnResponseStatusException() throws AccessDeniedException {
 		doNothing().when(userService).isUserLogIn();
 		
 		EditClientDto editClientDto = new EditClientDto();
@@ -422,8 +403,7 @@ public class ClientUTest {
 	@Test
 	@WithAnonymousUser
 	void updateClient_ReturnAccessDenied() throws AccessDeniedException {
-		doThrow(new AccessDeniedException("Нямате права да извършите тази опреация!"))
-				.when(userService).isUserLogIn();
+		doThrow(new AccessDeniedException("Нямате права да извършите тази опреация!")).when(userService).isUserLogIn();
 		EditClientDto editClientDto = new EditClientDto();
 		editClientDto.setId(UUID.randomUUID());
 		editClientDto.setLastName("Test");
@@ -440,8 +420,7 @@ public class ClientUTest {
 	
 	@Test
 	@WithMockUser(username = "admin", roles = "ADMIN")
-	void updateClient_WithoutCarAndCompany_Success()
-			throws AccessDeniedException {
+	void updateClient_WithoutCarAndCompany_Success() throws AccessDeniedException {
 		doNothing().when(userService).isUserLogIn();
 		
 		EditClientDto editClientDto = new EditClientDto();
@@ -449,18 +428,17 @@ public class ClientUTest {
 		editClientDto.setLastName("Test");
 		editClientDto.setFirstName("Test");
 		editClientDto.setPhone("0896619422");
-		when(clientRepository.findById(editClientDto.getId()))
-				.thenReturn(Optional.of(client));
-	
+		when(clientRepository.findById(editClientDto.getId())).thenReturn(Optional.of(client));
+		
 		HashMap<String, String> result = clientService.updateClient(editClientDto.getId(), editClientDto);
 		assertEquals("success", result.get("status"));
-	
+		
 		
 	}
+	
 	@Test
 	@WithMockUser(username = "admin", roles = "ADMIN")
-	void updateClient_WithCarAndCompany_Success()
-			throws AccessDeniedException {
+	void updateClient_WithCarAndCompany_Success() throws AccessDeniedException {
 		doNothing().when(userService).isUserLogIn();
 		
 		EditClientDto editClientDto = new EditClientDto();
@@ -479,7 +457,7 @@ public class ClientUTest {
 		car.setYear(2014);
 		car.setId(UUID.randomUUID());
 		carRepository.save(car);
-	
+		
 		Company company = new Company();
 		company.setName("test");
 		company.setId(UUID.randomUUID());
@@ -491,8 +469,7 @@ public class ClientUTest {
 		companyRepository.save(company);
 		editClientDto.setCarId(car.getId());
 		editClientDto.setCompanyId(company.getId());
-		when(clientRepository.findById(editClientDto.getId()))
-				.thenReturn(Optional.of(client));
+		when(clientRepository.findById(editClientDto.getId())).thenReturn(Optional.of(client));
 		when(carService.findById(car.getId(), Car.class)).thenReturn(car);
 		when(companyService.findById(company.getId(), Company.class)).thenReturn(company);
 		HashMap<String, String> result = clientService.updateClient(editClientDto.getId(), editClientDto);
@@ -506,8 +483,7 @@ public class ClientUTest {
 	
 	@Test
 	@WithMockUser(username = "admin", roles = "ADMIN")
-	void updateClient_WithCarAndCompanyWithClient_ErrorMessage()
-			throws AccessDeniedException {
+	void updateClient_WithCarAndCompanyWithClient_ErrorMessage() throws AccessDeniedException {
 		doNothing().when(userService).isUserLogIn();
 		
 		EditClientDto editClientDto = new EditClientDto();
@@ -544,8 +520,7 @@ public class ClientUTest {
 		company.setClient(clientSecond);
 		editClientDto.setCarId(car.getId());
 		editClientDto.setCompanyId(company.getId());
-		when(clientRepository.findById(editClientDto.getId()))
-				.thenReturn(Optional.of(client));
+		when(clientRepository.findById(editClientDto.getId())).thenReturn(Optional.of(client));
 		when(carService.findById(car.getId(), Car.class)).thenReturn(car);
 		when(companyService.findById(company.getId(), Company.class)).thenReturn(company);
 		HashMap<String, String> result = clientService.updateClient(editClientDto.getId(), editClientDto);
@@ -558,8 +533,7 @@ public class ClientUTest {
 	
 	@Test
 	@WithMockUser(username = "admin", roles = "ADMIN")
-	void updateClient_WithCarWithClientAndCompany_ErrorMessage()
-			throws AccessDeniedException {
+	void updateClient_WithCarWithClientAndCompany_ErrorMessage() throws AccessDeniedException {
 		doNothing().when(userService).isUserLogIn();
 		
 		EditClientDto editClientDto = new EditClientDto();
@@ -598,8 +572,7 @@ public class ClientUTest {
 		company.setClient(clientSecond);
 		editClientDto.setCarId(car.getId());
 		editClientDto.setCompanyId(company.getId());
-		when(clientRepository.findById(editClientDto.getId()))
-				.thenReturn(Optional.of(client));
+		when(clientRepository.findById(editClientDto.getId())).thenReturn(Optional.of(client));
 		when(carService.findById(car.getId(), Car.class)).thenReturn(car);
 		HashMap<String, String> result = clientService.updateClient(editClientDto.getId(), editClientDto);
 		assertEquals("error", result.get("status"));
@@ -630,9 +603,38 @@ public class ClientUTest {
 		List<ClientListDto> result = clientService.findAll(ClientListDto.class);
 		assertNotNull(result);
 		assertEquals(1, result.size());
-	
 		
 		
 	}
-
+	
+	@Test
+	void removeCar_whenCarClientDoesNotMatchClientToUpdate_thenReturnError() throws Exception {
+		UUID carId = UUID.randomUUID();
+		UUID clientId = UUID.randomUUID();
+		
+		client = new Client();
+		client.setId(clientId);
+		
+		Car car = new Car();
+		car.setId(carId);
+		car.setRegistrationNumber("CB1234TT");
+		car.setClient(client);
+		doNothing().when(userService).isUserLogIn();
+		
+		Client otherClient = new Client();
+		otherClient.setId(UUID.randomUUID());
+		
+		car.setClient(client);
+		when(carRepository.findById(carId)).thenReturn(Optional.of(car));
+		when(clientRepository.findById(clientId)).thenReturn(Optional.of(otherClient));
+		
+		HashMap<String, String> result = clientService.removeCar(carId, clientId);
+		
+		assertNotNull(result);
+		assertEquals("error", result.get("status"));
+		assertTrue(result.get("message").contains("Нещо се обърка"));
+		verify(carRepository, never()).save(any());
+		verify(userService).isUserLogIn();
+	}
+	
 }

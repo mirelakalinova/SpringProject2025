@@ -257,7 +257,6 @@ public class ClientController extends BaseController {
 		HashMap<String, Object> response = new HashMap<>();
 		try {
 			
-			
 			List<FetchClientListDto> clientList = clientService.fetchAllClientsByDeletedAtNull();
 			response.put("clients", clientList);
 			return ResponseEntity.ok(response);
@@ -271,7 +270,7 @@ public class ClientController extends BaseController {
 	
 	@GetMapping("/fetch/companies/{id}")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> fetchClientByCarId(
+	public ResponseEntity<Map<String, Object>> fetchCompaniesByClientId(
 			@PathVariable("id") String id) {
 		UUID uuid = UUID.fromString(id);
 		HashMap<String, Object> response = new HashMap<>();
