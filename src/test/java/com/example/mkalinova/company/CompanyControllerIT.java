@@ -1,6 +1,7 @@
 package com.example.mkalinova.company;
 
 
+import com.example.mkalinova.app.client.data.dto.ClientListCarDto;
 import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.client.repo.ClientRepository;
 import com.example.mkalinova.app.company.data.dto.CompanyListDto;
@@ -25,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -122,6 +124,17 @@ public class CompanyControllerIT {
 						.contentType(MediaType.TEXT_HTML))
 				.andExpect(status().isOk())
 				.andExpect(model().attribute("companies", hasSize(1)));
+	}
+	
+	@Test
+	public void addCompany() throws Exception {
+		List<ClientListCarDto> list = new ArrayList<>();
+		list.add(modelMapper.map(client, ClientListCarDto.class));
+		
+		mockMvc.perform(get("/company/add")
+						.contentType(MediaType.TEXT_HTML))
+				.andExpect(status().isOk())
+				.andExpect(model().attribute("clients", hasSize(1)));
 	}
 	
 	

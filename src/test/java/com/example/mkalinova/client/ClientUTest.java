@@ -637,4 +637,70 @@ public class ClientUTest {
 		verify(userService).isUserLogIn();
 	}
 	
+	@Test
+	void removeCar_ResponseStatusException() throws Exception {
+		UUID carId = UUID.randomUUID();
+		UUID clientId = UUID.randomUUID();
+		
+		client = new Client();
+		client.setId(UUID.randomUUID());
+		
+		Car car = new Car();
+		car.setId(carId);
+		car.setRegistrationNumber("CB1234TT");
+		car.setClient(client);
+		doNothing().when(userService).isUserLogIn();
+		
+		Client otherClient = new Client();
+		otherClient.setId(UUID.randomUUID());
+		
+		car.setClient(client);
+		when(carRepository.findById(carId)).thenReturn(Optional.of(car));
+		when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
+		
+		assertThrows(ResponseStatusException.class, () -> {
+			clientService.removeCar(carId, clientId);
+		});
+		
+		
+		
+		verify(carRepository, never()).save(any());
+		verify(userService).isUserLogIn();
+	}
+	
+	
+	@Test
+	void removeCompany_ResponseStatusException() throws Exception {
+		UUID companyId = UUID.randomUUID();
+		UUID clientId = UUID.randomUUID();
+		
+		client = new Client();
+		client.setId(clientId);
+		
+		Company company = new Company();
+		company.setName("test");
+		company.setId(companyId);
+		company.setUic("201478523");
+		company.setVatNumber("BG201478523");
+		company.setAddress("Test address");
+		company.setAccountablePerson("Test Test");
+		company.setClient(client);
+		doNothing().when(userService).isUserLogIn();
+		
+		Client otherClient = new Client();
+		otherClient.setId(UUID.randomUUID());
+		
+		company.setClient(client);
+		when(companyRepository.findById(companyId)).thenReturn(Optional.of(company));
+		when(clientRepository.findById(clientId)).thenReturn(Optional.of(otherClient));
+		
+		HashMap<String, String> result = clientService.removeCompany(companyId, clientId);
+		
+		assertNotNull(result);
+		assertEquals("error", result.get("status"));
+		assertTrue(result.get("message").contains("Нещо се обърка"));
+		verify(carRepository, never()).save(any());
+		verify(userService).isUserLogIn();
+	}
+	
 }
