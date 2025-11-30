@@ -3,6 +3,9 @@ package com.example.mkalinova.car;
 import com.example.mkalinova.app.car.data.dto.CarDto;
 import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.car.repo.CarRepository;
+import com.example.mkalinova.app.client.data.entity.Client;
+import com.example.mkalinova.app.client.repo.ClientRepository;
+import com.example.mkalinova.app.company.data.entity.Company;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.data.entity.UsersRole;
 import com.example.mkalinova.app.user.repo.UserRepository;
@@ -17,7 +20,9 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,6 +47,8 @@ public class CarControllerIT {
 	private Car carSecond;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private ClientRepository clientRepository;
 	private User admin;
 	private User editor;
 	
@@ -283,5 +290,45 @@ public class CarControllerIT {
 		assertTrue(car.isEmpty());
 	}
 	
+	@Test
+	@WithMockUser(username = "admin", roles = {"ADMIN"})
+	public void fetchAllCars_ReturnList() throws Exception {
+		carSecond.setDeletedAt(LocalDateTime.now());
+		carRepository.save(carSecond);
+		
+		mockMvc.perform(get("/car/fetch/cars")
+						.contentType(MediaType.APPLICATION_JSON)
+						.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.cars").isArray())
+				.andExpect(jsonPath("$.cars.length()").value(1))
+				.andExpect(jsonPath("$.cars[0].registrationNumber").value("CB2116KH"));
+		
+	}
+	
+	
+	@Test
+	@WithMockUser(username = "admin", roles = {"ADMIN"})
+	public void fetchClientByCarId_ReturnList() throws Exception {
+		
+		
+		Client client = new Client();
+		client.setPhone("0896619422");
+		
+		client.setFirstName("Test");
+		client.setLastName("Test");
+		client.setCars(List.of(carFirst));
+		clientRepository.save(client);
+		carFirst.setClient(client);
+		carRepository.save(carFirst);
+		mockMvc.perform(get("/car/fetch/client/{id}", carFirst.getId())
+						.contentType(MediaType.APPLICATION_JSON)
+						.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.clients").isArray())
+				.andExpect(jsonPath("$.clients.length()").value(1))
+				.andExpect(jsonPath("$.clients[0].phone").value("0896619422"));
+		
+	}
 	
 }

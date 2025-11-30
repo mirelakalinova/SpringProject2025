@@ -596,11 +596,33 @@ public class ClientControllerIT {
 				.andExpect(flash().attribute("status", "success"))
 				.andExpect(flash().attributeExists("message"));
 		
-		// Проверка в базата дали car вече не е свързан с клиента
 		Optional<Company> optCompany = companyRepository.findById(companyId);
 		assertTrue(optCompany.isPresent());
 		assertNull(optCompany.get().getClient());
 	}
+	
+	
+	@Test
+	@WithMockUser(username = "admin", roles = {"ADMIN"})
+	public void removeCompanyFromClient_ResponseStatusException() throws Exception {
+		Company company = new Company();
+		company.setName("Audi");
+		company.setUic("201799236");
+		company.setVatNumber("BG201799236");
+		company.setAddress("1HGBH41JXMN109177");
+		company.setAccountablePerson("Test test");
+		company.setClient(clientFirst);
+		companyRepository.saveAndFlush(company);
+		UUID clientId = clientFirst.getId();
+		UUID companyId = UUID.randomUUID();
+		
+		
+		mockMvc.perform(post("/client/remove-company/{id}", companyId)
+						.param("clientId", String.valueOf(clientId))
+						.with(csrf()))
+				.andExpect(status().is4xxClientError());
+	}
+	
 	
 	@Test
 	@WithMockUser(username = "admin", roles = {"ADMIN"})
