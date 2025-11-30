@@ -5,6 +5,7 @@ import com.example.mkalinova.app.order.data.dto.EditOrderDto;
 import com.example.mkalinova.app.order.data.dto.OrderListDto;
 
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -22,4 +23,5 @@ public interface OrderService {
 	List<OrderListDto> getAllOrders() throws AccessDeniedException;
 	
 	EditOrderDto getOrderById(UUID id);
+	int cleanOrder(LocalDateTime date);
 }
