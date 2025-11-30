@@ -33,6 +33,7 @@ import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -80,15 +81,13 @@ public class ClientControllerIT {
 		clientFirst.setFirstName("Test");
 		clientFirst.setLastName("Test");
 		clientFirst.setEmail("projects@zashev.com");
-		
-		
 		clientRepository.saveAndFlush(clientFirst);
+		
 		clientSecond = new Client();
 		clientSecond.setPhone("0896619423");
 		clientSecond.setFirstName("Test2");
 		clientSecond.setLastName("Test2");
 		clientSecond.setEmail("projects2@zashev.com");
-		
 		clientRepository.saveAndFlush(clientSecond);
 		
 		User user = new User();
@@ -664,9 +663,10 @@ public class ClientControllerIT {
 						.param("phone", "0898819465")
 						.with(csrf()))
 				.andExpect(status().is3xxRedirection());
-			
+		
 		
 	}
+	
 	@Test
 	@WithAnonymousUser
 	public void editClient_AccessDenied() throws Exception {
@@ -678,6 +678,70 @@ public class ClientControllerIT {
 						.with(csrf()))
 				.andExpect(status().isForbidden());
 		
+		
+	}
+	
+	@Test
+	@WithMockUser(username = "admin", roles = {"ADMIN"})
+	public void fetchAllClientsByDeletedAtNull_ReturnList() throws Exception {
+		clientSecond.setDeletedAt(LocalDateTime.now());
+		clientRepository.save(clientSecond);
+		
+		mockMvc.perform(get("/client/fetch/clients")
+						.contentType(MediaType.TEXT_HTML)
+						.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.clients").isArray())
+				.andExpect(jsonPath("$.clients.length()").value(1))
+				.andExpect(jsonPath("$.clients[0].firstName").value("Test"));
+		
+	}
+	
+	@Test
+	@WithMockUser(username = "admin", roles = {"ADMIN"})
+	public void fetchCompaniesByClientId_ReturnList() throws Exception {
+		
+		System.out.println(clientFirst.getId());
+		Company company = new Company();
+		company.setClient(clientFirst);
+		System.out.println(company.getClient().getId());
+		company.setUic("201201201");
+		company.setVatNumber("BG201201201");
+		company.setName("BG201201201");
+		company.setAddress("BG201201201");
+		company.setAccountablePerson("BG201201201");
+		companyRepository.save(company);
+		mockMvc.perform(get("/client/fetch/companies/{id}", clientFirst.getId())
+						.contentType(MediaType.TEXT_HTML)
+						.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.companies").isArray())
+				.andExpect(jsonPath("$.companies.length()").value(1))
+				.andExpect(jsonPath("$.companies[0].uic").value("201201201"));
+		
+	}
+	
+	@Test
+	@WithMockUser(username = "admin", roles = {"ADMIN"})
+	public void fetchCompaniesByClientId_ReturnEmptyList() throws Exception {
+		
+		System.out.println(clientFirst.getId());
+		Company company = new Company();
+		company.setClient(clientFirst);
+		company.setClient(clientSecond);
+		System.out.println(company.getClient().getId());
+		company.setUic("201201201");
+		company.setVatNumber("BG201201201");
+		company.setName("BG201201201");
+		company.setAddress("BG201201201");
+		company.setAccountablePerson("BG201201201");
+		companyRepository.save(company);
+		mockMvc.perform(get("/client/fetch/companies/{id}", clientFirst.getId())
+						.contentType(MediaType.TEXT_HTML)
+						.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.companies").isArray())
+				.andExpect(jsonPath("$.companies.length()").value(0));
 		
 	}
 	
