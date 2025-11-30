@@ -117,7 +117,7 @@ public class OrderUTest {
 		editor.setPassword("Password1234!");
 		editor.setRole(UsersRole.EDITOR);
 		order = new Order();
-		order.setCreated_at(LocalDateTime.now());
+		order.setCreatedAt(LocalDateTime.now());
 		order.setCompany(new Company());
 		order.setClient(new Client());
 		order.setDiscount(12D);

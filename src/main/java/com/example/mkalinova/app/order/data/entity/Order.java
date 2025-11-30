@@ -37,7 +37,7 @@ public class Order {
 	private LocalDateTime editedAt;
 	
 	@Column(name = "created_at")
-	private LocalDateTime created_at;
+	private LocalDateTime createdAt;
 	
 	@ManyToOne
 	@JoinColumn(name = "car_id")
@@ -135,12 +135,12 @@ public class Order {
 		this.note = note;
 	}
 	
-	public LocalDateTime getCreated_at() {
-		return created_at;
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	}
 	
-	public void setCreated_at(LocalDateTime created_at) {
-		this.created_at = created_at;
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 	
 	public LocalDateTime getDeletedAt() {
