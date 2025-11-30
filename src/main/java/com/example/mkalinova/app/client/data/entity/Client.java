@@ -26,7 +26,7 @@ public class Client {
 	@Column
 	private String email;
 	@Column(name = "deleted_at")
-	private LocalDateTime deleteAd;
+	private LocalDateTime deletedAt;
 	private String name;
 	
 	@OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
@@ -103,13 +103,13 @@ public class Client {
 		this.email = email;
 	}
 	
-	public LocalDateTime getDeleteAd() {
-		return deleteAd;
+	public LocalDateTime getDeletedAt() {
+		return deletedAt;
 	}
 	
 	
-	public void setDeleteAd(LocalDateTime deleteAd) {
-		this.deleteAd = deleteAd;
+	public void setDeletedAt(LocalDateTime deletedAt) {
+		this.deletedAt = deletedAt;
 	}
 	
 }
