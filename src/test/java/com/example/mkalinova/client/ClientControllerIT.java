@@ -35,8 +35,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -114,13 +113,39 @@ public class ClientControllerIT {
 	public void getClientList() throws Exception {
 		ArrayList<ClientListCarDto> list = new ArrayList<>();
 		list.add(modelMapper.map(clientFirst, ClientListCarDto.class));
-		clientSecond.setDeleteAd(LocalDateTime.now());
+		clientSecond.setDeletedAt(LocalDateTime.now());
 		clientRepository.saveAndFlush(clientSecond);
 		list.add(modelMapper.map(clientSecond, ClientListCarDto.class));
 		mockMvc.perform(get("/client/clients")
 						.contentType(MediaType.TEXT_HTML))
 				.andExpect(status().isOk())
 				.andExpect(model().attribute("clients", hasSize(1)));
+	}
+	
+	@Test
+	public void getAddClient() throws Exception {
+		Company company = new Company();
+		company.setName("test");
+		company.setUic("201478523");
+		company.setVatNumber("BG201478523");
+		company.setAddress("Test address");
+		company.setAccountablePerson("Test Test");
+		
+		Company companySecond = new Company();
+		companySecond.setName("test2");
+		companySecond.setUic("201478524");
+		companySecond.setVatNumber("BG201478524");
+		companySecond.setAddress("Test address");
+		companySecond.setAccountablePerson("Test Test");
+		companySecond.setDeleteAd(LocalDateTime.now());
+		companySecond.setClient(clientFirst);
+		
+		companyRepository.saveAndFlush(company);
+		companyRepository.saveAndFlush(companySecond);
+		mockMvc.perform(get("/client/add")
+						.contentType(MediaType.TEXT_HTML))
+				.andExpect(status().isOk())
+				.andExpect(model().attribute("companies", hasSize(1)));
 	}
 	
 	@Test
@@ -493,7 +518,7 @@ public class ClientControllerIT {
 		assertNotNull(optCompnay.get().getDeletedAt());
 		
 		Optional<Client> optClient = clientRepository.findById(clientFirst.getId());
-		assertNotNull(optClient.get().getDeleteAd());
+		assertNotNull(optClient.get().getDeletedAt());
 	}
 	
 	@Test
@@ -539,7 +564,7 @@ public class ClientControllerIT {
 				.andExpect(status().isForbidden());
 		
 		Optional<Client> optClient = clientRepository.findById(client.getId());
-		assertNull(optClient.get().getDeleteAd());
+		assertNull(optClient.get().getDeletedAt());
 		
 		Optional<Car> optCar = carRepository.findById(car.getId());
 		assertNull(optCar.get().getDeletedAt());
@@ -612,7 +637,6 @@ public class ClientControllerIT {
 	@Test
 	@WithMockUser(username = "admin", roles = {"ADMIN"})
 	public void editClient_ShouldReturnModelWithClientCarsAndCompanies() throws Exception {
-		// sanity: client exists
 		Optional<Client> c = clientRepository.findById(clientFirst.getId());
 		assertTrue(c.isPresent());
 		
@@ -620,8 +644,6 @@ public class ClientControllerIT {
 						.contentType(MediaType.TEXT_HTML)
 						.with(csrf()))
 				.andExpect(status().isOk())
-				
-				// model attributes existence
 				.andExpect(model().attributeExists("client"))
 				.andExpect(model().attributeExists("cars"))
 				.andExpect(model().attributeExists("clientId"))
@@ -630,5 +652,34 @@ public class ClientControllerIT {
 				.andExpect(model().attributeExists("companiesWithoutUser"));
 		
 	}
+	
+	@Test
+	@WithMockUser(username = "admin", roles = {"ADMIN"})
+	public void editClient_WithBindingResult_RedirectToClientEdit() throws Exception {
+		
+		mockMvc.perform(put("/client/edit/{id}", clientFirst.getId())
+						.param("firstName", "Te")
+						.param("lastName", "Testov")
+						.param("email", "projects45@gmail.com")
+						.param("phone", "0898819465")
+						.with(csrf()))
+				.andExpect(status().is3xxRedirection());
+			
+		
+	}
+	@Test
+	@WithAnonymousUser
+	public void editClient_AccessDenied() throws Exception {
+		mockMvc.perform(put("/client/edit/{id}", clientFirst.getId())
+						.param("firstName", "Test")
+						.param("lastName", "Testov")
+						.param("email", "projects45@gmail.com")
+						.param("phone", "0898819465")
+						.with(csrf()))
+				.andExpect(status().isForbidden());
+		
+		
+	}
+	
 }
 

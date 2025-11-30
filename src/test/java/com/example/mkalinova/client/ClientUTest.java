@@ -5,6 +5,9 @@ import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.car.repo.CarRepository;
 import com.example.mkalinova.app.car.service.CarServiceImpl;
 import com.example.mkalinova.app.client.data.dto.AddClientDto;
+import com.example.mkalinova.app.client.data.dto.ClientListCarDto;
+import com.example.mkalinova.app.client.data.dto.ClientListDto;
+import com.example.mkalinova.app.client.data.dto.EditClientDto;
 import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.client.repo.ClientRepository;
 import com.example.mkalinova.app.client.service.ClientServiceImpl;
@@ -25,6 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
@@ -69,6 +73,7 @@ public class ClientUTest {
 		client.setLastName("Testov");
 		client.setPhone("0896619422");
 		
+		
 		clientRepository.save(client);
 		
 		deletedClient = new Client();
@@ -76,7 +81,7 @@ public class ClientUTest {
 		deletedClient.setFirstName("Test");
 		deletedClient.setLastName("Testov");
 		deletedClient.setPhone("0896619424");
-		deletedClient.setDeleteAd(LocalDateTime.now());
+		deletedClient.setDeletedAt(LocalDateTime.now());
 		clientRepository.save(deletedClient);
 		
 		userRepository.deleteAll();
@@ -107,7 +112,6 @@ public class ClientUTest {
 			userService.isUserLogIn();
 		});
 		
-		// (по желание) Проверяваме, че методът е извикан точно веднъж
 		verify(userService, times(1)).isUserLogIn();
 	}
 	
@@ -350,10 +354,285 @@ public class ClientUTest {
 		clientService.deleteClient(clientId);
 		assertNotNull(car.getDeletedAt(), "Car should have deletedAt set");
 		assertNotNull(company.getDeletedAt(), "Company should have deleteAd set");
-		assertNotNull(client.getDeleteAd(), "Client should have deleteAd set");
+		assertNotNull(client.getDeletedAt(), "Client should have deleteAd set");
 		verify(companyRepository, times(1)).save(company);
 		verify(carRepository, times(1)).save(car);
 		
 		
 	}
+	
+	@Test
+	@WithMockUser(username = "admin", roles = "ADMIN")
+	void deleteClient_ReturnResponseStatusException()
+			throws AccessDeniedException {
+		doNothing().when(userService).isUserLogIn();
+		UUID clientId = UUID.randomUUID();
+		
+		when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
+		
+		List<Car> cars = new ArrayList<>();
+		Car car = new Car();
+		UUID carId = UUID.randomUUID();
+		car.setId(carId);
+		car.setRegistrationNumber("K2116KH");
+		car.setClient(client);
+		cars.add(car);
+		
+		
+		List<Company> companies = new ArrayList<>();
+		Company company = new Company();
+		company.setClient(client);
+		UUID companyId = UUID.randomUUID();
+		company.setId(companyId);
+		companies.add(company);
+		
+		assertThrows(ResponseStatusException.class, () -> {
+			clientService.deleteClient(clientId);
+		});
+		assertNull(car.getDeletedAt(), "Car should not have deletedAt set");
+		assertNull(company.getDeletedAt(), "Company not should have deleteAd set");
+		assertNull(client.getDeletedAt(), "Client should not have deleteAd set");
+		verify(companyRepository, times(0)).save(company);
+		verify(carRepository, times(0)).save(car);
+		
+		
+	}
+	
+	
+	@Test
+	@WithMockUser(username = "admin", roles = "ADMIN")
+	void updateClient_ReturnResponseStatusException()
+			throws AccessDeniedException {
+		doNothing().when(userService).isUserLogIn();
+		
+		EditClientDto editClientDto = new EditClientDto();
+		editClientDto.setId(UUID.randomUUID());
+		editClientDto.setLastName("Test");
+		editClientDto.setFirstName("Test");
+		editClientDto.setPhone("0896619422");
+		when(clientRepository.findById(editClientDto.getId())).thenReturn(Optional.empty());
+		
+		
+		assertThrows(ResponseStatusException.class, () -> {
+			clientService.updateClient(editClientDto.getId(), editClientDto);
+		});
+		
+	}
+	
+	@Test
+	@WithAnonymousUser
+	void updateClient_ReturnAccessDenied() throws AccessDeniedException {
+		doThrow(new AccessDeniedException("Нямате права да извършите тази опреация!"))
+				.when(userService).isUserLogIn();
+		EditClientDto editClientDto = new EditClientDto();
+		editClientDto.setId(UUID.randomUUID());
+		editClientDto.setLastName("Test");
+		editClientDto.setFirstName("Test");
+		editClientDto.setPhone("0896619422");
+		
+		
+		assertThrows(AccessDeniedException.class, () -> {
+			clientService.updateClient(editClientDto.getId(), editClientDto);
+		});
+		
+		verify(userService, times(1)).isUserLogIn();
+	}
+	
+	@Test
+	@WithMockUser(username = "admin", roles = "ADMIN")
+	void updateClient_WithoutCarAndCompany_Success()
+			throws AccessDeniedException {
+		doNothing().when(userService).isUserLogIn();
+		
+		EditClientDto editClientDto = new EditClientDto();
+		editClientDto.setId(UUID.randomUUID());
+		editClientDto.setLastName("Test");
+		editClientDto.setFirstName("Test");
+		editClientDto.setPhone("0896619422");
+		when(clientRepository.findById(editClientDto.getId()))
+				.thenReturn(Optional.of(client));
+	
+		HashMap<String, String> result = clientService.updateClient(editClientDto.getId(), editClientDto);
+		assertEquals("success", result.get("status"));
+	
+		
+	}
+	@Test
+	@WithMockUser(username = "admin", roles = "ADMIN")
+	void updateClient_WithCarAndCompany_Success()
+			throws AccessDeniedException {
+		doNothing().when(userService).isUserLogIn();
+		
+		EditClientDto editClientDto = new EditClientDto();
+		editClientDto.setId(UUID.randomUUID());
+		editClientDto.setLastName("Test");
+		editClientDto.setFirstName("Test");
+		editClientDto.setPhone("0896619422");
+		
+		Car car = new Car();
+		car.setCube(1200);
+		car.setHp(114);
+		car.setMake("Audi");
+		car.setModel("A4");
+		car.setRegistrationNumber("CB1440KH");
+		car.setVin("HK12KO90QW23");
+		car.setYear(2014);
+		car.setId(UUID.randomUUID());
+		carRepository.save(car);
+	
+		Company company = new Company();
+		company.setName("test");
+		company.setId(UUID.randomUUID());
+		company.setUic("201478523");
+		company.setVatNumber("BG201478523");
+		company.setAddress("Test address");
+		company.setAccountablePerson("Test Test");
+		company.setId(UUID.randomUUID());
+		companyRepository.save(company);
+		editClientDto.setCarId(car.getId());
+		editClientDto.setCompanyId(company.getId());
+		when(clientRepository.findById(editClientDto.getId()))
+				.thenReturn(Optional.of(client));
+		when(carService.findById(car.getId(), Car.class)).thenReturn(car);
+		when(companyService.findById(company.getId(), Company.class)).thenReturn(company);
+		HashMap<String, String> result = clientService.updateClient(editClientDto.getId(), editClientDto);
+		assertEquals("success", result.get("status"));
+		assertTrue(result.get("message").contains(car.getRegistrationNumber()));
+		assertTrue(result.get("message").contains(company.getName()));
+		
+		
+	}
+	
+	
+	@Test
+	@WithMockUser(username = "admin", roles = "ADMIN")
+	void updateClient_WithCarAndCompanyWithClient_ErrorMessage()
+			throws AccessDeniedException {
+		doNothing().when(userService).isUserLogIn();
+		
+		EditClientDto editClientDto = new EditClientDto();
+		editClientDto.setId(UUID.randomUUID());
+		editClientDto.setLastName("Test");
+		editClientDto.setFirstName("Test");
+		editClientDto.setPhone("0896619422");
+		
+		Car car = new Car();
+		car.setCube(1200);
+		car.setHp(114);
+		car.setMake("Audi");
+		car.setModel("A4");
+		car.setRegistrationNumber("CB1440KH");
+		car.setVin("HK12KO90QW23");
+		car.setYear(2014);
+		car.setId(UUID.randomUUID());
+		Client clientSecond = new Client();
+		clientSecond.setPhone("0896619423");
+		clientSecond.setFirstName("Test2");
+		clientSecond.setLastName("Test2");
+		clientSecond.setEmail("projects2@zashev.com");
+		
+		clientRepository.saveAndFlush(clientSecond);
+		
+		Company company = new Company();
+		company.setName("test");
+		company.setId(UUID.randomUUID());
+		company.setUic("201478523");
+		company.setVatNumber("BG201478523");
+		company.setAddress("Test address");
+		company.setAccountablePerson("Test Test");
+		company.setId(UUID.randomUUID());
+		company.setClient(clientSecond);
+		editClientDto.setCarId(car.getId());
+		editClientDto.setCompanyId(company.getId());
+		when(clientRepository.findById(editClientDto.getId()))
+				.thenReturn(Optional.of(client));
+		when(carService.findById(car.getId(), Car.class)).thenReturn(car);
+		when(companyService.findById(company.getId(), Company.class)).thenReturn(company);
+		HashMap<String, String> result = clientService.updateClient(editClientDto.getId(), editClientDto);
+		assertEquals("error", result.get("status"));
+		assertFalse(result.get("message").contains(car.getRegistrationNumber()));
+		assertTrue(result.get("message").contains(company.getName()));
+		
+		
+	}
+	
+	@Test
+	@WithMockUser(username = "admin", roles = "ADMIN")
+	void updateClient_WithCarWithClientAndCompany_ErrorMessage()
+			throws AccessDeniedException {
+		doNothing().when(userService).isUserLogIn();
+		
+		EditClientDto editClientDto = new EditClientDto();
+		editClientDto.setId(UUID.randomUUID());
+		editClientDto.setLastName("Test");
+		editClientDto.setFirstName("Test");
+		editClientDto.setPhone("0896619422");
+		
+		Client clientSecond = new Client();
+		clientSecond.setPhone("0896619423");
+		clientSecond.setFirstName("Test2");
+		clientSecond.setLastName("Test2");
+		clientSecond.setEmail("projects2@zashev.com");
+		
+		Car car = new Car();
+		car.setCube(1200);
+		car.setHp(114);
+		car.setMake("Audi");
+		car.setModel("A4");
+		car.setRegistrationNumber("CB1440KH");
+		car.setVin("HK12KO90QW23");
+		car.setYear(2014);
+		car.setId(UUID.randomUUID());
+		car.setClient(clientSecond);
+		
+		clientRepository.saveAndFlush(clientSecond);
+		
+		Company company = new Company();
+		company.setName("test");
+		company.setId(UUID.randomUUID());
+		company.setUic("201478523");
+		company.setVatNumber("BG201478523");
+		company.setAddress("Test address");
+		company.setAccountablePerson("Test Test");
+		company.setId(UUID.randomUUID());
+		company.setClient(clientSecond);
+		editClientDto.setCarId(car.getId());
+		editClientDto.setCompanyId(company.getId());
+		when(clientRepository.findById(editClientDto.getId()))
+				.thenReturn(Optional.of(client));
+		when(carService.findById(car.getId(), Car.class)).thenReturn(car);
+		HashMap<String, String> result = clientService.updateClient(editClientDto.getId(), editClientDto);
+		assertEquals("error", result.get("status"));
+		assertTrue(result.get("message").contains(car.getRegistrationNumber()));
+		assertFalse(result.get("message").contains(company.getName()));
+		
+		
+	}
+	
+	@Test
+	void getAllClients_ReturnList() {
+		
+		Client clientSecond = new Client();
+		clientSecond.setPhone("0896619423");
+		clientSecond.setFirstName("Test2");
+		clientSecond.setLastName("Test2");
+		clientSecond.setEmail("projects2@zashev.com");
+		clientSecond.setDeletedAt(LocalDateTime.now());
+		clientRepository.save(clientSecond);
+		ClientListCarDto dtoClient = new ClientListCarDto();
+		client.setId(UUID.randomUUID());
+		dtoClient.setId(client.getId());
+		dtoClient.setPhone(client.getPhone());
+		dtoClient.setFirstName(client.getFirstName());
+		dtoClient.setLastName(client.getLastName());
+		
+		when(clientRepository.findAllByDeletedAtNull()).thenReturn(List.of(client));
+		List<ClientListDto> result = clientService.findAll(ClientListDto.class);
+		assertNotNull(result);
+		assertEquals(1, result.size());
+	
+		
+		
+	}
+
 }

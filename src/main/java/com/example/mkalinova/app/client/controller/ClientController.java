@@ -12,6 +12,7 @@ import com.example.mkalinova.app.client.service.ClientService;
 import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
 import com.example.mkalinova.app.company.data.dto.CompanyDtoEditClient;
 import com.example.mkalinova.app.company.data.dto.FetchCompaniesDto;
+import com.example.mkalinova.app.company.data.entity.Company;
 import com.example.mkalinova.app.company.service.CompanyService;
 import com.example.mkalinova.app.land.Controller.BaseController;
 import com.example.mkalinova.app.util.ObjectUtils;
@@ -97,7 +98,6 @@ public class ClientController extends BaseController {
 		model.addObject("companies", companyService.allCompaniesWithoutClient());
 		List<AddCarDto> cars = carService.allCarsWithoutUser();
 		model.addObject("cars", cars);
-		model.addObject("formType", "client");
 		return model;
 		
 		
@@ -190,12 +190,13 @@ public class ClientController extends BaseController {
 		modelAndView.addObject("companiesWithoutUser", companyService.allCompaniesWithoutClient());
 		modelAndView.addObject("carsWithoutUser", carService.allCarsWithoutUser(CarDtoEditClient.class));
 		EditClientDto client = clientService.findClientById(uuid, EditClientDto.class);
-		
 		List<CarDto> cars = clientService.getCarsByClient(uuid);
+		List<Company> companies = companyService.getAllCompaniesByClientId(uuid);
+		
 		modelAndView.addObject("client", client);
-		modelAndView.addObject("cars", client.getCars());
+		modelAndView.addObject("cars", cars);
 		modelAndView.addObject("clientId", client.getId());
-		modelAndView.addObject("companies", client.getCompanies());
+		modelAndView.addObject("companies", companies);
 		
 		return modelAndView;
 		
@@ -204,9 +205,9 @@ public class ClientController extends BaseController {
 	@PutMapping("/edit/{id}")
 	public String updateClient(@PathVariable String id,
 	                           @Valid EditClientDto editClientDto,
+	                           BindingResult bindingResult,
 	                           @Valid CompanyDtoEditClient companyDtoEditClient,
 	                           BindingResult bindingResultCar,
-	                           BindingResult bindingResult,
 	                           RedirectAttributes attributes
 	
 	) throws AccessDeniedException {

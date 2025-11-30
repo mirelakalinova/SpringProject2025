@@ -125,7 +125,7 @@ public class ClientServiceImpl implements ClientService {
         log.debug("Attempt to get all clients with cars and companies..");
         List<ClientListDto> clientList =
 
-                this.clientRepository.findAllByDeleteAdNull().stream().map(c -> modelMapper.map(c, ClientListDto.class)).toList();
+                this.clientRepository.findAllByDeletedAtNull().stream().map(c -> modelMapper.map(c, ClientListDto.class)).toList();
         clientList.forEach(c -> {
             List<Car> carlist = carService.getAllCarByClientId(c.getId());
             List<Company> companyList = companyService.getAllCompaniesByClientId(c.getId());
@@ -168,7 +168,7 @@ public class ClientServiceImpl implements ClientService {
                     companyRepository.save(c);
                 });
             }
-            client.get().setDeleteAd(LocalDateTime.now());
+            client.get().setDeletedAt(LocalDateTime.now());
             clientRepository.save(client.get());
             log.info("Successfully deleted client with phone number {}", client.get().getPhone());
         } else {
@@ -204,7 +204,7 @@ public class ClientServiceImpl implements ClientService {
         sb.append("Успешно обновен клиент").append(System.lineSeparator());
         UUID carId = editClientDto.getCarId();
         if (carId != null) {
-            Car car = modelMapper.map(carService.findById(carId, Car.class), Car.class);
+            Car car = (Car) carService.findById(carId, Car.class);
             if (car.getClient() == null) {
                 car.setClient(client.get());
                 carRepository.save(car);
@@ -220,7 +220,7 @@ public class ClientServiceImpl implements ClientService {
         }
         UUID companyId = editClientDto.getCompanyId();
         if (companyId != null) {
-            Company company = modelMapper.map(companyService.findById(companyId, Company.class), Company.class);
+            Company company = (Company) companyService.findById(companyId, Company.class);
             if (company.getClient() == null) {
                 company.setClient(client.get());
                 companyRepository.save(company);
@@ -246,7 +246,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public <T> List<T> findAll(Class<T> dtoClass) {
         log.debug("Attempt to find all clients..");
-        List<Client> clientList = this.clientRepository.findAllByDeleteAdNull();
+        List<Client> clientList = this.clientRepository.findAllByDeletedAtNull();
         List<T> dtoClientList = new ArrayList<>();
         clientList.forEach(c -> dtoClientList.add(modelMapper.map(c, dtoClass)));
         log.info("Successfully found all clients..");
@@ -325,7 +325,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public List<FetchClientListDto> fetchAllClientsByDeletedAtNull() {
         log.debug("Attempt to fetch all clients..");
-        List<FetchClientListDto> list = clientRepository.findAllByDeleteAdNull().stream().map(c -> modelMapper.map(c, FetchClientListDto.class)).toList();
+        List<FetchClientListDto> list = clientRepository.findAllByDeletedAtNull().stream().map(c -> modelMapper.map(c, FetchClientListDto.class)).toList();
         log.info("Successfully fetched all clients..");
         return list;
     }
