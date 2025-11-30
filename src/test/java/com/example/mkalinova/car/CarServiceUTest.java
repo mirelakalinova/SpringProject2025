@@ -203,17 +203,6 @@ class CarServiceUTest {
 		verify(carRepository, times(1)).findByVin(carFirst.getVin());
 		
 	}
-	//  Changed method... may be is not neccessary to throw..
-	//    @Test
-	//    void findCar_Throw(){
-	//        when(carRepository.findByRegistrationNumber(carFirst.getRegistrationNumber())).thenReturn(Optional.empty());
-	//        NullPointerException exception = assertThrows(
-	//                NullPointerException.class,
-	//                () -> service.findCar(carFirst.getRegistrationNumber()));
-	//        assertTrue(exception.getMessage().contains("Кола с подадения регистрационен номер не е налична"));
-	//        verify(carRepository, times(1)).findByRegistrationNumber(carFirst.getRegistrationNumber());
-	//
-	//    }
 	
 	
 	@Test

@@ -313,7 +313,7 @@ public class ClientServiceImpl implements ClientService {
             }
 
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Автомобил с #" + id + " не беше намерен!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Фирма с #:" + id + " не беше намерена!");
         }
 
         result.put("status", "error");
