@@ -1,24 +1,28 @@
 package com.example.mkalinova.app.car.controller;
 
-import com.example.mkalinova.app.car.data.dto.CarListDto;
-import com.example.mkalinova.app.client.data.dto.FetchClientDto;
-import com.example.mkalinova.app.land.Controller.BaseController;
 import com.example.mkalinova.app.car.data.dto.AddCarDto;
 import com.example.mkalinova.app.car.data.dto.CarDto;
+import com.example.mkalinova.app.car.data.dto.CarListDto;
 import com.example.mkalinova.app.car.data.dto.EditCarDto;
 import com.example.mkalinova.app.car.service.CarService;
 import com.example.mkalinova.app.client.data.dto.ClientListCarDto;
+import com.example.mkalinova.app.client.data.dto.FetchClientDto;
 import com.example.mkalinova.app.client.service.ClientService;
+import com.example.mkalinova.app.land.Controller.BaseController;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.file.AccessDeniedException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/car")
@@ -67,11 +71,12 @@ public class CarController extends BaseController {
 	}
 	
 	@GetMapping("/edit/{id}")
-	public ModelAndView editCar(@PathVariable String id) {
+	public ModelAndView editCar(@PathVariable String id, Model model) {
 		UUID carId = UUID.fromString(id);
-		
 		ModelAndView modelAndView = super.view("car/edit");
-		modelAndView.addObject("editCarDto", carService.findById(carId, EditCarDto.class));
+		if (!model.containsAttribute("editCarDto")) {
+			modelAndView.addObject("editCarDto", carService.findById(carId, EditCarDto.class));
+		}
 		modelAndView.addObject("clients", clientService.findAll(ClientListCarDto.class));
 		
 		return modelAndView;
