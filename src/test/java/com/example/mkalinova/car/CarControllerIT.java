@@ -5,7 +5,6 @@ import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.car.repo.CarRepository;
 import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.client.repo.ClientRepository;
-import com.example.mkalinova.app.company.data.entity.Company;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.data.entity.UsersRole;
 import com.example.mkalinova.app.user.repo.UserRepository;

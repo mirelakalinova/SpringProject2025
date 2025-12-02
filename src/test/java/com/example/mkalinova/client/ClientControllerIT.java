@@ -33,7 +33,6 @@ import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
