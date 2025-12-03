@@ -1,7 +1,7 @@
 <div class="container align-content-center order" xmlns:th="http://www.w3.org/1999/xhtml"
 	 xmlns:v-="http://www.w3.org/1999/xhtml">
 	<!-- todo ако може да се взема от някакви настройки -->
-	<div th:if="${message}" th:text="${message}"
+	<div th:if="${message}" th:text="${message}" style="white-space: pre-line;"
 		 th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"></div>
 	<h1>Добави ремонт</h1>
 	<form th:action="@{/order/add}" th:method="post" th:object="${orderDto}">

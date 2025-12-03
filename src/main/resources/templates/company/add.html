@@ -2,7 +2,7 @@
      xmlns:th="http://www.w3.org/1999/xhtml">
     <!-- todo ако може да се взема от някакви настройки -->
     <h1>Добави фирма</h1>
-    <dvi class="${status}" th:text="${message}" th:if="${message}"></dvi>
+    <dvi class="${status}" th:text="${message}" th:if="${message}" style="white-space: pre-line;"></dvi>
     <form th:action="@{/company/add}" th:method="POST"
           th:object="${addCompanyDto}">
         <div class="row row-view">

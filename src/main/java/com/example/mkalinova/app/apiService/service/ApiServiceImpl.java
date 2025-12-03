@@ -1,11 +1,13 @@
 package com.example.mkalinova.app.apiService.service;
 
-import com.example.mkalinova.app.apiService.data.dto.MakeListDto;
-import com.example.mkalinova.app.apiService.data.dto.SaveMakeModelDto;
 import com.example.mkalinova.app.apiService.config.ApiFeignClient;
+import com.example.mkalinova.app.apiService.data.dto.SaveMakeModelDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 
 @Service
 public class ApiServiceImpl implements ApiService {
@@ -17,8 +19,11 @@ public class ApiServiceImpl implements ApiService {
 	}
 	
 	@Override
-	public void saveMakeAndModel(SaveMakeModelDto saveMakeModelDto) {
-		apiFeignClient.saveMakeAndModel(saveMakeModelDto);
+	public HashMap<String, String> saveMakeAndModel(SaveMakeModelDto saveMakeModelDto) {
+		ResponseEntity<HashMap<String,String>> resp = apiFeignClient.saveMakeAndModel(saveMakeModelDto);
+		System.out.println(resp.getHeaders());
+		System.out.println(resp.getBody());
+		return resp.getBody();
 		
 	}
 	

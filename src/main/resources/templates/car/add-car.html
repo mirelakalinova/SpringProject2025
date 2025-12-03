@@ -12,7 +12,7 @@
 			<div th:fragment="form-car" xmlns:th="http://www.w3.org/1999/xhtml">
 
 
-				<div th:if="${message}" th:text="${message}"
+				<div th:if="${message}" th:text="${message}" style="white-space: pre-line;"
 					 th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"></div>
 				<form th:method="POST"
 					  th:action="@{/car/add}"
