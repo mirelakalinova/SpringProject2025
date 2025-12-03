@@ -1,0 +1,45 @@
+<div class="container" xmlns:th="http://www.w3.org/1999/xhtml">
+	<h1>Списък с коли</h1>
+	<div th:if="${message}" th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')">
+		<span th:text="${message}" style="white-space: pre-line;"></span>
+	</div>
+
+	<div class="table-responsive">
+
+		<table class="table table-striped table-hover" th:object="${companies}">
+			<thead class="thead-light">
+			<tr>
+				<td>Марка</td>
+				<td>Модел</td>
+				<td>Изтриване</td>
+			</tr>
+			</thead>
+			<tbody>
+			<tr th:each="model : ${page.content}">
+
+				<td th:text="${model.name}">Марка</td>
+				<td th:text="${model.make}">Модел</td>
+				<td>
+					<form th:action="@{/api/delete/model/{id}(id=${model.id})}" th:method="post">
+
+						<button type="submit"
+								class="user-delete-btn user-btn" th:attr="data-name=${model.id}">
+							<i class="fa-solid fa-trash-arrow-up"></i>
+						</button>
+					</form>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+		<div class="pagination">
+			<a th:if="${page.number > 0}" class="page-arrows"
+			   th:href="@{/makes(page=${page.number - 1}, size=${page.size})}">&#171;</a>
+
+			 <span th:text="${page.number + 1}"></span> / <span th:text="${page.totalPages}"></span>
+
+			<a class="page-arrows" th:if="${page.number + 1 < page.totalPages}"
+			   th:href="@{/api/models(page=${page.number + 1}, size=${page.size})}"> &#187; </i>
+			</a>
+		</div>
+	</div>
+</div>
