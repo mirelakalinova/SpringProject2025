@@ -122,4 +122,30 @@ public class UserController extends BaseController {
 	}
 	
 	
+	@PostMapping("/block/{id}")
+	public String blockUser(@PathVariable String id,
+	                        RedirectAttributes attributes) throws AccessDeniedException {
+		UUID uuid = UUID.fromString(id);
+		HashMap<String, String> result = userService.blockUser(uuid);
+		attributes.addFlashAttribute("message", result.get("message"));
+		attributes.addFlashAttribute("status", result.get("status"));
+		
+		
+		return "redirect:/users";
+	}
+	
+	
+	@PostMapping("/unblock/{id}")
+	public String unblockUser(@PathVariable String id,
+	                          RedirectAttributes attributes) throws AccessDeniedException {
+		UUID uuid = UUID.fromString(id);
+		HashMap<String, String> result = userService.unblockUser(uuid);
+		attributes.addFlashAttribute("message", result.get("message"));
+		attributes.addFlashAttribute("status", result.get("status"));
+		
+		
+		return "redirect:/users";
+	}
+	
+	
 }

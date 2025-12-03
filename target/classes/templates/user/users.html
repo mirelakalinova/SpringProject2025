@@ -1,4 +1,4 @@
-<div class="container" xmlns:th="http://www.w3.org/1999/xhtml">
+<div class="container" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
     <h1>Списък с потребители</h1>
     <div th:if="${message}" th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')">
         <span th:text="${message}" style="white-space: pre-line;"></span>
@@ -14,8 +14,9 @@
             <td>Email</td>
             <td>Username</td>
             <td>Роля</td>
-            <td>Редакция</td>
-            <td>Изтриване</td>
+            <td >Редакция</td>
+            <td sec:authorize="hasRole('ADMIN')">Block/Unblock</td>
+            <td sec:authorize="hasRole('ADMIN')">Изтриване</td>
         </tr>
         </thead>
         <tbody>
@@ -32,7 +33,26 @@
                     </button>
                 </form>
             </td>
-            <td>
+
+			<td th:if="${user.enabled && user.username != #authentication.name}" sec:authorize="hasRole('ADMIN')">
+				<form th:action="@{/block/{id}(id=${user.id})}" th:method="post">
+
+					<button type="submit" class="user-delete-btn user-btn">
+						<i class="fa fa-ban" aria-hidden="true"></i>
+					</button>
+				</form>
+			</td>
+
+			<td th:if="${!user.enabled && user.username != #authentication.name}" sec:authorize="hasRole('ADMIN')">
+				<form th:action="@{/unblock/{id}(id=${user.id})}" th:method="post">
+
+					<button type="submit" class="user-delete-btn user-btn" style="background: #00800073;">
+						<i class="fa fa-unlock" aria-hidden="true"></i>
+					</button>
+				</form>
+			</td>
+
+            <td sec:authorize="hasRole('ADMIN')" th:if="${user.username != #authentication.name}">
                 <form th:action="@{/delete/{id}(id=${user.id})}" th:method="post" >
 
                     <button type="submit" class="user-delete-btn user-btn"  th:attr="data-name=${user.username}">

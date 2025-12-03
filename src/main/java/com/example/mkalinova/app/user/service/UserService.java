@@ -25,4 +25,7 @@ public interface UserService {
 	Optional<User> getLoggedInUser() throws AccessDeniedException;
 	
 	void isUserLogIn() throws AccessDeniedException;
+	
+	HashMap<String, String> blockUser(UUID uuid) throws AccessDeniedException;
+	HashMap<String, String> unblockUser(UUID uuid) throws AccessDeniedException;
 }

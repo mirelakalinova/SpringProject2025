@@ -10,6 +10,7 @@ public class UserListDto {
 	private String username;
 	private String email;
 	private UsersRole role;
+	private boolean enabled;
 	
 	public UserListDto() {
 	}
@@ -44,5 +45,13 @@ public class UserListDto {
 	
 	public void setRole(UsersRole role) {
 		this.role = role;
+	}
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
+	
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 }

@@ -25,6 +25,7 @@ public class UserInitialize implements CommandLineRunner {
         if (userRepository.count() == 0) {
             User user = new User();
             user.setEmail("admin@test.bg");
+			user.setEnabled(true);
             String pass = encoder.encode("123");
             user.setPassword(pass);
             user.setUsername("dorela-auto");

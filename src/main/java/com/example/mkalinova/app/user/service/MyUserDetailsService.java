@@ -30,8 +30,13 @@ public class MyUserDetailsService implements UserDetailsService {
 		User user = userRepository.findByUsername(username);
 		
 		GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole());
-		
-		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+		return new org.springframework.security.core.userdetails.User(
+				user.getUsername(),
+				user.getPassword(),
+				user.isEnabled(),
+				true,
+				true,
+				user.isEnabled(),
 				Collections.singletonList(authority));
 	}
 }
