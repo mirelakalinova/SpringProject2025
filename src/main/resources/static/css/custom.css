@@ -570,3 +570,19 @@ p.info-text {
 .info-text span {
     font-weight: 700;
 }
+
+.pagination {
+    padding: 20px;
+    margin: 0 auto;
+    display: block;
+    text-align: center;
+}
+
+.page-arrows{
+    color: #dc3545;
+    font-weight: 900;
+    font-size: 24px;
+    text-decoration: none;
+    padding: 20px;
+
+}

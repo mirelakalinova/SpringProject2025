@@ -35,7 +35,7 @@ public interface CarService {
 	
 	<T> Object getById(UUID id, Class<T> clazz);
 	
-	HashMap<String, String> editCar(UUID id, EditCarDto editCarDto);
+	HashMap<String, String> editCar(UUID id, EditCarDto editCarDto) throws AccessDeniedException;
 	
 	<T> Object findById(UUID carId, Class<T> clazz);
 	

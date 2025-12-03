@@ -85,7 +85,7 @@ public class CarController extends BaseController {
 	}
 	
 	@PostMapping("/edit/{id}")
-	public String editCar(@Valid EditCarDto editCarDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+	public String editCar(@Valid EditCarDto editCarDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) throws AccessDeniedException {
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute("editCarDto", editCarDto);
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.editCarDto", bindingResult);

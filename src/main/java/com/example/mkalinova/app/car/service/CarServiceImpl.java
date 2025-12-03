@@ -233,7 +233,7 @@ public class CarServiceImpl implements CarService {
 			@CacheEvict(value = "car", key = "#id"),
 			@CacheEvict(value = "clientByCar", key = "#id")
 	})
-	public HashMap<String, String> editCar(UUID id, EditCarDto editCarDto) {
+	public HashMap<String, String> editCar(UUID id, EditCarDto editCarDto) throws AccessDeniedException {
 		log.debug("Attempt to edit a car with id {}", id);
 		Optional<Car> car = carRepository.findById(id);
 		HashMap<String, String> result = new HashMap<>();

@@ -2,13 +2,14 @@ package com.example.mkalinova.app.apiService.data.dto;
 
 import java.util.UUID;
 
-public class MakeDto {
+public class ModelDto {
+
 	
 	private UUID id;
 	private String name;
+	private String make;
 	
-	
-	public MakeDto() {
+	public ModelDto() {
 	}
 	
 	public UUID getId() {
@@ -27,5 +28,11 @@ public class MakeDto {
 		this.name = name;
 	}
 	
+	public String getMake() {
+		return make;
+	}
 	
+	public void setMake(String make) {
+		this.make = make;
+	}
 }
