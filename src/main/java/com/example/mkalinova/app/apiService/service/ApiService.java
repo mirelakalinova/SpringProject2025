@@ -1,6 +1,5 @@
 package com.example.mkalinova.app.apiService.service;
 
-import com.example.mkalinova.app.apiService.data.dto.MakeListDto;
 import com.example.mkalinova.app.apiService.data.dto.SaveMakeModelDto;
 
 import java.util.HashMap;

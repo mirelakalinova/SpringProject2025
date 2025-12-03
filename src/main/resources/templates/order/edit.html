@@ -1,6 +1,4 @@
-<div class="container align-content-center order" xmlns:th="http://www.w3.org/1999/xhtml"
-	 xmlns:v-="http://www.w3.org/1999/xhtml">
-	<!-- todo ако може да се взема от някакви настройки -->
+<div class="container align-content-center order" xmlns:th="http://www.w3.org/1999/xhtml">
 	<div th:if="${message}" th:text="${message}" style="white-space: pre-line;"
 		 th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"></div>
 	<form th:action="@{/order/edit/{id}(id=${editOrderDto.id})}" th:method="post" th:object="${editOrderDto}">
@@ -13,8 +11,6 @@
 
 					<div class="app-select-form">
 
-
-						<!-- Селект за автомобил -->
 						<div class="choose-data ">
 							<label for="order-car">1. Избери автомобил</label>
 							<input type="hidden" name="car" id="car">
@@ -26,7 +22,6 @@
 								</option>
 							</select>
 						</div>
-						<!-- Селект за клиент -->
 						<div class="choose-data ">
 							<label for="order-client">2. Избери клиент</label>
 							<input type="hidden" name="client" id="client">
@@ -39,7 +34,6 @@
 								</option>
 							</select>
 						</div>
-						<!-- Селект за фирма -->
 						<div class="choose-data ">
 							<label for="order-company">3. Избери фирма</label>
 							<input type="hidden" name="company" id="company">
@@ -397,14 +391,10 @@
 
 </p>
 <div class="d-none" th:object="${dto}">
-	<!-- Данни от dto-то при bindingResults.hasError... -->
-	<!--modelAndView.addObject("dtoCar", orderDto.getCar());-->
+
 	<input type="hidden" id="dtoCar" th:value="${dto.car.id}">
-	<!--modelAndView.addObject("dtoClient", orderDto.getClient());-->
 	<input type="hidden" id="dtoClient" th:value="${dto.client.id}">
-	<!--modelAndView.addObject("dtoCompany", orderDto.getCompany());-->
 	<input type="hidden" id="dtoCompany" th:value="${dto.company.id}">c
-	<!--modelAndView.addObject("dtoParts", orderDto.getParts());-->
 	<ul class="d-none" id="dtoParts">
 		<li th:each="p : ${partList}"
 			th:value="${p.id}"
@@ -413,7 +403,6 @@
 			th:data-quantity="${p.quantity}"
 		></li>
 	</ul>
-	<!--modelAndView.addObject("dtoRepairs", orderDto.getRepairs());-->
 	<ul class="d-none" id="dtoRepairs">
 		<li th:each="r : ${repairList}"
 			th:value="${r.id}"
@@ -422,15 +411,10 @@
 			th:data-quantity="${r.quantity}"
 		></li>
 	</ul>
-	<!--modelAndView.addObject("dtoSubtotal", orderDto.getSubtotal());-->
 	<input type="hidden" id="dtoSubtotal" th:value="${dto.subtotal}">
-	<!--modelAndView.addObject("dtoTax", orderDto.getTax());-->
 	<input type="hidden" id="dtoTax" th:value="${dto.tax}">
 	<input type="hidden" id="dtoDiscount" th:value="${dto.discount}">
-	<!--modelAndView.addObject("dtoDiscount", orderDto.getDiscount());-->
-	<!--modelAndView.addObject("dtoTotal", orderDto.getTotal());-->
 	<input type="hidden" id="dtoTotal" th:value="${dto.total}">
-	<!--modelAndView.addObject("dtoNote", orderDto.getNote());-->
 	<input type="hidden" id="dtoNote" th:value="${dto.note}">
 
 </div>

@@ -1,6 +1,4 @@
-<div class="container align-content-center order" xmlns:th="http://www.w3.org/1999/xhtml"
-	 xmlns:v-="http://www.w3.org/1999/xhtml">
-	<!-- todo ако може да се взема от някакви настройки -->
+<div class="container align-content-center order" xmlns:th="http://www.w3.org/1999/xhtml">
 	<div th:if="${message}" th:text="${message}" style="white-space: pre-line;"
 		 th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"></div>
 	<h1>Добави ремонт</h1>
@@ -14,7 +12,6 @@
 					<div class="app-select-form">
 
 
-						<!-- Селект за автомобил -->
 						<div class="choose-data ">
 							<label for="order-car">1. Избери автомобил</label>
 							<input type="hidden" name="car" id="car">
@@ -26,7 +23,7 @@
 								</option>
 							</select>
 						</div>
-						<!-- Селект за клиент -->
+
 						<div class="choose-data ">
 							<label for="order-client">2. Избери клиент</label>
 							<input type="hidden" name="client" id="client">
@@ -39,7 +36,6 @@
 								</option>
 							</select>
 						</div>
-						<!-- Селект за фирма -->
 						<div class="choose-data ">
 							<label for="order-company">3. Избери фирма</label>
 							<input type="hidden" name="company" id="company">
@@ -369,11 +365,16 @@
 					<h5 class="totals"> Сума без ДДС: <input class="readonly-input" name="subtotal"
 															 id="total-without-tax"
 															 value="0.00"><span> лв. </span></h5>
-					<h5 class="totals"> ДДС(20.00%): <input class="readonly-input" name="tax" id="tax" value="0.00"> <span> лв. </span></h5>
-					<h5 class="totals discount"> Отстъпка: <input class="readonly-input" readonly name="discount" id="discount" value="0.00"> <span> лв. </span> </h5>
-					<h5 class="totals"> Сума с ДДС: <input class="readonly-input" value="0.00" id="order-total"name="total"> <span> лв. </span></h5>
-					<input type="hidden" id="discount-sum" name="discountAmount" th:value="${discountAmount != null ? discountAmount : 0}"/>
-					<input type="hidden" id="discount-perc" name="discountPercent" th:value="${discountPercent != null ? discountPercent : 0}"/>
+					<h5 class="totals"> ДДС(20.00%): <input class="readonly-input" name="tax" id="tax" value="0.00">
+						<span> лв. </span></h5>
+					<h5 class="totals discount"> Отстъпка: <input class="readonly-input" readonly name="discount"
+																  id="discount" value="0.00"> <span> лв. </span></h5>
+					<h5 class="totals"> Сума с ДДС: <input class="readonly-input" value="0.00" id="order-total"
+														   name="total"> <span> лв. </span></h5>
+					<input type="hidden" id="discount-sum" name="discountAmount"
+						   th:value="${discountAmount != null ? discountAmount : 0}"/>
+					<input type="hidden" id="discount-perc" name="discountPercent"
+						   th:value="${discountPercent != null ? discountPercent : 0}"/>
 
 
 				</div>
@@ -386,14 +387,10 @@
 
 </div>
 <div class="d-none" th:object="${dto}">
-	<!-- Данни от dto-то при bindingResults.hasError... -->
-	<!--modelAndView.addObject("dtoCar", orderDto.getCar());-->
+
 	<input type="hidden" id="dtoCar" th:value="${dtoCar}">
-	<!--modelAndView.addObject("dtoClient", orderDto.getClient());-->
 	<input type="hidden" id="dtoClient" th:value="${dtoClient}">
-	<!--modelAndView.addObject("dtoCompany", orderDto.getCompany());-->
 	<input type="hidden" id="dtoCompany" th:value="${dtoCompany}">c
-	<!--modelAndView.addObject("dtoParts", orderDto.getParts());-->
 	<ul class="d-none" id="dtoParts">
 		<li th:each="p : ${dtoParts}"
 			th:value="${p.id}"
@@ -402,7 +399,6 @@
 			th:data-quantity="${p.quantity}"
 		></li>
 	</ul>
-	<!--modelAndView.addObject("dtoRepairs", orderDto.getRepairs());-->
 	<ul class="d-none" id="dtoRepairs">
 		<li th:each="r : ${dtoRepairs}"
 			th:value="${r.id}"
@@ -411,15 +407,10 @@
 			th:data-quantity="${r.quantity}"
 		></li>
 	</ul>
-	<!--modelAndView.addObject("dtoSubtotal", orderDto.getSubtotal());-->
 	<input type="hidden" id="dtoSubtotal" th:value="${dtoSubtotal}">
-	<!--modelAndView.addObject("dtoTax", orderDto.getTax());-->
 	<input type="hidden" id="dtoTax" th:value="${dtoTax}">
 	<input type="hidden" id="dtoDiscount" th:value="${dtoDiscount}">
-	<!--modelAndView.addObject("dtoDiscount", orderDto.getDiscount());-->
-	<!--modelAndView.addObject("dtoTotal", orderDto.getTotal());-->
 	<input type="hidden" id="dtoTotal" th:value="${dtoTotal}">
-	<!--modelAndView.addObject("dtoNote", orderDto.getNote());-->
 	<input type="hidden" id="dtoNote" th:value="${dtoNote}">
 
 </div>
