@@ -1,7 +1,7 @@
 <div class="container" xmlns:th="http://www.w3.org/1999/xhtml">
 	<h1>Списък с части</h1>
 	<div th:if="${message}" th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')">
-		<span th:text="${message}"></span>
+		<span th:text="${message}" style="white-space: pre-line;"></span>
 	</div>
 	<div class="add-user-btn">
 		<a th:href="@{/part/add}">Добави част</a>

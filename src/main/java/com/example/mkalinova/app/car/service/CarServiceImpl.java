@@ -109,10 +109,15 @@ public class CarServiceImpl implements CarService {
 			
 		}
 		car.setVin(car.getVin().toUpperCase());
-		apiService.saveMakeAndModel(new SaveMakeModelDto(addCarDto.getMake(), addCarDto.getModel()));
+		HashMap<String, String> responseResult = apiService.saveMakeAndModel(new SaveMakeModelDto(addCarDto.getMake(), addCarDto.getModel()));
 		carRepository.save(car);
+		StringBuilder sb = new StringBuilder();
+		sb.append("Успешно добавен автомобил с рег. номер: ").append(addCarDto.getRegistrationNumber()).append(System.lineSeparator());
+		if(responseResult.get("status").equals("success")){
+			sb.append(responseResult.get("message")).append(System.lineSeparator());
+		}
 		result.put("status", "success");
-		result.put("message", "Успешно добавен автомобил с рег. номер: " + addCarDto.getRegistrationNumber());
+		result.put("message", sb.toString());
 		log.info("Created car with registration number " + addCarDto.getRegistrationNumber());
 		return result;
 	}

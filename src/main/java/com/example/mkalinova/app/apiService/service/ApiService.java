@@ -1,10 +1,11 @@
 package com.example.mkalinova.app.apiService.service;
 
-import com.example.mkalinova.app.apiService.data.dto.MakeListDto;
 import com.example.mkalinova.app.apiService.data.dto.SaveMakeModelDto;
+
+import java.util.HashMap;
 
 public interface ApiService {
 	
-	void saveMakeAndModel(SaveMakeModelDto saveMakeModelDto);
+	HashMap<String, String> saveMakeAndModel(SaveMakeModelDto saveMakeModelDto);
 	
 }

@@ -69,10 +69,10 @@ new Vue({
             this.filteredMakes = [];
             if (!this.selectedMake || this.selectedMake.name !== this.searchMake) {
                 this.selectedMake = { id: null, name: this.searchMake };
-                const makeInput = document.getElementById('make');
-                if (makeInput) {
-                    makeInput.value = this.searchMake;
-                    makeInput.setAttribute('value', this.searchMake);
+                const hiddenMake = document.getElementById('hiddenMake');
+                if (hiddenMake) {
+                    hiddenMake.value = this.searchMake || this.searchMake.value || '';
+                    hiddenMake.setAttribute('value', hiddenMake.value);
                 }
             }
         },
@@ -117,10 +117,10 @@ new Vue({
             this.filteredModels = [];
             if (!this.selectedModel || this.selectedModel.name !== this.searchModel) {
                 this.selectedModel = { id: null, name: this.searchModel };
-                const modelInput = document.getElementById('model');
-                if (modelInput) {
-                    modelInput.value = this.searchModel;
-                    modelInput.setAttribute('value', this.searchModel);
+                const hiddenModel = document.getElementById('hiddenModel');
+                if (hiddenModel) {
+                    hiddenModel.value = this.searchModel || this.searchModel.value || '';
+                    hiddenModel.setAttribute('value', hiddenModel.value);
                 }
             }
         },
@@ -202,7 +202,7 @@ new Vue({
             const hiddenMake = document.getElementById('hiddenMake');
             if (hiddenMake) hiddenMake.value = make.name;
             if (this.selectedMake && this.selectedMake.id) this.$nextTick(() => this.fetchModels());
-            const isEditView = window.location.pathname.startsWith('/car/edit') || window.location.pathname.startsWith('/car/add') ;
+            const isEditView = window.location.pathname.startsWith('/car/edit') || window.location.pathname.startsWith('/car/add') || window.location.pathname.startsWith('/client/add') ;
 
             if (isEditView) {
 
@@ -219,7 +219,7 @@ new Vue({
             this.filteredModels = [];
             const hiddenModel = document.getElementById('hiddenModel');
             if (hiddenModel) hiddenModel.value = model.name;
-            const isEditView = window.location.pathname.startsWith('/car/edit') || window.location.pathname.startsWith('/car/add') ;
+            const isEditView = window.location.pathname.startsWith('/car/edit') || window.location.pathname.startsWith('/car/add')  || window.location.pathname.startsWith('/client/add') ;
 
             if (isEditView) {
 

@@ -64,6 +64,8 @@ public class CarController extends BaseController {
 		redirectAttributes.addFlashAttribute("status", status);
 		redirectAttributes.addFlashAttribute("message", result.get("message"));
 		if (!status.equals("success")) {
+			redirectAttributes.addFlashAttribute("addCarDto", addCarDto);
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.addCarDto", bindingResult);
 			return "redirect:/car/add";
 		} else {
 			return "redirect:/car/cars";
