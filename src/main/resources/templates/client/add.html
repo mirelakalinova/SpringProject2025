@@ -100,13 +100,15 @@
 						<div id="app">
 							<label for="make">Марка</label>
 
-							<input name="make" id="make" type="text" v-model="searchMake" th:field="*{make}"
-								   th:value="*{make}" @input="searchMakes"
+							<input  id="make" type="text" v-model="searchMake"
+								   @input="searchMakes"
+								   @click="onMakeFocus"
+								   @blur="handleMakeBlur"
 								   class="form-control" placeholder="Започнете да пишете за марката...">
-
+							<input type="hidden" id="hiddenMake" th:field="*{make}">
 							<!-- Падащо меню за марки -->
-							<ul v-if="filteredMakes.length > 0 && searchMake" class="dropdown-menu">
-								<li v-for="make in filteredMakes" :key="make.id" @click="selectMake(make)">
+							<ul v-if="filteredMakes.length > 0 && searchMake && !dropdownMakeInitialized" class="dropdown-menu">
+								<li v-for="make in filteredMakes" :key="make.id" @mousedown.prevent="selectMake(make)">
 									{{ make.name }}
 								</li>
 							</ul>
@@ -115,14 +117,16 @@
 							</div>
 							<div class="form-group">
 								<label for="model">Модел</label>
-								<input th:field="*{model}" id="model" name="model" type="text" th:value="*{model}"
+								<input  id="model"  type="text"
 									   v-model="searchModel"
+									   @click="onModelFocus"
+									   @blur="handleModelBlur"
 									   @input="searchModels" class="form-control"
 									   placeholder="Започнете да пишете за модела...">
-
+					<input type="hidden" id="hiddenModel" th:field="*{model}">
 								<!-- Падащо меню за модели (ще се показва винаги, без да е нужно да се въвеждат букви) -->
 								<ul v-if="filteredModels.length > 0" class="dropdown-menu" id="model-list">
-									<li v-for="model in filteredModels" :key="model.id" @click="selectModel(model)">
+									<li v-for="model in filteredModels" :key="model.id" @mousedown.prevent="selectModel(model)">
 										{{ model.name }}
 									</li>
 								</ul>

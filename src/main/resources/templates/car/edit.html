@@ -36,20 +36,21 @@
 								<span class="change-span" id="change-make">Промени марка и модел</span>
 							</div>
 							<div class="car-make-model">
-								<label for="make">Марка
+								<label for="hiddenMake">Марка
 								</label>
 								<input type="text" class="form-control" readonly th:field="*{make}"
-									   th:value="*{make}" id="make" name="make">
+									   th:value="*{make}" id="hiddenMake">
 							</div>
 							<input name="searchMake" id="searchMake" type="text" v-model="searchMake"
 								   @input="searchMakes"
+								   @click="onMakeFocus"
 								   @blur="handleMakeBlur" class="form-control d-none"
 								   placeholder="Започнете да пишете марката...">
 
-							<!-- Падащо меню за марки -->
-							<ul v-if="filteredMakes.length > 0 && searchMake"
+
+							<ul v-if="filteredMakes.length > 0 && searchMake && !dropdownMakeInitialized"
 								class="dropdown-menu">
-								<li v-for="make in filteredMakes" :key="make.id" @click="selectMake(make)">
+								<li v-for="make in filteredMakes" :key="make.id" @mousedown.prevent="selectMake(make)">
 									{{ make.name }}
 								</li>
 							</ul>
@@ -61,22 +62,24 @@
 
 							<div class="form-group">
 								<div class="car-make-model">
-									<label for="model">Модел
+									<label for="hiddenModel">Модел
 									</label>
 									<input type="text" readonly class="form-control" th:field="*{model}"
-										   th:value="*{model}" id="model" name="model">
+										   th:value="*{model}" id="hiddenModel" name="model">
 
 								</div>
 
-								<!-- Поле за търсене на модели -->
+
 								<input id="searchModel" name="searchModel"
 									   type="text" v-model="searchModel"
-									   @blur="handleModelBlur" @input="searchModels" class="form-control d-none"
+									   @click="onModelFocus"
+									   @blur="handleModelBlur"
+									   @input="searchModels" class="form-control d-none"
 									   placeholder="Започнете да пишете за модела...">
 
 								<!-- Падащо меню за модели (ще се показва винаги, без да е нужно да се въвеждат букви) -->
 								<ul v-if="filteredModels.length > 0" class="dropdown-menu" id="model-list">
-									<li v-for="model in filteredModels" :key="model.id" @click="selectModel(model)">
+									<li v-for="model in filteredModels" :key="model.id" @mousedown.prevent="selectModel(model)">
 										{{ model.name }}
 									</li>
 								</ul>
@@ -143,7 +146,7 @@
 
 					</div>
 
-						<button class="submit" type="submit">Запиши</button>
+					<button class="submit" type="submit">Запиши</button>
 
 				</form>
 			</div>
