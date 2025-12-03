@@ -64,8 +64,7 @@ public class UserServiceImpl implements UserService {
 		log.debug("Attempt to add new user with username {}", addUserDto.getUsername());
 		ArrayList<String> result = new ArrayList<>();
 		
-		Optional<User> loggedUser =
-				this.userRepository.findById(getLoggedInUserId());
+		Optional<User> loggedUser = this.userRepository.findById(getLoggedInUserId());
 		if (!isAdmin(modelMapper.map(loggedUser, User.class))) {
 			
 			
@@ -85,10 +84,10 @@ public class UserServiceImpl implements UserService {
 		String pass = passEn.encode(user.getPassword());
 		user.setPassword(pass);
 		user.setRole(UsersRole.valueOf(addUserDto.getRole().toUpperCase()));
+		user.setEnabled(true);
 		userRepository.save(user);
 		result.add("success");
-		result.add("Успешно добавен потребител!\n" +
-				"Username: \n" + addUserDto.getUsername() + "Email: " + addUserDto.getEmail());
+		result.add("Успешно добавен потребител!\n" + "Username: \n" + addUserDto.getUsername() + "Email: " + addUserDto.getEmail());
 		
 		log.info("Successfully added new user with username {}", addUserDto.getUsername());
 		return result;
@@ -118,9 +117,7 @@ public class UserServiceImpl implements UserService {
 	
 	public <T> T getById(UUID id, Class<T> clazz) {
 		log.debug("Attempt to get user with id {}", id);
-		return userRepository.findById(id)
-				.map(user -> modelMapper.map(user, clazz))
-				.orElse(null);
+		return userRepository.findById(id).map(user -> modelMapper.map(user, clazz)).orElse(null);
 	}
 	
 	public HashMap<String, String> editUser(UUID id, EditUserDto editUserDto) throws AccessDeniedException {
@@ -154,7 +151,7 @@ public class UserServiceImpl implements UserService {
 			throw new AccessDeniedException("Нямате права да променяте роли на потребители!");
 		}
 		
-
+		
 		if (!password.isEmpty()) {
 			String newPassword = editUserDto.getPassword();
 			String encodedPassword = passEn.encode(newPassword);
@@ -178,14 +175,13 @@ public class UserServiceImpl implements UserService {
 	public boolean isAdmin(User user) {
 		log.debug("Attempt check if user with id {} is admin..", user.getId());
 		
-		return this.userRepository.
-				findByUsername(user.getUsername()).getRole().name().equals("ADMIN");
+		return this.userRepository.findByUsername(user.getUsername()).getRole().name().equals("ADMIN");
 		
 	}
 	
 	
 	public HashMap<String, String> deleteUser(UUID id) throws AccessDeniedException {
-		log.debug("Attempt delete if user with id {}", id);
+		log.debug("Attempt delete user with id {}", id);
 		Optional<User> loggedInUser = this.userRepository.findById(this.getLoggedInUserId());
 		HashMap<String, String> result = new HashMap<>();
 		if (!isAdmin(modelMapper.map(loggedInUser, User.class))) {
@@ -206,6 +202,59 @@ public class UserServiceImpl implements UserService {
 			
 			log.warn("Return error message: User with id {} does not exist", id);
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма потребител с #: " + id);
+			
+		}
+	}
+	
+	@Override
+	public HashMap<String, String> blockUser(UUID uuid) throws AccessDeniedException {
+		log.debug("Attempt to block user with id {}", uuid);
+		Optional<User> loggedInUser = this.userRepository.findById(this.getLoggedInUserId());
+		HashMap<String, String> result = new HashMap<>();
+		if (!isAdmin(modelMapper.map(loggedInUser, User.class))) {
+			
+			throw new AccessDeniedException("Нямате права да блокирате потребител!");
+			
+		}
+		
+		Optional<User> user = this.userRepository.findById(uuid);
+		
+		if (user.isPresent()) {
+			user.get().setEnabled(false);
+			userRepository.save(user.get());
+			result.put("message", "Успешно блокиран потребител: " + user.get().getUsername());
+			result.put("status", "success");
+			log.info("Successfully blocked user with id {}", uuid);
+			return result;
+		} else {
+			log.warn("Return error message in blocking user method: User with id {} does not exist", uuid);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма потребител с #: " + uuid);
+			
+		}
+	}
+	
+	
+	@Override
+	public HashMap<String, String> unblockUser(UUID uuid) throws AccessDeniedException {
+		log.debug("Attempt to unblock user with id {}", uuid);
+		Optional<User> loggedInUser = this.userRepository.findById(this.getLoggedInUserId());
+		HashMap<String, String> result = new HashMap<>();
+		if (!isAdmin(modelMapper.map(loggedInUser, User.class))) {
+			throw new AccessDeniedException("Нямате права да блокирате потребител!");
+		}
+		
+		Optional<User> user = this.userRepository.findById(uuid);
+		
+		if (user.isPresent()) {
+			user.get().setEnabled(true);
+			userRepository.save(user.get());
+			result.put("message", "Успешно отключен потребител: " + user.get().getUsername());
+			result.put("status", "success");
+			log.info("Successfully unblocked user with id {}", uuid);
+			return result;
+		} else {
+			log.warn("Return error message in unblocking user method: User with id {} does not exist", uuid);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма потребител с #: " + uuid);
 			
 		}
 	}

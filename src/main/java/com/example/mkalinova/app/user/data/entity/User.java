@@ -36,6 +36,9 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	private UsersRole role;
 	
+	@Column
+	private boolean enabled;
+	
 	public User() {
 	}
 	
@@ -94,5 +97,13 @@ public class User {
 	
 	public void setRole(UsersRole role) {
 		this.role = role;
+	}
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
+	
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 }
