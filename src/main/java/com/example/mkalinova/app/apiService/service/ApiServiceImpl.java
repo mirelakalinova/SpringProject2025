@@ -13,11 +13,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.*;
 
 @Service
@@ -25,15 +24,15 @@ public class ApiServiceImpl implements ApiService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApiServiceImpl.class);  // Статично инициализиране на логгера
 	private final ApiFeignClient apiFeignClient;
 	private final ModelMapper modelMapper;
-	private final RedisTemplate<String, Object> redisTemplate;
+
 	private final UserService userService;
 	
 	private static final int PAGE_SIZE = 25;
 	
-	public ApiServiceImpl(ApiFeignClient apiFeignClient, ModelMapper modelMapper, RedisTemplate<String, Object> redisTemplate, UserService userService) {
+	public ApiServiceImpl(ApiFeignClient apiFeignClient, ModelMapper modelMapper, UserService userService) {
 		this.apiFeignClient = apiFeignClient;
 		this.modelMapper = modelMapper;
-		this.redisTemplate = redisTemplate;
+
 		
 		this.userService = userService;
 	}

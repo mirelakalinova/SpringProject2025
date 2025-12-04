@@ -7,7 +7,7 @@ import com.example.mkalinova.app.apiService.data.dto.SaveMakeModelDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.HashMap;
 import java.util.UUID;
 

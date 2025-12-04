@@ -4,7 +4,7 @@ import com.example.mkalinova.app.repair.data.dto.EditRepairDto;
 import com.example.mkalinova.app.repair.data.dto.RepairDto;
 import com.example.mkalinova.app.repair.data.dto.RepairListDto;
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;

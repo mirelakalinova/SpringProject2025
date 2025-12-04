@@ -8,7 +8,7 @@ import com.example.mkalinova.app.company.data.dto.EditCompanyDto;
 import com.example.mkalinova.app.company.data.dto.FetchCompaniesDto;
 import com.example.mkalinova.app.company.data.entity.Company;
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;

@@ -22,10 +22,10 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -79,7 +79,7 @@ public class CarServiceImpl implements CarService {
 	
 	@Override
 	@Transactional
-	public HashMap<String, String> addCarAndReturnMessage(AddCarDto addCarDto) throws AccessDeniedException {
+	public HashMap<String, String> addCarAndReturnMessage(AddCarDto addCarDto) throws AccessDeniedException{
 		log.debug("Attempt to create car with registration number {}", addCarDto.getRegistrationNumber());
 		Optional<User> user = userService.getLoggedInUser();
 		if (user.isEmpty()) {
@@ -113,7 +113,7 @@ public class CarServiceImpl implements CarService {
 		carRepository.save(car);
 		StringBuilder sb = new StringBuilder();
 		sb.append("Успешно добавен автомобил с рег. номер: ").append(addCarDto.getRegistrationNumber()).append(System.lineSeparator());
-		if(responseResult.get("status").equals("success")){
+		if (responseResult.get("status").equals("success")) {
 			sb.append(responseResult.get("message")).append(System.lineSeparator());
 		}
 		result.put("status", "success");

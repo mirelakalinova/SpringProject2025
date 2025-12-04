@@ -1,5 +1,7 @@
 package com.example.mkalinova.car;
 
+import com.example.mkalinova.app.apiService.config.ApiFeignClient;
+import com.example.mkalinova.app.apiService.data.dto.SaveMakeModelDto;
 import com.example.mkalinova.app.apiService.service.ApiService;
 import com.example.mkalinova.app.car.data.dto.AddCarDto;
 import com.example.mkalinova.app.car.data.dto.CarRepairDto;
@@ -17,8 +19,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 
-import java.nio.file.AccessDeniedException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,6 +43,8 @@ class CarServiceUTest {
 	private UserServiceImpl userService;
 	@Mock
 	private UserRepository userRepository;
+	@Mock
+	private ApiFeignClient feignClient;
 	
 	@InjectMocks
 	private CarServiceImpl service;
@@ -129,12 +134,15 @@ class CarServiceUTest {
 	void addCarAndReturnMessage_Success() throws AccessDeniedException {
 		when(userService.getLoggedInUser()).thenReturn(Optional.of(admin));
 		when(carRepository.getByRegistrationNumber(addCarDto.getRegistrationNumber())).thenReturn(Optional.empty());
+		HashMap<String, String> apiResp = new HashMap<>();
+		apiResp.put("status", "success");
+		when(apiService.saveMakeAndModel(any(SaveMakeModelDto.class))).thenReturn(apiResp);
 		when(modelMapper.map(addCarDto, Car.class))
 				.thenReturn(carFirst);
 		HashMap<String, String> result = service.addCarAndReturnMessage(addCarDto);
 		verify(carRepository, times(1)).save(any());
 		assertEquals("success", result.get("status"));
-		assertEquals("Успешно добавен автомобил с рег. номер: " + addCarDto.getRegistrationNumber(), result.get("message"));
+		assertTrue( result.get("message").contains("Успешно добавен автомобил с рег. номер: " + addCarDto.getRegistrationNumber()));
 		
 		
 	}

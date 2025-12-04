@@ -78,6 +78,7 @@ public class CompanyControllerIT {
 		admin.setEmail("admin@test.bg");
 		admin.setPassword("Password1234!");
 		admin.setRole(UsersRole.ADMIN);
+		admin.setEnabled(true);
 		
 		editor = new User();
 		editor.setFirstName("Mirela");
@@ -86,7 +87,7 @@ public class CompanyControllerIT {
 		editor.setEmail("editor@test.bg");
 		editor.setPassword("Password1234!");
 		editor.setRole(UsersRole.EDITOR);
-		
+		editor.setEnabled(true);
 		client = new Client();
 		client.setPhone("0896619422");
 		client.setFirstName("Test");

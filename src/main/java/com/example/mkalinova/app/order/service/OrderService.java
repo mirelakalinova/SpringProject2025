@@ -4,7 +4,7 @@ import com.example.mkalinova.app.order.data.dto.AddOrderDto;
 import com.example.mkalinova.app.order.data.dto.EditOrderDto;
 import com.example.mkalinova.app.order.data.dto.OrderListDto;
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;

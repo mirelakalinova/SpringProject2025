@@ -81,7 +81,7 @@ public class OrderControllerIT {
 		admin.setEmail("admin@test.bg");
 		admin.setPassword("Password1234!");
 		admin.setRole(UsersRole.ADMIN);
-		
+		admin.setEnabled(true);
 		userRepository.save(admin);
 		
 		editor = new User();
@@ -91,6 +91,7 @@ public class OrderControllerIT {
 		editor.setEmail("editor@test.bg");
 		editor.setPassword("Password1234!");
 		editor.setRole(UsersRole.EDITOR);
+		editor.setEnabled(true);
 		userRepository.save(editor);
 		carRepository.deleteAll();
 		car = new Car();

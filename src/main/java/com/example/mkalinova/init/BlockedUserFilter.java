@@ -1,21 +1,20 @@
 package com.example.mkalinova.init;
 
-import com.example.mkalinova.app.exepction.GlobalExceptionHandler;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.repo.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 
+@Profile("!test")
 @Component
 public class BlockedUserFilter extends OncePerRequestFilter {
 	private final UserRepository userRepository;

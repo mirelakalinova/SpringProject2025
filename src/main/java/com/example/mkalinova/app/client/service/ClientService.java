@@ -10,7 +10,7 @@ import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
 import jakarta.validation.Valid;
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;

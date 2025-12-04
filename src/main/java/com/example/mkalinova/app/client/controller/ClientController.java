@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +104,7 @@ public class ClientController extends BaseController {
 	}
 	
 	@PostMapping("/add")
-	public String createUser(@Valid AddClientDto addClientDto,
+	public String createClient(@Valid AddClientDto addClientDto,
 	                         BindingResult bindingResult,
 	                         @Valid AddCarDto addCarDto,
 	                         BindingResult bindingResultAddCarDto,
