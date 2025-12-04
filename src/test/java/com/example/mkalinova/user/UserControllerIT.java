@@ -51,6 +51,7 @@ public class UserControllerIT {
 		admin.setEmail("admin@test.bg");
 		admin.setPassword("Password1234!");
 		admin.setRole(UsersRole.ADMIN);
+		admin.setEnabled(true);
 		
 		userRepository.save(admin);
 		
@@ -62,6 +63,8 @@ public class UserControllerIT {
 		editor.setEmail("editor@test.bg");
 		editor.setPassword("Password1234!");
 		editor.setRole(UsersRole.EDITOR);
+		editor.setEnabled(true);
+		
 		userRepository.save(editor);
 		
 		

@@ -7,7 +7,7 @@ import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.client.data.dto.FetchClientDto;
 import jakarta.validation.Valid;
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;

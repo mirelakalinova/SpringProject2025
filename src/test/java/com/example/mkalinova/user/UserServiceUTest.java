@@ -19,7 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -157,7 +157,7 @@ public class UserServiceUTest {
 		when(securityContext.getAuthentication()).thenReturn(authentication);
 		SecurityContextHolder.setContext(securityContext);
 		
-		assertThrows(java.nio.file.AccessDeniedException.class, () -> {
+		assertThrows(AccessDeniedException.class, () -> {
 			userService.getLoggedInUserId();
 		});
 	}
@@ -175,7 +175,7 @@ public class UserServiceUTest {
 		
 		verify(userRepository, times(2)).findByUsername(editor.getUsername());
 		
-		assertThrows(java.nio.file.AccessDeniedException.class, () -> {
+		assertThrows(AccessDeniedException.class, () -> {
 			userService.addNewUser(newUser);
 		});
 	}

@@ -4,7 +4,7 @@ import com.example.mkalinova.app.parts.data.dto.EditPartDto;
 import com.example.mkalinova.app.parts.data.dto.PartDto;
 import com.example.mkalinova.app.parts.data.dto.PartListDto;
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
