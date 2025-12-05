@@ -6,6 +6,7 @@ import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.client.service.ClientService;
 import com.example.mkalinova.app.company.data.entity.Company;
 import com.example.mkalinova.app.company.service.CompanyService;
+import com.example.mkalinova.app.exception.NoSuchResourceException;
 import com.example.mkalinova.app.order.data.dto.AddOrderDto;
 import com.example.mkalinova.app.order.data.dto.EditOrderDto;
 import com.example.mkalinova.app.order.data.dto.OrderListDto;
@@ -23,11 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -142,7 +141,7 @@ public class OrderServiceImpl implements OrderService {
 		log.debug("Attempt to get order with id {}", id);
 		Optional<Order> order = orderRepository.findById(id);
 		if (order.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Поръчка с #" + id + " не съществува!");
+			throw new NoSuchResourceException( "Поръчка с #" + id + " не съществува!");
 		}
 		List<OrderPart> orderParts = orderPartService.findAllByOrderId(id);
 		if (!orderParts.isEmpty()) {
@@ -162,7 +161,7 @@ public class OrderServiceImpl implements OrderService {
 		userService.isUserLogIn();
 		Optional<Order> order = orderRepository.findById(id);
 		if (order.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Поръчка с #" + id + " не съществува!");
+			throw new NoSuchResourceException( "Поръчка с #" + id + " не съществува!");
 		}
 		HashMap<String, String> result = new HashMap<>();
 		
@@ -229,7 +228,7 @@ public class OrderServiceImpl implements OrderService {
 			Optional<Order> orderToDelete = orderRepository.findById(id);
 			
 			if (orderToDelete.isEmpty()) {
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма намерена поръчка с #" + id);
+				throw new NoSuchResourceException( "Няма намерена поръчка с #" + id);
 			}
 			orderPartService.setDeletedAtAllByOrderId(id);
 			orderRepairService.setDeletedAtAllByOrderId(id);

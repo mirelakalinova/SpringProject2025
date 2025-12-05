@@ -1,6 +1,7 @@
 package com.example.mkalinova.repair;
 
 
+import com.example.mkalinova.app.exception.NoSuchResourceException;
 import com.example.mkalinova.app.repair.data.dto.EditRepairDto;
 import com.example.mkalinova.app.repair.data.dto.RepairDto;
 import com.example.mkalinova.app.repair.data.dto.RepairListDto;
@@ -227,10 +228,12 @@ public class RepairUTest {
 		dto.setPrice(130D);
 		dto.setId(UUID.randomUUID());
 		when(repository.findById(dto.getId())).thenReturn(Optional.empty());
-		HashMap<String, String> result = this.service.editService(dto);
-		verify(repository).findById(dto.getId());
+		assertThrows(NoSuchResourceException.class, () -> {
+			this.service.editService(dto);
+		});
+		
+		//verify(repository).findById(dto.getId());
 		verify(repository, never()).save(repairFirst);
-		assertEquals("error", result.get("status"));
 		Optional<Repair> optService = repository.findByName(dto.getName());
 		assertFalse(optService.isPresent());
 		

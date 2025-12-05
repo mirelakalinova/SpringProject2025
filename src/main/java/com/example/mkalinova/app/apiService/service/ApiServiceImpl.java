@@ -14,9 +14,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import org.springframework.security.access.AccessDeniedException;
 import java.util.*;
 
 @Service
@@ -24,7 +24,7 @@ public class ApiServiceImpl implements ApiService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApiServiceImpl.class);  // Статично инициализиране на логгера
 	private final ApiFeignClient apiFeignClient;
 	private final ModelMapper modelMapper;
-
+	
 	private final UserService userService;
 	
 	private static final int PAGE_SIZE = 25;
@@ -32,7 +32,7 @@ public class ApiServiceImpl implements ApiService {
 	public ApiServiceImpl(ApiFeignClient apiFeignClient, ModelMapper modelMapper, UserService userService) {
 		this.apiFeignClient = apiFeignClient;
 		this.modelMapper = modelMapper;
-
+		
 		
 		this.userService = userService;
 	}
@@ -57,15 +57,11 @@ public class ApiServiceImpl implements ApiService {
 	
 	@Override
 	public Page<ModelDto> getModelsPage(Pageable pageable) {
-		int page = pageable.getPageNumber();
-		
-		
 		List<ModelDto> rawModelList = loadAllModelsFromApi();
+		int page = pageable.getPageNumber();
 		int total = rawModelList.size();
-		
 		int fromIndex = Math.min(page * PAGE_SIZE, total);
 		int toIndex = Math.min(fromIndex + PAGE_SIZE, total);
-		
 		List<ModelDto> content = rawModelList.subList(fromIndex, toIndex);
 		
 		return new PageImpl<>(content, PageRequest.of(page, PAGE_SIZE, pageable.getSort()), total);

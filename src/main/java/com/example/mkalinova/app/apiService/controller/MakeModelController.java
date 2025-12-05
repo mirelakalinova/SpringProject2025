@@ -3,22 +3,21 @@ package com.example.mkalinova.app.apiService.controller;
 import com.example.mkalinova.app.apiService.data.dto.MakeDto;
 import com.example.mkalinova.app.apiService.data.dto.ModelDto;
 import com.example.mkalinova.app.apiService.service.ApiService;
+import com.example.mkalinova.app.exception.NoSuchResourceException;
 import com.example.mkalinova.app.land.Controller.BaseController;
 import feign.FeignException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import org.springframework.security.access.AccessDeniedException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -40,11 +39,10 @@ public class MakeModelController extends BaseController {
 		return mv;
 	}
 	
-
 	
 	@PostMapping("/delete/model/{id}")
 	public String deleteModel(@PathVariable String id,
-	                         RedirectAttributes attributes) throws AccessDeniedException {
+	                          RedirectAttributes attributes) throws AccessDeniedException {
 		UUID uuid = UUID.fromString(id);
 		HashMap<String, String> result;
 		try {
@@ -53,7 +51,7 @@ public class MakeModelController extends BaseController {
 			attributes.addFlashAttribute("message", result.get("message"));
 			return "redirect:/api/models";
 		} catch (FeignException.NotFound e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Моделът с id " + id + " не съществува!.");
+			throw new NoSuchResourceException("Моделът с id " + id + " не съществува!.");
 		} catch (FeignException e) {
 			throw new RuntimeException("Грешка при изтриване на модела: " + e.getMessage());
 		}
@@ -80,7 +78,7 @@ public class MakeModelController extends BaseController {
 			attributes.addFlashAttribute("message", result.get("message"));
 			return "redirect:/api/makes";
 		} catch (FeignException.NotFound e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Марка с id " + id + " не съществува!.");
+			throw new NoSuchResourceException("Марка с id " + id + " не съществува!.");
 		} catch (FeignException e) {
 			throw new RuntimeException("Грешка при изтриване на марка: " + e.getMessage());
 		}

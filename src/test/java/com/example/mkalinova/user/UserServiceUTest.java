@@ -1,5 +1,6 @@
 package com.example.mkalinova.user;
 
+import com.example.mkalinova.app.exception.NoSuchResourceException;
 import com.example.mkalinova.app.user.data.dto.AddUserDto;
 import com.example.mkalinova.app.user.data.dto.EditUserDto;
 import com.example.mkalinova.app.user.data.entity.User;
@@ -13,13 +14,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import org.springframework.security.access.AccessDeniedException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -220,8 +221,10 @@ public class UserServiceUTest {
 	void getByIdNull() {
 		when(userRepository.findById(administrator.getId())).thenReturn(Optional.empty());
 		
-		EditUserDto dto = userService.getById(administrator.getId(), EditUserDto.class);
-		assertNull(dto);
+
+				assertThrows(NoSuchResourceException.class, () -> {
+					userService.getById(administrator.getId(), EditUserDto.class);
+				});
 		
 		verify(userRepository, atLeastOnce()).findById(administrator.getId());
 		verifyNoInteractions(modelMapper);

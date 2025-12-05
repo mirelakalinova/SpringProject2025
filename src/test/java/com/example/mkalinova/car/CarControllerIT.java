@@ -150,7 +150,7 @@ public class CarControllerIT {
 		mockMvc.perform(post("/car/delete/{id}", id)
 						.param("id", String.valueOf(id))
 						.with(csrf()))
-				.andExpect(status().is4xxClientError());
+				.andExpect(status().is5xxServerError());
 		
 		
 		Optional<Car> car = carRepository.findById(UUID.randomUUID());

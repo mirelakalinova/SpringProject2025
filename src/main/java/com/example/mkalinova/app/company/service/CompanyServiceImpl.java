@@ -9,6 +9,7 @@ import com.example.mkalinova.app.company.data.dto.EditCompanyDto;
 import com.example.mkalinova.app.company.data.dto.FetchCompaniesDto;
 import com.example.mkalinova.app.company.data.entity.Company;
 import com.example.mkalinova.app.company.repo.CompanyRepository;
+import com.example.mkalinova.app.exception.NoSuchResourceException;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.service.UserService;
 import jakarta.transaction.Transactional;
@@ -16,11 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -135,7 +134,7 @@ public class CompanyServiceImpl implements CompanyService {
 			
 			return result;
 		} else {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма намерена фирма с #" + uuid);
+			throw new NoSuchResourceException( "Няма намерена фирма с #" + uuid);
 		}
 		
 	}
@@ -147,7 +146,7 @@ public class CompanyServiceImpl implements CompanyService {
 			return modelMapper.map(companyRepository.findById(id).get(), clazz);
 			
 		} else {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма фирма с подаденото #" + id);
+			throw new NoSuchResourceException( "Няма фирма с подаденото #" + id);
 		}
 	}
 	
@@ -158,7 +157,7 @@ public class CompanyServiceImpl implements CompanyService {
 		
 		Optional<Company> optCompany = companyRepository.findById(editCompanyDto.getId());
 		if (optCompany.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма намерена фирма с #:" + editCompanyDto.getId());
+			throw new NoSuchResourceException( "Няма намерена фирма с #:" + editCompanyDto.getId());
 		}
 		HashMap<String, String> result = new HashMap<>();
 		StringBuilder sb = new StringBuilder();
@@ -241,10 +240,10 @@ public class CompanyServiceImpl implements CompanyService {
 				log.info("Successfully removed client with id {} of a company with id {}", id, companyId);
 				return result;
 			} else {
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Клиент с #" + id + " не беше намерен!");
+				throw new NoSuchResourceException( "Клиент с #" + id + " не беше намерен!");
 			}
 		} else {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Компания с #" + companyId + " не беше намерена!");
+			throw new NoSuchResourceException( "Компания с #" + companyId + " не беше намерена!");
 		}
 	}
 	

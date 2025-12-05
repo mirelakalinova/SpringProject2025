@@ -10,6 +10,7 @@ import com.example.mkalinova.app.client.service.ClientServiceImpl;
 import com.example.mkalinova.app.company.data.entity.Company;
 import com.example.mkalinova.app.company.repo.CompanyRepository;
 import com.example.mkalinova.app.company.service.CompanyServiceImpl;
+import com.example.mkalinova.app.exception.NoSuchResourceException;
 import com.example.mkalinova.app.order.data.dto.AddOrderDto;
 import com.example.mkalinova.app.order.data.dto.EditOrderDto;
 import com.example.mkalinova.app.order.data.dto.OrderListDto;
@@ -39,7 +40,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.web.server.ResponseStatusException;
 
 import org.springframework.security.access.AccessDeniedException;
 import java.time.LocalDateTime;
@@ -395,15 +395,15 @@ public class OrderUTest {
 	}
 	
 	@Test
-	void EditOrder_NotFoundException() {
+	void EditOrder_NoSuchResourceException() {
 		UUID orderId = UUID.randomUUID();
 		EditOrderDto dto = new EditOrderDto();
 		
 		when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 		
-		ResponseStatusException ex = assertThrows(ResponseStatusException.class, () ->
+		NoSuchResourceException ex = assertThrows(NoSuchResourceException.class, () ->
 				service.editOrder(orderId, dto));
 		
-		assertEquals("Поръчка с #" + orderId + " не съществува!", ex.getReason());
+		assertEquals("Поръчка с #" + orderId + " не съществува!", ex.getMessage());
 	}
 }
