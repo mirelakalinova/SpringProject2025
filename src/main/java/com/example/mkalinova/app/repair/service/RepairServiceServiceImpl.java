@@ -1,6 +1,7 @@
 package com.example.mkalinova.app.repair.service;
 
 
+import com.example.mkalinova.app.exception.NoSuchResourceException;
 import com.example.mkalinova.app.repair.data.dto.EditRepairDto;
 import com.example.mkalinova.app.repair.data.dto.RepairDto;
 import com.example.mkalinova.app.repair.data.dto.RepairListDto;
@@ -12,11 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -85,7 +84,7 @@ public class RepairServiceServiceImpl implements RepairService {
 			
 			return result;
 		}
-		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Услуга с #" + id + " не съществува!");
+		throw new NoSuchResourceException("Услуга с #" + id + " не съществува!");
 	}
 	
 	@Override
@@ -94,12 +93,10 @@ public class RepairServiceServiceImpl implements RepairService {
 		userService.isUserLogIn();
 		HashMap<String, String> result = new HashMap<>();
 		Optional<Repair> optService = carServiceRepository.findById(dto.getId());
-		if (!optService.isPresent()) {
-			result.put("status", "error");
-			result.put("message", "Услуга #" + dto.getId() + " не съществува!");
+		if (optService.isEmpty()) {
+	
 			log.warn("Return error message: edited repair with id {} does not exist", dto.getId());
-			
-			return result;
+			throw new NoSuchResourceException("Услуга #" + dto.getId() + " не съществува!");
 		}
 		optService.get().setName(dto.getName());
 		if (dto.getPrice() != null) {
@@ -124,6 +121,6 @@ public class RepairServiceServiceImpl implements RepairService {
 			return modelMapper.map(service, EditRepairDto.class);
 		}
 		log.warn("Return error message: repair with id {} does not exist", id);
-		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма намерена услуга с #" + id);
+		throw new NoSuchResourceException("Няма намерена услуга с #" + id);
 	}
 }

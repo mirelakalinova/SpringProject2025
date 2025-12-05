@@ -1,5 +1,6 @@
 package com.example.mkalinova.app.orderPart.service;
 
+import com.example.mkalinova.app.exception.NoSuchResourceException;
 import com.example.mkalinova.app.order.data.entity.Order;
 import com.example.mkalinova.app.orderPart.data.OrderPart;
 import com.example.mkalinova.app.orderPart.data.dto.AddOrderPartDto;
@@ -66,7 +67,7 @@ public class OrderPartServiceImpl implements OrderPartService {
 		log.debug("Attempt to safe delete all parts of order with id {}", id);
 		List<OrderPart> orderParts = repository.findAllByOrderId(id);
 		if (orderParts.isEmpty()) {
-			return;
+			throw  new NoSuchResourceException("Част към поръча с #" + id + " не съществува!");
 		}
 		orderParts.forEach(p -> {
 			p.setDeletedAt(LocalDateTime.now());
@@ -80,7 +81,7 @@ public class OrderPartServiceImpl implements OrderPartService {
 		log.debug("Attempt to delete all parts of order with id {}", id);
 		List<OrderPart> orderParts = repository.findAllByOrderId(id);
 		if (orderParts.isEmpty()) {
-			return;
+			throw  new NoSuchResourceException("Част към поръча с #" + id + " не съществува!");
 		}
 		orderParts.forEach(repository::delete);
 		log.info("Successfully deleted all parts of order with id {}", id);

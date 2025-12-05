@@ -1,5 +1,6 @@
 package com.example.mkalinova.app.orderRepair.service;
 
+import com.example.mkalinova.app.exception.NoSuchResourceException;
 import com.example.mkalinova.app.order.data.entity.Order;
 import com.example.mkalinova.app.orderRepair.data.OrderRepair;
 import com.example.mkalinova.app.orderRepair.data.dto.AddOrderRepairDto;
@@ -65,7 +66,7 @@ public class OrderRepairServiceImpl implements OrderRepairService {
 		
 		List<OrderRepair> orderRepairs = repository.findAllByOrderId(id);
 		if (orderRepairs.isEmpty()) {
-			return;
+			throw new NoSuchResourceException("Ремонт към поръча с #" + id + " не съществува!");
 		}
 		orderRepairs.forEach(r -> {
 			r.setDeletedAt(LocalDateTime.now());
@@ -80,7 +81,7 @@ public class OrderRepairServiceImpl implements OrderRepairService {
 		
 		List<OrderRepair> orderRepairs = repository.findAllByOrderId(id);
 		if (orderRepairs.isEmpty()) {
-			return;
+			throw new NoSuchResourceException("Ремонт към поръча с #" + id + " не съществува!");
 		}
 		orderRepairs.forEach(repository::delete);
 		log.info("Successfully deleted all repairs of order with id {}", id);

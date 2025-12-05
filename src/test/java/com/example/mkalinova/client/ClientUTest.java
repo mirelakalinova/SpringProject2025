@@ -15,6 +15,7 @@ import com.example.mkalinova.app.company.data.dto.AddCompanyDto;
 import com.example.mkalinova.app.company.data.entity.Company;
 import com.example.mkalinova.app.company.repo.CompanyRepository;
 import com.example.mkalinova.app.company.service.CompanyServiceImpl;
+import com.example.mkalinova.app.exception.NoSuchResourceException;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.data.entity.UsersRole;
 import com.example.mkalinova.app.user.repo.UserRepository;
@@ -28,7 +29,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.web.server.ResponseStatusException;
 
 import org.springframework.security.access.AccessDeniedException;
 import java.time.LocalDateTime;
@@ -346,7 +346,7 @@ public class ClientUTest {
 	
 	@Test
 	@WithMockUser(username = "admin", roles = "ADMIN")
-	void deleteClient_ReturnResponseStatusException() throws AccessDeniedException {
+	void deleteClient_NoSuchResourceException() throws AccessDeniedException {
 		doNothing().when(userService).isUserLogIn();
 		UUID clientId = UUID.randomUUID();
 		
@@ -368,7 +368,7 @@ public class ClientUTest {
 		company.setId(companyId);
 		companies.add(company);
 		
-		assertThrows(ResponseStatusException.class, () -> {
+		assertThrows(NoSuchResourceException.class, () -> {
 			clientService.deleteClient(clientId);
 		});
 		assertNull(car.getDeletedAt(), "Car should not have deletedAt set");
@@ -383,7 +383,7 @@ public class ClientUTest {
 	
 	@Test
 	@WithMockUser(username = "admin", roles = "ADMIN")
-	void updateClient_ReturnResponseStatusException() throws AccessDeniedException {
+	void updateClient_ReturnNoSuchResourceException() throws AccessDeniedException {
 		doNothing().when(userService).isUserLogIn();
 		
 		EditClientDto editClientDto = new EditClientDto();
@@ -394,7 +394,7 @@ public class ClientUTest {
 		when(clientRepository.findById(editClientDto.getId())).thenReturn(Optional.empty());
 		
 		
-		assertThrows(ResponseStatusException.class, () -> {
+		assertThrows(NoSuchResourceException.class, () -> {
 			clientService.updateClient(editClientDto.getId(), editClientDto);
 		});
 		
@@ -638,7 +638,7 @@ public class ClientUTest {
 	}
 	
 	@Test
-	void removeCar_ResponseStatusException() throws Exception {
+	void removeCar_NoSuchResourceException() throws Exception {
 		UUID carId = UUID.randomUUID();
 		UUID clientId = UUID.randomUUID();
 		
@@ -658,7 +658,7 @@ public class ClientUTest {
 		when(carRepository.findById(carId)).thenReturn(Optional.of(car));
 		when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
 		
-		assertThrows(ResponseStatusException.class, () -> {
+		assertThrows(NoSuchResourceException.class, () -> {
 			clientService.removeCar(carId, clientId);
 		});
 		

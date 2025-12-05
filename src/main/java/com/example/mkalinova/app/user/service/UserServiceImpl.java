@@ -1,5 +1,6 @@
 package com.example.mkalinova.app.user.service;
 
+import com.example.mkalinova.app.exception.NoSuchResourceException;
 import com.example.mkalinova.app.user.data.dto.AddUserDto;
 import com.example.mkalinova.app.user.data.dto.EditUserDto;
 import com.example.mkalinova.app.user.data.entity.User;
@@ -9,14 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import org.springframework.security.access.AccessDeniedException;
 import java.util.*;
 
 @Slf4j
@@ -117,7 +116,14 @@ public class UserServiceImpl implements UserService {
 	
 	public <T> T getById(UUID id, Class<T> clazz) {
 		log.debug("Attempt to get user with id {}", id);
-		return userRepository.findById(id).map(user -> modelMapper.map(user, clazz)).orElse(null);
+		Optional<User> user = userRepository.findById(id);
+		if (user.isEmpty()) {
+			log.warn("Return NoSuchResourceException in Get by id Method- user with id {} does not exist ", id);
+			
+			throw new NoSuchResourceException("Не съществува потребител с #" + id);
+		}
+		
+		return modelMapper.map(user.get(), clazz);
 	}
 	
 	public HashMap<String, String> editUser(UUID id, EditUserDto editUserDto) throws AccessDeniedException {
@@ -127,11 +133,10 @@ public class UserServiceImpl implements UserService {
 		User userToEdit = this.getById(id, User.class);
 		
 		if (userToEdit == null) {
-			result.put("message", "Няма такъв потребител!");
-			result.put("status", "error");
-			log.warn("Return error message - user with id {} does not exist ", id);
 			
-			return result;
+			log.warn("Return NoSuchResourceException in Edit Method- user with id {} does not exist ", id);
+			
+			throw new NoSuchResourceException("Не съществува потребител с #" + id);
 		}
 		
 		String firstName = editUserDto.getFirstName();
@@ -201,7 +206,7 @@ public class UserServiceImpl implements UserService {
 		} else {
 			
 			log.warn("Return error message: User with id {} does not exist", id);
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма потребител с #: " + id);
+			throw new NoSuchResourceException("Няма потребител с #: " + id);
 			
 		}
 	}
@@ -228,7 +233,7 @@ public class UserServiceImpl implements UserService {
 			return result;
 		} else {
 			log.warn("Return error message in blocking user method: User with id {} does not exist", uuid);
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма потребител с #: " + uuid);
+			throw new NoSuchResourceException("Няма потребител с #: " + uuid);
 			
 		}
 	}
@@ -254,7 +259,7 @@ public class UserServiceImpl implements UserService {
 			return result;
 		} else {
 			log.warn("Return error message in unblocking user method: User with id {} does not exist", uuid);
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма потребител с #: " + uuid);
+			throw new NoSuchResourceException("Няма потребител с #: " + uuid);
 			
 		}
 	}

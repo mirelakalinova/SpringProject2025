@@ -1,6 +1,7 @@
 package com.example.mkalinova.app.parts.service;
 
 
+import com.example.mkalinova.app.exception.NoSuchResourceException;
 import com.example.mkalinova.app.parts.data.dto.EditPartDto;
 import com.example.mkalinova.app.parts.data.dto.PartDto;
 import com.example.mkalinova.app.parts.data.dto.PartListDto;
@@ -12,11 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -85,7 +84,7 @@ public class PartServiceImpl implements PartService {
 			
 			return result;
 		}
-		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Част с #" + id + " не съществува!");
+		throw new NoSuchResourceException("Част с #" + id + " не съществува!");
 	}
 	
 	@Override
@@ -95,11 +94,9 @@ public class PartServiceImpl implements PartService {
 		HashMap<String, String> result = new HashMap<>();
 		Optional<Part> optPart = partRepository.findById(partDto.getId());
 		if (optPart.isEmpty()) {
-			result.put("status", "error");
-			result.put("message", "Част #" + partDto.getId() + " не съществува!");
 			log.warn("Return error message: Part with name {} does not exist", partDto.getName());
+			throw new NoSuchResourceException("Част #" + partDto.getId() + " не съществува!");
 			
-			return result;
 		}
 		optPart.get().setName(partDto.getName());
 		if (partDto.getPrice() != null) {
@@ -124,6 +121,6 @@ public class PartServiceImpl implements PartService {
 			return modelMapper.map(part, EditPartDto.class);
 		}
 		
-		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Няма намерена част с #" + id);
+		throw new NoSuchResourceException("Няма намерена част с #" + id);
 	}
 }

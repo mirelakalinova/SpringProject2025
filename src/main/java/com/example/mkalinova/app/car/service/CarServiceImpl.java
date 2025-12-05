@@ -10,6 +10,7 @@ import com.example.mkalinova.app.car.repo.CarRepository;
 import com.example.mkalinova.app.client.data.dto.FetchClientDto;
 import com.example.mkalinova.app.client.data.entity.Client;
 import com.example.mkalinova.app.client.repo.ClientRepository;
+import com.example.mkalinova.app.exception.NoSuchResourceException;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.service.UserServiceImpl;
 import jakarta.transaction.Transactional;
@@ -238,7 +239,7 @@ public class CarServiceImpl implements CarService {
 		Optional<Car> car = carRepository.findById(id);
 		HashMap<String, String> result = new HashMap<>();
 		if (car.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Автомобил с #" + id + "и рег.# " + editCarDto.getRegistrationNumber() + " не съществува!");
+			throw new NoSuchResourceException("Автомобил с #" + id + "и рег.# " + editCarDto.getRegistrationNumber() + " не съществува!");
 		}
 		
 		Car carToUpdate = modelMapper.map(editCarDto, Car.class);
@@ -260,7 +261,10 @@ public class CarServiceImpl implements CarService {
 	public <T> Object findById(UUID carId, Class<T> clazz) {
 		log.debug("Attempt to find car by id {}", carId);
 		Optional<Car> car = carRepository.findById(carId);
-		return car.<Object>map(value -> modelMapper.map(value, clazz)).orElse(null);
+		if(car.isEmpty()){
+			throw new NoSuchResourceException("Автомобил с #" + carId + " не съществува!");
+		}
+		return modelMapper.map(car, clazz);
 		
 		
 	}

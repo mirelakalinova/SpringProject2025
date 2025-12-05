@@ -1,5 +1,6 @@
 package com.example.mkalinova.part;
 
+import com.example.mkalinova.app.exception.NoSuchResourceException;
 import com.example.mkalinova.app.parts.data.dto.EditPartDto;
 import com.example.mkalinova.app.parts.data.dto.PartDto;
 import com.example.mkalinova.app.parts.data.dto.PartListDto;
@@ -17,10 +18,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 
-import org.springframework.security.access.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -226,10 +227,10 @@ public class PartUTest {
 		dto.setPrice(130D);
 		dto.setId(UUID.randomUUID());
 		when(partRepository.findById(dto.getId())).thenReturn(Optional.empty());
-		HashMap<String, String> result = service.editPart(dto);
-		verify(partRepository).findById(dto.getId());
+		assertThrows(NoSuchResourceException.class, () -> {
+			this.service.editPart(dto);
+		});
 		verify(partRepository, never()).save(partFirst);
-		assertEquals("error", result.get("status"));
 		Optional<Part> optPart = partRepository.findByName(dto.getName());
 		assertFalse(optPart.isPresent());
 		
