@@ -9,10 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -22,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
+@RequestMapping("user")
 public class UserController extends BaseController {
 	private final UserServiceImpl userService;
 	
@@ -44,25 +42,25 @@ public class UserController extends BaseController {
 		return super.view("/");
 	}
 	
-	@GetMapping("/users")
+	@GetMapping("/list")
 	public ModelAndView userList() {
-		ModelAndView modelAndView = super.view("user/users");
+		ModelAndView modelAndView = super.view("user/list");
 		modelAndView.addObject("users", userService.getAll(UserListDto.class));
 		return modelAndView;
 	}
 	
-	@GetMapping("/add-user")
+	@GetMapping("/add")
 	public ModelAndView addUser() {
-		return super.view("user/add-user");
+		return super.view("user/add");
 	}
 	
-	@PostMapping("/add-user")
+	@PostMapping("/add")
 	public String createUser(@Valid AddUserDto addUserDto, BindingResult bindingResult, RedirectAttributes attributes) throws AccessDeniedException {
 		if (bindingResult.hasErrors()) {
 			attributes.addFlashAttribute("addUserDto", addUserDto);
 			attributes.addFlashAttribute("org.springframework.validation.BindingResult.addUserDto", bindingResult);
 			
-			return "redirect:/add-user";
+			return "redirect:/user/add";
 		}
 		
 		
@@ -75,13 +73,13 @@ public class UserController extends BaseController {
 			attributes.addFlashAttribute("success", message);
 			
 		}
-		return "redirect:/add-user";
+		return "redirect:/user/add";
 	}
 	
 	
-	@GetMapping("/edit-user/{id}")
+	@GetMapping("/edit/{id}")
 	public ModelAndView editUser(@PathVariable UUID id, Model model) {
-		ModelAndView modelAndView = super.view("user/edit-user");
+		ModelAndView modelAndView = super.view("user/edit");
 		if (!model.containsAttribute("editUserDto")) {
 			modelAndView.addObject("editUserDto", userService.getById(id, EditUserDto.class));
 		}
@@ -89,7 +87,7 @@ public class UserController extends BaseController {
 		return modelAndView;
 	}
 	
-	@PostMapping("edit-user/{id}")
+	@PostMapping("edit/{id}")
 	public String editUser(@Valid
 	                       EditUserDto editUserDto,
 	                       BindingResult bindingResult,
@@ -98,14 +96,14 @@ public class UserController extends BaseController {
 		if (bindingResult.hasErrors()) {
 			attributes.addFlashAttribute("editUserDto", editUserDto);
 			attributes.addFlashAttribute("org.springframework.validation.BindingResult.editUserDto", bindingResult);
-			return "redirect:/edit-user/" + editUserDto.getId();
+			return "redirect:/user/edit/" + editUserDto.getId();
 		}
 		HashMap<String, String> result = userService.editUser(editUserDto.getId(), editUserDto);
 		
 		
 		attributes.addFlashAttribute("message", result.get("message"));
 		attributes.addFlashAttribute("status", result.get("status"));
-		return "redirect:/users";
+		return "redirect:/user/list";
 	}
 	
 	
@@ -118,7 +116,7 @@ public class UserController extends BaseController {
 		attributes.addFlashAttribute("status", result.get("status"));
 		
 		
-		return "redirect:/users";
+		return "redirect:/user/list";
 	}
 	
 	
@@ -131,7 +129,7 @@ public class UserController extends BaseController {
 		attributes.addFlashAttribute("status", result.get("status"));
 		
 		
-		return "redirect:/users";
+		return "redirect:/user/list";
 	}
 	
 	
@@ -144,7 +142,7 @@ public class UserController extends BaseController {
 		attributes.addFlashAttribute("status", result.get("status"));
 		
 		
-		return "redirect:/users";
+		return "redirect:/user/list";
 	}
 	
 	

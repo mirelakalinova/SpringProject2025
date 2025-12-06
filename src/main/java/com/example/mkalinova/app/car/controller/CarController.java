@@ -43,7 +43,7 @@ public class CarController extends BaseController {
 	@GetMapping("/add")
 	public ModelAndView addCar() {
 		
-		ModelAndView modelAndView = super.view("car/add-car");
+		ModelAndView modelAndView = super.view("car/add");
 		
 		modelAndView.addObject("clients", clientService.findAll(ClientListCarDto.class));
 		
@@ -68,7 +68,7 @@ public class CarController extends BaseController {
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.addCarDto", bindingResult);
 			return "redirect:/car/add";
 		} else {
-			return "redirect:/car/cars";
+			return "redirect:/car/list";
 		}
 	}
 	
@@ -92,7 +92,7 @@ public class CarController extends BaseController {
 			return "redirect:/car/edit/" + editCarDto.getId();
 		}
 		HashMap<String, String> result = carService.editCar(editCarDto.getId(), editCarDto);
-		return "redirect:/car/cars";
+		return "redirect:/car/list";
 	}
 	
 	
@@ -103,13 +103,13 @@ public class CarController extends BaseController {
 		HashMap<String, String> result = carService.deleteCarById(uuid);
 		attributes.addFlashAttribute("message", result.get("message"));
 		attributes.addFlashAttribute("status", result.get("status"));
-		return "redirect:/car/cars";
+		return "redirect:/car/list";
 		
 	}
 	
-	@GetMapping("cars")
+	@GetMapping("list")
 	public ModelAndView carList() {
-		ModelAndView modelAndView = super.view("car/cars");
+		ModelAndView modelAndView = super.view("car/list");
 		
 		List<CarDto> carList = carService.getAll(CarDto.class);
 		modelAndView.addObject("cars", carList);

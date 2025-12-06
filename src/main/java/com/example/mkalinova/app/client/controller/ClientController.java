@@ -83,9 +83,9 @@ public class ClientController extends BaseController {
 		return new AddCompanyDto();
 	}
 	
-	@GetMapping("/clients")
+	@GetMapping("/list")
 	public ModelAndView clientList() {
-		ModelAndView modelAndView = super.view("/client/clients");
+		ModelAndView modelAndView = super.view("/client/list");
 		modelAndView.addObject("clients", clientService.getAllWithCarsAndCompanies());
 		return modelAndView;
 	}
@@ -155,7 +155,7 @@ public class ClientController extends BaseController {
 		}
 		attributes.addFlashAttribute("message", result.get("message"));
 		attributes.addFlashAttribute("status", "success");
-		return "redirect:/client/clients";
+		return "redirect:/client/list";
 		
 		
 	}
@@ -178,7 +178,7 @@ public class ClientController extends BaseController {
 		attributes.addFlashAttribute("message", "Успещно изтрит клиент #" + id);
 		attributes.addFlashAttribute("status", "success");
 		
-		return "redirect:/client/clients";
+		return "redirect:/client/list";
 	}
 	
 	
@@ -223,7 +223,7 @@ public class ClientController extends BaseController {
 		
 		attributes.addFlashAttribute("message", result.get("message"));
 		attributes.addFlashAttribute("status", result.get("status"));
-		return "redirect:/client/clients";
+		return "redirect:/client/list";
 	}
 	
 	@PostMapping("/remove-car/{id}")

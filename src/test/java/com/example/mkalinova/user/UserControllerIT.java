@@ -74,7 +74,7 @@ public class UserControllerIT {
 	public void editUser_ReturnsModelAndViewWithUser() throws Exception {
 		
 		mockMvc.perform(
-						get("/edit-user/{id}", admin.getId())
+						get("/user/edit/{id}", admin.getId())
 								.contentType(MediaType.TEXT_HTML))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("editUserDto"))
@@ -90,7 +90,7 @@ public class UserControllerIT {
 		ArrayList<UserListDto> list = new ArrayList<>();
 		list.add(modelMapper.map(admin, UserListDto.class));
 		list.add(modelMapper.map(editor, UserListDto.class));
-		mockMvc.perform(get("/users").contentType(MediaType.TEXT_HTML))
+		mockMvc.perform(get("/user/list").contentType(MediaType.TEXT_HTML))
 				.andExpect(status().isOk())
 				.andExpect(model().attribute("users", hasSize(2)));
 	}
@@ -98,7 +98,7 @@ public class UserControllerIT {
 	@Test
 	@WithMockUser(username = "admin", roles = {"ADMIN"})
 	public void addUserSucces() throws Exception {
-		mockMvc.perform(post("/add-user")
+		mockMvc.perform(post("/user/add")
 						.param("firstName", "Test")
 						.param("lastName", "Test")
 						.param("username", "test_editor")
@@ -107,7 +107,7 @@ public class UserControllerIT {
 						.param("role", "EDITOR")
 						.with(csrf()))
 				.andExpect(status().is3xxRedirection())
-				.andExpect(redirectedUrl("/add-user"));
+				.andExpect(redirectedUrl("/user/add"));
 		
 		User user = userRepository.findByUsername("test_editor");
 		assertNotNull(user);
@@ -119,7 +119,7 @@ public class UserControllerIT {
 	@Test
 	@WithMockUser(username = "admin", roles = {"ADMIN"})
 	public void addUserWithErrors() throws Exception {
-		mockMvc.perform(post("/add-user")
+		mockMvc.perform(post("/user/add")
 						.param("firstName", "Test")
 						.param("lastName", "Test")
 						.param("username", "test_editor")
@@ -129,7 +129,7 @@ public class UserControllerIT {
 						.with(csrf()))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(flash().attributeExists("addUserDto"))
-				.andExpect(redirectedUrl("/add-user"));
+				.andExpect(redirectedUrl("/user/add"));
 		
 		User user = userRepository.findByUsername("test_editor");
 		assertNull(user);
@@ -141,7 +141,7 @@ public class UserControllerIT {
 	@Test
 	@WithMockUser(username = "admin", roles = {"ADMIN"})
 	public void addUserWithExistingEmail() throws Exception {
-		mockMvc.perform(post("/add-user")
+		mockMvc.perform(post("/user/add")
 						.param("firstName", "Test")
 						.param("lastName", "Test")
 						.param("username", "test_editor")
@@ -151,7 +151,7 @@ public class UserControllerIT {
 						.with(csrf()))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(flash().attributeExists("error"))
-				.andExpect(redirectedUrl("/add-user"));
+				.andExpect(redirectedUrl("/user/add"));
 		
 		Optional<User> user = userRepository.findByUsernameOrEmail("test_editor", "admin@test.bg");
 		assertNotNull(user);
@@ -162,7 +162,7 @@ public class UserControllerIT {
 	@Test
 	@WithMockUser(username = "admin", roles = {"ADMIN"})
 	public void addUserWithExistingUsername() throws Exception {
-		mockMvc.perform(post("/add-user")
+		mockMvc.perform(post("/user/add")
 						.param("firstName", "Test")
 						.param("lastName", "Test")
 						.param("username", "editor")
@@ -172,7 +172,7 @@ public class UserControllerIT {
 						.with(csrf()))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(flash().attributeExists("error"))
-				.andExpect(redirectedUrl("/add-user"));
+				.andExpect(redirectedUrl("/user/add"));
 		
 		Optional<User> user = userRepository.findByUsernameOrEmail("editor", "test@test.bg");
 		assertNotNull(user);
@@ -183,7 +183,7 @@ public class UserControllerIT {
 	@Test
 	@WithMockUser(username = "editor", roles = {"EDITOR"})
 	public void addUserByEditor_AccessDenied() throws Exception {
-		mockMvc.perform(post("/add-user")
+		mockMvc.perform(post("/user/add")
 						.param("firstName", "Test")
 						.param("lastName", "Test")
 						.param("username", "test_editor")
@@ -203,7 +203,7 @@ public class UserControllerIT {
 	@Test
 	@WithMockUser(username = "admin", roles = {"ADMIN"})
 	public void editUserByAdmin_Success() throws Exception {
-		mockMvc.perform(post("/edit-user/{id}", editor.getId())
+		mockMvc.perform(post("/user/edit/{id}", editor.getId())
 						.param("id", String.valueOf(editor.getId()))
 						.param("firstName", "Test")
 						.param("lastName", "Test")
@@ -212,7 +212,7 @@ public class UserControllerIT {
 						.param("password", "Password1234!")
 						.param("role", "Редактор")
 						.with(csrf()))
-				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/users"));
+				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/user/list"));
 		
 		User user = userRepository.findByUsername("editor");
 		assertNotNull(user);
@@ -224,7 +224,7 @@ public class UserControllerIT {
 	@Test
 	@WithMockUser(username = "editor", roles = {"EDITOR"})
 	public void editUserByEditor_Success() throws Exception {
-		mockMvc.perform(post("/edit-user/{id}", editor.getId())
+		mockMvc.perform(post("/user/edit/{id}", editor.getId())
 						.param("id", String.valueOf(editor.getId()))
 						.param("firstName", "Test")
 						.param("lastName", "Test")
@@ -233,7 +233,7 @@ public class UserControllerIT {
 						.param("password", "Password1234!")
 						.param("role", "Редактор")
 						.with(csrf()))
-				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/users"));
+				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/user/list"));
 		
 		User user = userRepository.findByUsername("editor");
 		assertNotNull(user);
@@ -246,7 +246,7 @@ public class UserControllerIT {
 	@Test
 	@WithMockUser(username = "admin", roles = {"ADMIN"})
 	public void editUserByAdminChangeRole_Success() throws Exception {
-		mockMvc.perform(post("/edit-user/{id}", editor.getId())
+		mockMvc.perform(post("/user/edit/{id}", editor.getId())
 						.param("id", String.valueOf(editor.getId()))
 						.param("firstName", "Test")
 						.param("lastName", "Test")
@@ -255,7 +255,7 @@ public class UserControllerIT {
 						.param("password", "Password1234!")
 						.param("role", "Администратор")
 						.with(csrf()))
-				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/users"));
+				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/user/list"));
 		
 		User user = userRepository.findByUsername("editor");
 		assertNotNull(user);
@@ -268,7 +268,7 @@ public class UserControllerIT {
 	@Test
 	@WithMockUser(username = "admin", roles = {"ADMIN"})
 	public void editUserByAdminChangeRole_Return() throws Exception {
-		mockMvc.perform(post("/edit-user/{id}", editor.getId())
+		mockMvc.perform(post("/user/edit/{id}", editor.getId())
 						.param("id", String.valueOf(editor.getId()))
 						.param("firstName", "Te")
 						.param("lastName", "Te")
@@ -278,7 +278,7 @@ public class UserControllerIT {
 						.param("role", "Администратор")
 						.with(csrf()))
 				.andExpect(status().is3xxRedirection())
-				.andExpect(redirectedUrl("/edit-user/" + editor.getId()));
+				.andExpect(redirectedUrl("/user/edit/" + editor.getId()));
 		
 		User user = userRepository.findByUsername("editor");
 		assertNotNull(user);
@@ -291,7 +291,7 @@ public class UserControllerIT {
 	@Test
 	@WithMockUser(username = "editor", roles = {"EDITOR"})
 	public void editUserByEditorChangeRole_AccessDenied() throws Exception {
-		mockMvc.perform(post("/edit-user/{id}", editor.getId())
+		mockMvc.perform(post("/user/edit/{id}", editor.getId())
 						.param("id", String.valueOf(editor.getId()))
 						.param("firstName", "Test")
 						.param("lastName", "Test")
@@ -314,11 +314,11 @@ public class UserControllerIT {
 	@Test
 	@WithMockUser(username = "admin", roles = {"ADMIN"})
 	public void DeleteUserByAdmin_Success() throws Exception {
-		mockMvc.perform(post("/delete/{id}", editor.getId())
+		mockMvc.perform(post("/user/delete/{id}", editor.getId())
 						.param("id", String.valueOf(editor.getId()))
 						.with(csrf()))
 				.andExpect(status().is3xxRedirection())
-				.andExpect(redirectedUrl("/users"));
+				.andExpect(redirectedUrl("/user/list"));
 		
 		User user = userRepository.findByUsername("editor");
 		assertNull(user);
@@ -330,7 +330,7 @@ public class UserControllerIT {
 	@Test
 	@WithMockUser(username = "editor", roles = {"EDITOR"})
 	public void DeleteUserByEditor_AccessDenied() throws Exception {
-		mockMvc.perform(post("/delete/{id}", editor.getId())
+		mockMvc.perform(post("/user/delete/{id}", editor.getId())
 						.param("id", String.valueOf(editor.getId()))
 						.with(csrf()))
 				.andExpect(status().isForbidden());
@@ -343,7 +343,7 @@ public class UserControllerIT {
 	
 	@Test
 	public void addUserViewAdmin() throws Exception {
-		mockMvc.perform(get("/add-user").contentType(MediaType.TEXT_HTML)
+		mockMvc.perform(get("/user/add").contentType(MediaType.TEXT_HTML)
 				)
 				.andExpect(status().isOk());
 		
@@ -353,7 +353,7 @@ public class UserControllerIT {
 	@Test
 	
 	public void loginView() throws Exception {
-		mockMvc.perform(get("/login").contentType(MediaType.TEXT_HTML)
+		mockMvc.perform(get("/user/login").contentType(MediaType.TEXT_HTML)
 				)
 				.andExpect(status().isOk());
 		
