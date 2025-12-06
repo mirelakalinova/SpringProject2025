@@ -104,7 +104,7 @@ public class CarControllerIT {
 		ArrayList<CarDto> list = new ArrayList<>();
 		list.add(modelMapper.map(carFirst, CarDto.class));
 		list.add(modelMapper.map(carSecond, CarDto.class));
-		mockMvc.perform(get("/car/cars")
+		mockMvc.perform(get("/car/list")
 						.contentType(MediaType.TEXT_HTML))
 				.andExpect(status().isOk())
 				.andExpect(model().attribute("cars", hasSize(2)));
@@ -117,7 +117,7 @@ public class CarControllerIT {
 						.param("id", String.valueOf(carRepository.getByRegistrationNumber(carFirst.getRegistrationNumber()).get().getId()))
 						.with(csrf()))
 				.andExpect(status().is3xxRedirection())
-				.andExpect(redirectedUrl("/car/cars"));
+				.andExpect(redirectedUrl("/car/list"));
 		
 		
 		Optional<Car> car = carRepository.findByRegistrationNumber(carFirst.getRegistrationNumber());
@@ -173,7 +173,7 @@ public class CarControllerIT {
 						.param("year", String.valueOf(carFirst.getYear()))
 						.param("cube", String.valueOf(carFirst.getCube()))
 						.with(csrf()))
-				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/car/cars"));
+				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/car/list"));
 		
 		Optional<Car> car = carRepository.findByRegistrationNumber("KH2000K");
 		assertTrue(car.isPresent());
@@ -219,7 +219,7 @@ public class CarControllerIT {
 						.param("year", String.valueOf(carFirst.getYear()))
 						.param("cube", String.valueOf(carFirst.getCube()))
 						.with(csrf()))
-				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/car/cars"));
+				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/car/list"));
 		
 		Optional<Car> car = carRepository.findByRegistrationNumber("KH2000K");
 		assertTrue(car.isPresent());

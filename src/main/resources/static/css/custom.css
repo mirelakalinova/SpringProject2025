@@ -1,5 +1,10 @@
-.navbar {
-    background-color:#D71F2B
+html, body{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.red-navbar {
+    background-color:#D71F2B !important;
 }
 
 ul.navbar{
@@ -18,7 +23,9 @@ a.nav-link:hover {
     color: #ffffffc9;
     transition: 0.5s;
 }
-
+.content {
+    width: 100%;
+}
 .login-container {
     max-width: 450px;
     display: block;

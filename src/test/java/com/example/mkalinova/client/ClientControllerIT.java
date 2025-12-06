@@ -126,7 +126,7 @@ public class ClientControllerIT {
 		clientSecond.setDeletedAt(LocalDateTime.now());
 		clientRepository.saveAndFlush(clientSecond);
 		list.add(modelMapper.map(clientSecond, ClientListCarDto.class));
-		mockMvc.perform(get("/client/clients").contentType(MediaType.TEXT_HTML)).andExpect(status().isOk()).andExpect(model().attribute("clients", hasSize(1)));
+		mockMvc.perform(get("/client/list").contentType(MediaType.TEXT_HTML)).andExpect(status().isOk()).andExpect(model().attribute("clients", hasSize(1)));
 	}
 	
 	@Test
@@ -160,7 +160,7 @@ public class ClientControllerIT {
 						
 						.param("firstName", "Test").param("lastName", "Testov").param("email", "projects23@gmail.com").param("phone", "0898819422").with(csrf()))
 				
-				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/client/clients"));
+				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/client/list"));
 		
 		Optional<Client> client = clientRepository.findByPhone("0898819422");
 		assertTrue(client.isPresent());
@@ -181,7 +181,7 @@ public class ClientControllerIT {
 						
 						.with(csrf()))
 				
-				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/client/clients"));
+				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/client/list"));
 		Optional<Client> client = clientRepository.findByPhone("0898819422");
 		assertTrue(client.isPresent());
 		Optional<Car> car = carRepository.findByRegistrationNumber("CB2126KO");
@@ -221,7 +221,7 @@ public class ClientControllerIT {
 						
 						.with(csrf()))
 				
-				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/client/clients"));
+				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/client/list"));
 		
 		Optional<Client> client = clientRepository.findByPhone("0898819455");
 		assertTrue(client.isPresent());
@@ -388,7 +388,7 @@ public class ClientControllerIT {
 						
 						.with(user("admin").roles(UsersRole.ADMIN.toString())).param("id", String.valueOf(clientFirst.getId())).with(csrf()))
 				
-				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/client/clients"));
+				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/client/list"));
 		
 		
 		Optional<Car> optCar = carRepository.findById(car.getId());
