@@ -170,3 +170,10 @@ $('select.form-select').on('select2:select', function(e) {
 
     console.log('Value:', value, 'Text:', text, 'Price:', price);
 });
+
+
+$(document).ready(function () {
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+    });
+});

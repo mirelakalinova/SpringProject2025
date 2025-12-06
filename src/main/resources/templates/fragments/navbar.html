@@ -1,0 +1,124 @@
+<nav id="sidebar" xmlns:th="http://www.w3.org/1999/xhtml">
+	<div class="sidebar-header">
+		<a href="/"> <img th:src="@{/images/logo-white.png}" class="logo" alt="Logo"></a>
+	</div>
+
+	<ul class="list-unstyled components">
+
+
+		<li th:classappend="${currentPath.startsWith('/??') ? ' active' : ''}"><a href="#" ><i class="fa-solid fa-square-poll-horizontal dashboard-first-icon"></i>Табло</a></li>
+		<li th:classappend="${currentPath.startsWith('/order') ? ' active' : ''}">
+			<a href="#orderSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+					class="fa-solid fa-clipboard-list"></i>Поръчки<i class="fa-solid fa-chevron-down"></i></a>
+			<ul class="collapse list-unstyled" id="orderSubmenu">
+				<li>
+					<a th:href="@{/order/add}">Нова поръчка</a>
+				</li>
+				<li>
+					<a th:href="@{/order/list}">Списък</a>
+				</li>
+
+			</ul>
+		</li>
+		<li th:classappend="${currentPath.startsWith('/car') ? ' active' : ''}">
+			<a href="#carSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+					class="fa-solid fa-car"></i>Автомобили<i class="fa-solid fa-chevron-down"></i></a>
+			<ul class="collapse list-unstyled" id="carSubmenu">
+				<li>
+					<a th:href="@{/car/add}">Добави автомобил</a>
+				</li>
+				<li>
+					<a th:href="@{/car/list}">Списък</a>
+				</li>
+
+			</ul>
+		</li>
+		<li th:classappend="${currentPath.startsWith('/client') ? ' active' : ''}">
+			<a href="#clientSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+					class="fa-solid fa-people-group"></i>Клиенти<i class="fa-solid fa-chevron-down"></i></a>
+			<ul class="collapse list-unstyled" id="clientSubmenu">
+				<li>
+					<a th:href="@{/client/add}">Добави клиент</a>
+				</li>
+				<li>
+					<a th:href="@{/client/list}">Списък</a>
+				</li>
+
+			</ul>
+		</li>
+
+		<li th:classappend="${currentPath.startsWith('/company') ? ' active' : ''}">
+			<a href="#companySubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+					class="fa-solid fa-building"></i>Фирми<i class="fa-solid fa-chevron-down"></i></a>
+			<ul class="collapse list-unstyled" id="companySubmenu">
+				<li>
+					<a th:href="@{/company/add}">Добави клиент</a>
+				</li>
+				<li>
+					<a th:href="@{/company/list}">Списък</a>
+				</li>
+
+			</ul>
+		</li>
+
+		<li th:classappend="${currentPath.startsWith('/repair') ? ' active' : ''}">
+			<a href="#serviceSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+					class="fa-solid fa-screwdriver-wrench"></i>Услуги<i class="fa-solid fa-chevron-down"></i></a>
+			<ul class="collapse list-unstyled" id="serviceSubmenu">
+				<li>
+					<a th:href="@{/repair/add}">Нова услуга</a>
+				</li>
+				<li>
+					<a th:href="@{/repair/list}">Списък</a>
+				</li>
+
+			</ul>
+		</li>
+
+
+		<li th:classappend="${currentPath.startsWith('/part') ? ' active' : ''}">
+			<a href="#partSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+					class="fa-solid fa-gear"></i>Части<i class="fa-solid fa-chevron-down"></i></a>
+			<ul class="collapse list-unstyled" id="partSubmenu">
+				<li>
+					<a th:href="@{/part/add}">Нова част</a>
+				</li>
+				<li>
+					<a th:href="@{/part/list}">Списък</a>
+				</li>
+
+			</ul>
+		</li>
+
+
+		<li th:classappend="${currentPath.startsWith('/api') ? ' active' : ''}">
+			<a href="#apiSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+					class="fa-solid fa-list-ul"></i>Марки<i class="fa-solid fa-chevron-down"></i></a>
+			<ul class="collapse list-unstyled" id="apiSubmenu">
+				<li>
+					<a th:href="@{/api/makes}">Марки</a>
+				</li>
+				<li>
+					<a th:href="@{/api/models}">Модели</a>
+				</li>
+
+			</ul>
+		</li>
+
+		<li th:classappend="${currentPath.startsWith('/user') ? ' active' : ''}">
+			<a href="#userSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+					class="fa-solid fa-user"></i>Потребители<i class="fa-solid fa-chevron-down"></i></a>
+			<ul class="collapse list-unstyled" id="userSubmenu">
+				<li>
+					<a th:href="@{/user/add}">Нов потребител</a>
+				</li>
+				<li>
+					<a th:href="@{/user/list}">Списък</a>
+				</li>
+
+			</ul>
+		</li>
+	</ul>
+
+</nav>
+

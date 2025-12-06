@@ -1,28 +1,14 @@
 <div xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml" class="home-login"
-     sec:authorize="!isAuthenticated()">
+	 sec:authorize="!isAuthenticated()">
 
-
-<h2>Добре дошли в ДОРЕЛА СОФТ!</h2>
-<p>За да продължите, моля, логнете се!</p>
-<a th:href="@{/user/login}" >Login</a>
+	<img th:src="@{/images/logo-wb.png}" class="home-logo" alt="Logo">
+	<h1>Добре дошли в ДОРЕЛА СОФТ!</h1>
+	<p>За да продължите, моля, логнете се!</p>
+	<a th:href="@{/user/login}">Login</a>
 
 </div>
 
 <div xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml" class="home-logged"
-     sec:authorize="isAuthenticated()">
+	 sec:authorize="isAuthenticated()">
 
-<div class="short-links">
-    <a href="/client/add" >Добави клиент</a>
-    <a href="/car/add" >Добави кола</a>
-    <a href="/company/add" >Добави фирма</a>
-    <a href="#" >Добави ремонт</a>
-    <a href="#" >Извърешни ремонти</a>
-    <a href="/repair/add" >Добави услуга</a>
-    <a href="/repair/list" >Услуги</a>
-    <a href="/part/add" >Добави част</a>
-    <a href="/part/list" >Части</a>
-    <a href="/user/add" >Добави потребител</a>
-    <a href="/user/add" >Всички ремонти</a>
-
-</div>
 </div>

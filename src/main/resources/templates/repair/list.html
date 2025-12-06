@@ -1,47 +1,55 @@
-<div class="container" xmlns:th="http://www.w3.org/1999/xhtml">
+<div class="container" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 	<h1>Списък с услуги</h1>
 	<div th:if="${message}" th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')">
 		<span th:text="${message}" style="white-space: pre-line;"></span>
 	</div>
+	<div sec:authorize="!isAuthenticated()">
+		<p>Представме на вашето внимание списък с предлаганите от нас услуги<br>
+			Цените са с включено ДДС.
+			<br>
+			Ако не виждате желаната от Вас услуга, моля свържете се с нас! Можем да Ви помогнем!
+		</p>
+	</div>
 	<div class="add-user-btn">
-		<a th:href="@{/repair/add}">Добави услуга</a>
+		<a sec:authorize="isAuthenticated()" th:href="@{/repair/add}">Добави услуга</a>
 	</div>
 	<div class="table-responsive">
-	<table class="table table-striped table-hover" th:object="${companies}">
-		<thead class="thead-light">
-		<tr>
-			<td>#</td>
-			<td>Име</td>
-			<td>Цена</td>
-			<td>Редакция</td>
-			<td>Изтриване</td>
-		</tr>
-		</thead>
-		<tbody>
-		<tr th:each="repair : ${repairs}">
-			<td th:text="${repair.id}">#</td>
-			<td th:text="${repair.name}">Име</td>
-			<td th:text="${repair.price!= null ?  repair.price : '-'}">ЕИК</td>
-			<td>
-				<form th:action="@{/repair/edit/{id}(id=${repair.id})}" th:method="get">
+		<table class="table table-striped table-hover" th:object="${companies}">
+			<thead class="thead-light">
+			<tr>
+				<td>#</td>
+				<td>Име</td>
+				<td>Цена</td>
+				<td sec:authorize="isAuthenticated()">Редакция</td>
+				<td sec:authorize="hasRole('ADMIN')">Изтриване</td>
+			</tr>
+			</thead>
+			<tbody>
+			<tr th:each="repair : ${repairs}">
+				<td th:text="${repair.id}">#</td>
+				<td th:text="${repair.name}">Име</td>
+				<td th:text="${repair.price!= null ?  repair.price : '-'}">ЕИК</td>
+				<td sec:authorize="isAuthenticated()">
+					<form th:action="@{/repair/edit/{id}(id=${repair.id})}" th:method="get">
 
-					<button type="submit" class="user-edit-btn user-btn">
+						<button type="submit" class="user-edit-btn user-btn">
 
-						<i class="fa-solid fa-square-pen"></i>
-					</button>
-				</form>
-			</td>
-			<td>
-				<form th:action="@{/repair/delete/{id}(id=${repair.id})}" th:method="post">
+							<i class="fa-solid fa-square-pen"></i>
+						</button>
+					</form>
+				</td>
+				<td>
+					<form sec:authorize="hasRole('ADMIN')" th:action="@{/repair/delete/{id}(id=${repair.id})}"
+						  th:method="post">
 
-					<button type="submit"
-							class="user-delete-btn user-btn" th:attr="data-name=${repair.id}">
-						<i class="fa-solid fa-trash-arrow-up"></i>
-					</button>
-				</form>
-			</td>
-		</tr>
-		</tbody>
-	</table>
+						<button type="submit"
+								class="user-delete-btn user-btn" th:attr="data-name=${repair.id}">
+							<i class="fa-solid fa-trash-arrow-up"></i>
+						</button>
+					</form>
+				</td>
+			</tr>
+			</tbody>
+		</table>
 	</div>
 </div>
