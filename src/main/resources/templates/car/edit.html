@@ -2,18 +2,15 @@
 	 xmlns:th="http://www.w3.org/1999/xhtml"
 	 xmlns="http://www.w3.org/1999/html">
 	<h1>Редакция автомобил <span th:text="*{registrationNumber}"></span></h1>
-	<!--  <h1 th:if="${heading == 'edit'}">Редакция автомобил</h1>-->
 
 	<div class="row row-view">
 		<div class="col-lg-6 elements">
-			<div class="car-form">
-
-			</div>
-			<!--Данни за колата-->
-			<div th:fragment="form-car" xmlns:th="http://www.w3.org/1999/xhtml">
 
 
-				<div th:if="${message}"
+
+
+
+				<div th:if="${message}" th:text="${message}" style="white-space: pre-line;"
 					 th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"></div>
 				<form th:method="POST"
 					  th:action="@{/car/edit/{id}(id=${editCarDto.id})}"
@@ -79,7 +76,8 @@
 
 								<!-- Падащо меню за модели (ще се показва винаги, без да е нужно да се въвеждат букви) -->
 								<ul v-if="filteredModels.length > 0" class="dropdown-menu" id="model-list">
-									<li v-for="model in filteredModels" :key="model.id" @mousedown.prevent="selectModel(model)">
+									<li v-for="model in filteredModels" :key="model.id"
+										@mousedown.prevent="selectModel(model)">
 										{{ model.name }}
 									</li>
 								</ul>
@@ -155,5 +153,5 @@
 
 
 	</div>
-</div>
+
 </div>

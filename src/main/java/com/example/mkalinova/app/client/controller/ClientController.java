@@ -1,6 +1,6 @@
 package com.example.mkalinova.app.client.controller;
 
-import ch.qos.logback.core.model.Model;
+
 import com.example.mkalinova.app.car.data.dto.AddCarDto;
 import com.example.mkalinova.app.car.data.dto.CarDto;
 import com.example.mkalinova.app.car.data.dto.CarDtoEditClient;
@@ -20,13 +20,14 @@ import jakarta.validation.Valid;
 import jakarta.validation.Validator;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import org.springframework.security.access.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,13 +105,7 @@ public class ClientController extends BaseController {
 	}
 	
 	@PostMapping("/add")
-	public String createClient(@Valid AddClientDto addClientDto,
-	                         BindingResult bindingResult,
-	                         @Valid AddCarDto addCarDto,
-	                         BindingResult bindingResultAddCarDto,
-	                         @Valid AddCompanyDto addCompanyDto,
-	                         BindingResult bindingResultAddCompanyDto,
-	                         RedirectAttributes attributes) throws AccessDeniedException {
+	public String createClient(@Valid AddClientDto addClientDto, BindingResult bindingResult, @Valid AddCarDto addCarDto, BindingResult bindingResultAddCarDto, @Valid AddCompanyDto addCompanyDto, BindingResult bindingResultAddCompanyDto, RedirectAttributes attributes) throws AccessDeniedException {
 		
 		boolean validateClient = false;
 		boolean validateCar = false;
@@ -183,44 +178,49 @@ public class ClientController extends BaseController {
 	
 	
 	@GetMapping("/edit/{id}")
-	public ModelAndView editClient(@PathVariable String id) {
+	public ModelAndView editClient(@PathVariable String id, Model model) {
 		UUID uuid = UUID.fromString(id);
 		
 		ModelAndView modelAndView = super.view("/client/edit");
+		
 		modelAndView.addObject("companiesWithoutUser", companyService.allCompaniesWithoutClient());
 		modelAndView.addObject("carsWithoutUser", carService.allCarsWithoutUser(CarDtoEditClient.class));
 		EditClientDto client = clientService.findClientById(uuid, EditClientDto.class);
 		List<CarDto> cars = clientService.getCarsByClient(uuid);
 		List<Company> companies = companyService.getAllCompaniesByClientId(uuid);
-		
-		modelAndView.addObject("client", client);
-		modelAndView.addObject("cars", cars);
-		modelAndView.addObject("clientId", client.getId());
-		modelAndView.addObject("companies", companies);
+		if(!model.containsAttribute("client")){
+			
+			modelAndView.addObject("client", client);
+			modelAndView.addObject("clientId", client.getId());
+			modelAndView.addObject("cars", cars);
+			modelAndView.addObject("companies", companies);
+		}
 		
 		return modelAndView;
 		
 	}
 	
 	@PutMapping("/edit/{id}")
-	public String updateClient(@PathVariable String id,
-	                           @Valid EditClientDto editClientDto,
-	                           BindingResult bindingResult,
-	                           @Valid CompanyDtoEditClient companyDtoEditClient,
-	                           BindingResult bindingResultCar,
-	                           RedirectAttributes attributes
+	public String updateClient(@PathVariable String id, @Valid EditClientDto client, BindingResult bindingResult, @Valid CompanyDtoEditClient companyDtoEditClient, BindingResult bindingResultCar, RedirectAttributes attributes
 	
 	) throws AccessDeniedException {
 		UUID uuid = UUID.fromString(id);
 		
 		if (bindingResult.hasErrors()) {
-			attributes.addFlashAttribute("editClientDto", editClientDto);
-			attributes.addFlashAttribute("org.springframework.validation.BindingResult.editClientDto", bindingResult);
+			attributes.addFlashAttribute("client", client);
+			attributes.addFlashAttribute("org.springframework.validation.BindingResult.client", bindingResult);
 			
 			return "redirect:/client/edit/{id}";
 		}
-		HashMap<String, String> result = clientService.updateClient(uuid, editClientDto);
-		
+		HashMap<String, String> result = clientService.updateClient(uuid, client);
+		if (result.get("status").equals("error")) {
+			attributes.addFlashAttribute("client", client);
+			attributes.addFlashAttribute("org.springframework.validation.BindingResult.client", bindingResult);
+			
+			attributes.addFlashAttribute("message", result.get("message"));
+			attributes.addFlashAttribute("status", result.get("status"));
+			return "redirect:/client/edit/{id}";
+		}
 		attributes.addFlashAttribute("message", result.get("message"));
 		attributes.addFlashAttribute("status", result.get("status"));
 		return "redirect:/client/list";
@@ -231,7 +231,6 @@ public class ClientController extends BaseController {
 		UUID uuid = UUID.fromString(id);
 		UUID uuidClientId = UUID.fromString(clientId);
 		HashMap<String, String> result = clientService.removeCar(uuid, uuidClientId);
-		Model model = new Model();
 		attributes.addFlashAttribute("message", result.get("message"));
 		attributes.addFlashAttribute("status", result.get("status"));
 		return "redirect:/client/edit/" + clientId;
@@ -270,8 +269,7 @@ public class ClientController extends BaseController {
 	
 	@GetMapping("/fetch/companies/{id}")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> fetchCompaniesByClientId(
-			@PathVariable("id") String id) {
+	public ResponseEntity<Map<String, Object>> fetchCompaniesByClientId(@PathVariable("id") String id) {
 		UUID uuid = UUID.fromString(id);
 		HashMap<String, Object> response = new HashMap<>();
 		try {

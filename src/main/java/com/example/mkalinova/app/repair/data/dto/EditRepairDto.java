@@ -12,7 +12,7 @@ public class EditRepairDto {
 	private UUID id;
 	
 	@NotNull
-	@Size(min = 3)
+	@Size(min = 3, message = "Името трябва да е поне 3 символа")
 	private String name;
 	
 	@PositiveOrZero

@@ -9,8 +9,8 @@ public class BaseController {
 	public String currentPath(HttpServletRequest request) {
 		if (request == null) return "";
 		String uri = request.getRequestURI();
-		System.out.println(uri);
-		return uri == null ? "" : uri;
+		
+		return uri == null ? "no-url" : uri;
 	}
 	
 	protected ModelAndView view(String view) {

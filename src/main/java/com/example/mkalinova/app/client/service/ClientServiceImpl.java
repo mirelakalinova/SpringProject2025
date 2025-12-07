@@ -198,6 +198,16 @@ public class ClientServiceImpl implements ClientService {
 		if (client.isEmpty()) {
 			throw new NoSuchResourceException("Няма намерен клиентс с #" + editClientDto.getId());
 		}
+		Optional<Client> clientByPhone = clientRepository.findByPhone(editClientDto.getPhone());
+		
+		if (clientByPhone.isPresent()) {
+			if (!clientByPhone.get().getId().equals(client.get().getId())) {
+				log.warn("Return error message: Client with phone number {} is present in other client", editClientDto.getPhone());
+				result.put("status", "error");
+				result.put("message", "Клиент с телефон: " + editClientDto.getPhone() + " вече съществува!");
+				return result;
+			}
+		}
 		sb.append("Успешно обновен клиент").append(System.lineSeparator());
 		UUID carId = editClientDto.getCarId();
 		if (carId != null) {
@@ -222,7 +232,7 @@ public class ClientServiceImpl implements ClientService {
 				company.setClient(client.get());
 				companyRepository.save(company);
 				
-				sb.append("Фирма: ").append(company.getName()).append(" беше добавен успешно към клиента!").append(System.lineSeparator());
+				sb.append("Фирма: ").append(company.getName()).append(" беше добавена успешно към клиента!").append(System.lineSeparator());
 				log.info("Successfully added company with name {} to client with id {}", company.getName(), id);
 			} else {
 				result.put("status", "error");

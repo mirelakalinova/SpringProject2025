@@ -67,6 +67,13 @@ public class CompanyServiceImpl implements CompanyService {
 			return result;
 		}
 		
+		if (companyRepository.findByUic(addCompanyDto.getUic()).isPresent()) {
+			result.put("status", "error");
+			result.put("message", "Компания с ЕИК: " + addCompanyDto.getUic() + " вече съществува!");
+			log.warn("Return error message: the company's uic number is present {}", addCompanyDto.getUic());
+			return result;
+		}
+		
 		try {
 			Company company = modelMapper.map(addCompanyDto, Company.class);
 			if (addCompanyDto.getClientId() != null) {
@@ -166,7 +173,7 @@ public class CompanyServiceImpl implements CompanyService {
 		optCompany.get().setVatNumber(editCompanyDto.getVatNumber());
 		optCompany.get().setAddress(editCompanyDto.getAddress());
 		optCompany.get().setAccountablePerson(editCompanyDto.getAccountablePerson());
-		sb.append("Успешно обновена фирма: ").append(editCompanyDto.getName());
+		sb.append("Успешно обновена фирма: ").append(editCompanyDto.getName()).append(System.lineSeparator());
 		if (isClientPresent) {
 			Optional<Client> client = clientRepository.findById(clientId);
 			
@@ -184,6 +191,14 @@ public class CompanyServiceImpl implements CompanyService {
 					result.put("message", sb.toString());
 					log.info("Successfully added client with id {} to company with id {}", client.get().getId(), editCompanyDto.getId());
 				}
+			}
+		}
+		Optional<Company> companyByUic = companyRepository.findByUic(optCompany.get().getUic());
+		if(companyByUic.isPresent()){
+			if(!companyByUic.get().getId().equals(optCompany.get().getId())){
+				result.put("status", "error");
+				result.put("message", "Има друга фирма с ЕИК " + optCompany.get().getUic());
+				return result;
 			}
 		}
 		companyRepository.saveAndFlush(optCompany.get());

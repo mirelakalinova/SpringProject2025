@@ -5,7 +5,9 @@ import com.example.mkalinova.app.user.data.dto.AddUserDto;
 import com.example.mkalinova.app.user.data.dto.EditUserDto;
 import com.example.mkalinova.app.user.data.dto.UserListDto;
 import com.example.mkalinova.app.user.service.UserServiceImpl;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,8 +35,19 @@ public class UserController extends BaseController {
 	}
 	
 	@GetMapping("/login")
-	public ModelAndView login() {
-		return super.view("user/login");
+	public ModelAndView login(HttpSession session,
+	                          @RequestParam(value = "error", required = false) String error) {
+		ModelAndView modelAndView = super.view("user/login");
+		
+		if (error != null) {
+			Exception ex = (Exception) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+			String message = "Грешен потребител или парола.";
+			
+			modelAndView.addObject("message", message);
+		}
+		
+		
+		return modelAndView;
 	}
 	
 	@PostMapping("/logout")
@@ -69,11 +82,15 @@ public class UserController extends BaseController {
 		if ("error".equals(result.get(0))) {
 			
 			attributes.addFlashAttribute("error", message);
+			attributes.addFlashAttribute("addUserDto", addUserDto);
+			attributes.addFlashAttribute("org.springframework.validation.BindingResult.addUserDto", bindingResult);
+			return "redirect:/user/add";
 		} else if ("success".equals(result.get(0))) {
-			attributes.addFlashAttribute("success", message);
+			attributes.addFlashAttribute("message", message);
+			
 			
 		}
-		return "redirect:/user/add";
+		return "redirect:/user/list";
 	}
 	
 	

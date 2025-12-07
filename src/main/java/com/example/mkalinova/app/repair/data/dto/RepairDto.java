@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 public class RepairDto {
 	
 	@NotNull
-	@Size(min = 3)
+	@Size(min = 3, message = "Името трябва да е поне 3 символа")
 	private String name;
 	
 	@PositiveOrZero

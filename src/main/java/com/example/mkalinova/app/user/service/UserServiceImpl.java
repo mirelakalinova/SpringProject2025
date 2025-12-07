@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
 		user.setEnabled(true);
 		userRepository.save(user);
 		result.add("success");
-		result.add("Успешно добавен потребител!\n" + "Username: \n" + addUserDto.getUsername() + "Email: " + addUserDto.getEmail());
+		result.add("Успешно добавен потребител!\n" + "Username: " + addUserDto.getUsername() + "\nEmail: " + addUserDto.getEmail());
 		
 		log.info("Successfully added new user with username {}", addUserDto.getUsername());
 		return result;

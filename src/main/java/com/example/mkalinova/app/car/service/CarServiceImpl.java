@@ -241,7 +241,15 @@ public class CarServiceImpl implements CarService {
 		if (car.isEmpty()) {
 			throw new NoSuchResourceException("Автомобил с #" + id + "и рег.# " + editCarDto.getRegistrationNumber() + " не съществува!");
 		}
-		
+		Optional<Car> carByRegistrationNumber = carRepository.findByRegistrationNumber(editCarDto.getRegistrationNumber());
+		if(carByRegistrationNumber.isPresent()){
+			if(!carByRegistrationNumber.get().getId().equals(editCarDto.getId())){
+				log.warn("Return error message: Car with registration number {} is present in other client", editCarDto.getRegistrationNumber());
+				result.put("status", "error");
+				result.put("message", "Кола с регистрационен номер: " + editCarDto.getRegistrationNumber() + " вече съществува!");
+				return result;
+			}
+		}
 		Car carToUpdate = modelMapper.map(editCarDto, Car.class);
 		carToUpdate.setId(car.get().getId());
 		if (!car.get().getMake().equals(editCarDto.getMake()) && !car.get().getModel().equals(editCarDto.getModel())) {
