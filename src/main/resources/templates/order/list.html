@@ -11,7 +11,7 @@
 	<table class="table table-striped table-hover">
 		<thead>
 		<tr>
-			<th>#</th>
+
 			<th>Дата</th>
 			<th>Автомобил</th>
 			<th>Клиент</th>
@@ -29,7 +29,7 @@
 		</thead>
 		<tbody>
 		<tr th:each="order : ${orderList}">
-			<td th:text="${order.id}"></td>
+
 			<td>
 				<i class="fa-solid fa-calendar-days"></i><span th:text="${#temporals.format(order.date, 'dd-MM-yyyy')}"></span>
 				<br/>
