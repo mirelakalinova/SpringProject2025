@@ -42,7 +42,8 @@
 								   @input="searchMakes"
 								   @click="onMakeFocus"
 								   @blur="handleMakeBlur" class="form-control d-none"
-								   placeholder="Започнете да пишете марката...">
+								   placeholder="Започнете да пишете марката..."
+								   autocomplete="off">
 
 
 							<ul v-if="filteredMakes.length > 0 && searchMake && !dropdownMakeInitialized"
@@ -72,7 +73,8 @@
 									   @click="onModelFocus"
 									   @blur="handleModelBlur"
 									   @input="searchModels" class="form-control d-none"
-									   placeholder="Започнете да пишете за модела...">
+									   placeholder="Започнете да пишете за модела..."
+									   autocomplete="off">
 
 								<!-- Падащо меню за модели (ще се показва винаги, без да е нужно да се въвеждат букви) -->
 								<ul v-if="filteredModels.length > 0" class="dropdown-menu" id="model-list">

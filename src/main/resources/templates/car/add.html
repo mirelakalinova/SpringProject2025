@@ -38,7 +38,8 @@
 										   @input="searchMakes"
 										   @click="onMakeFocus"
 										   @blur="handleMakeBlur" class="form-control"
-										   placeholder="Започнете да пишете марката...">
+										   placeholder="Започнете да пишете марката..."
+										   autocomplete="off">
 									<input th:field="*{make}" id="hiddenMake" type="hidden">
 
 									<ul v-if="filteredMakes.length > 0 && searchMake && !dropdownMakeInitialized "
@@ -61,7 +62,8 @@
 									<input id="model" type="text" v-model="searchModel"
 										   @click="onModelFocus" @blur="handleModelBlur" @input="searchModels"
 										   class="form-control"
-										   placeholder="Започнете да пишете за модела...">
+										   placeholder="Започнете да пишете за модела..."
+										   autocomplete="off">
 									<input th:field="*{model}" id="hiddenModel" type="hidden">
 									<ul v-if="filteredModels.length > 0" class="dropdown-menu" id="model-list">
 										<li v-for="model in filteredModels" :key="model.id"

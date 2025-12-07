@@ -252,14 +252,18 @@ public class CarServiceImpl implements CarService {
 		}
 		Car carToUpdate = modelMapper.map(editCarDto, Car.class);
 		carToUpdate.setId(car.get().getId());
-		if (!car.get().getMake().equals(editCarDto.getMake()) && !car.get().getModel().equals(editCarDto.getModel())) {
-			apiService.saveMakeAndModel(new SaveMakeModelDto(carToUpdate.getMake(), carToUpdate.getModel()));
-			
+		StringBuilder sb = new StringBuilder();
+		if (!car.get().getMake().equals(editCarDto.getMake()) || !car.get().getModel().equals(editCarDto.getModel())) {
+		HashMap<String,String> apiResult =	apiService.saveMakeAndModel(new SaveMakeModelDto(carToUpdate.getMake(), carToUpdate.getModel()));
+			if(apiResult.get("status").equals("success")){
+				log.info("Successfully added new make and/or model  by editing car with id {}", id);
+				sb.append(apiResult.get("message")).append(System.lineSeparator());
+			}
 		}
 		carRepository.saveAndFlush(carToUpdate);
-		String message = "Успешно обновен автомобил: " + carToUpdate.getRegistrationNumber();
+		sb.append("Успешно обновен автомобил: ").append(carToUpdate.getRegistrationNumber());
 		result.put("status", "success");
-		result.put("message", message);
+		result.put("message", sb.toString());
 		log.info("Successfully edit car with id {}", id);
 		return result;
 	}

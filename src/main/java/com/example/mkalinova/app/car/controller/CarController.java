@@ -92,13 +92,15 @@ public class CarController extends BaseController {
 			return "redirect:/car/edit/" + editCarDto.getId();
 		}
 		HashMap<String, String> result = carService.editCar(editCarDto.getId(), editCarDto);
+		redirectAttributes.addFlashAttribute("message", result.get("message"));
+		redirectAttributes.addFlashAttribute("status", result.get("status"));
 		if (result.get("status").equals("error")) {
-			redirectAttributes.addFlashAttribute("message", result.get("message"));
-			redirectAttributes.addFlashAttribute("status", result.get("status"));
+			
 			redirectAttributes.addFlashAttribute("editCarDto", editCarDto);
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.editCarDto", bindingResult);
 			return "redirect:/car/edit/" + editCarDto.getId();
 		}
+		
 		return "redirect:/car/list";
 	}
 	

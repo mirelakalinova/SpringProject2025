@@ -12,10 +12,10 @@ public class AddCarDto {
 	@Pattern(regexp = "[A-Z0-9]+", message = "Регистрационният номер може да съдържа само букви и цифри.")
 	private String registrationNumber;
 	
-	@NotNull(message = "Изберете марка")
+	@NotBlank(message = "Изберете марка")
 	private String model;
 	
-	@NotNull(message = "Изберете модел")
+	@NotBlank(message = "Изберете модел")
 	private String make;
 	
 	@Min(value = 1900, message = "Годината на производство трябва да бъде след 1900.")

@@ -71,18 +71,43 @@ $(document).ready(function() {
 
         $('#registrationNumber').val(registration).prop('readOnly', true);
         $('#make').val(make).prop('readOnly', true);
+        $('#hiddenMake').val(make);
         $('#model').val(model).prop('readOnly', true);
+        $('#hiddenModel').val(model);
         $('#year').val(year).prop('readOnly', true);
         $('#cube').val(cube).prop('readOnly', true);
         $('#kw').val(kw).prop('readOnly', true);
         $('#hp').val(hp).prop('readOnly', true);
         $('#vin').val(vin).prop('readOnly', true);
+
+        const vue = document.getElementById('app').__vue__;
+        if (vue) {
+            vue.searchMake = make;
+            vue.selectedMake = { id: $opt.data('make-id') || null, name: make };
+            vue.searchModel = model;
+            vue.selectedModel = { id: $opt.data('model-id') || null, name: model };
+        }
+    });
+
+    $('#car').on('select2:unselecting select2:clear', function(e) {
+        ['hiddenMake','hiddenModel'].forEach(id => {
+            $('#' + id).val('');
+        });
+
+        const vue = document.getElementById('app').__vue__;
+        if (vue) {
+            vue.searchMake = '';
+            vue.selectedMake = null;
+            vue.searchModel = '';
+            vue.selectedModel = null;
+        }
     });
 
     $('#car').on('select2:unselecting select2:clear', function(e) {
         ['registrationNumber','make','model','year','cube','kw','hp','vin'].forEach(id => {
             $('#' + id).val('').prop('readOnly', false);
         });
+
     });
 
     $('#company_name').on('change', function() {
