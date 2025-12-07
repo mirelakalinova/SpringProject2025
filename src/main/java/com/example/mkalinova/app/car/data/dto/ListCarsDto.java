@@ -13,7 +13,6 @@ public class ListCarsDto {
 		this.cars = new ArrayList<>();
 	}
 	
-	// Гетъри и сетъри
 	public List<EditCarDto> getCars() {
 		return cars;
 	}

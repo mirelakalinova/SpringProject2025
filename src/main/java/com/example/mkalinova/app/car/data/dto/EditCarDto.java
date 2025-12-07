@@ -14,7 +14,7 @@ public class EditCarDto {
 	private String registrationNumber;
 	@NotNull(message = "Изберете марка")
 	private String model;
-	@NotNull(message = "Изберете модел")
+	@NotBlank(message = "Изберете модел")
 	private String make;
 	@NotNull
 	@Min(value = 1900, message = "Годината на производство трябва да бъде след 1900.")
