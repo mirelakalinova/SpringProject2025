@@ -16,8 +16,6 @@ import com.example.mkalinova.app.user.service.UserServiceImpl;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -34,7 +32,6 @@ import java.util.*;
 @Service
 public class CarServiceImpl implements CarService {
 	
-	private static final Logger log = LoggerFactory.getLogger(CarServiceImpl.class);
 	private final CarRepository carRepository;
 	private final ModelMapper modelMapper;
 	private final ApiService apiService;

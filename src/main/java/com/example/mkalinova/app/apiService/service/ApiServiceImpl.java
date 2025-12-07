@@ -5,8 +5,7 @@ import com.example.mkalinova.app.apiService.data.dto.*;
 import com.example.mkalinova.app.user.data.entity.User;
 import com.example.mkalinova.app.user.service.UserService;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -21,7 +20,6 @@ import java.util.*;
 
 @Service
 public class ApiServiceImpl implements ApiService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ApiServiceImpl.class);  // Статично инициализиране на логгера
 	private final ApiFeignClient apiFeignClient;
 	private final ModelMapper modelMapper;
 	

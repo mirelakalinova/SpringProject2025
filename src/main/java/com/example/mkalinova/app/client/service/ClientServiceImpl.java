@@ -22,8 +22,6 @@ import com.example.mkalinova.app.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +33,6 @@ import java.util.*;
 @Service
 public class ClientServiceImpl implements ClientService {
 	
-	private static final Logger log = LoggerFactory.getLogger(ClientServiceImpl.class);
 	private final ClientRepository clientRepository;
 	private final CarService carService;
 	private final CarRepository carRepository;
