@@ -9,8 +9,6 @@ import com.example.mkalinova.app.parts.data.entity.Part;
 import com.example.mkalinova.app.parts.repo.PartRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,7 +19,6 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class OrderPartServiceImpl implements OrderPartService {
-	private static final Logger log = LoggerFactory.getLogger(OrderPartServiceImpl.class);
 	private final OrderPartRepository repository;
 	private final ModelMapper modelMapper;
 	private final PartRepository partRepository;

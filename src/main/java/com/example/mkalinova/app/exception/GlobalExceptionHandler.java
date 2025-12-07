@@ -3,8 +3,6 @@ package com.example.mkalinova.app.exception; // коригирано име
 import com.example.mkalinova.app.land.Controller.BaseController;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.expression.spel.SpelEvaluationException;
 import org.springframework.http.HttpStatus;
@@ -25,7 +23,6 @@ public class GlobalExceptionHandler extends BaseController {
 	public static final String ERROR_403 = "../../images/errors/403.jpg";
 	public static final String ERROR = "../../images/errors/error.jpg";
 	public static final String NO_SUCH_RESOURCE = "../../images/errors/no-such-resource.jpg";
-	private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 	
 	@ExceptionHandler(AccessDeniedException.class)
 	@ResponseStatus(HttpStatus.FORBIDDEN)
