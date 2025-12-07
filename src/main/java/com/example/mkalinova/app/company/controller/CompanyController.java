@@ -8,6 +8,7 @@ import com.example.mkalinova.app.company.data.dto.EditCompanyDto;
 import com.example.mkalinova.app.company.service.CompanyService;
 import com.example.mkalinova.app.land.Controller.BaseController;
 import jakarta.validation.Valid;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import org.springframework.security.access.AccessDeniedException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -56,7 +56,17 @@ public class CompanyController extends BaseController {
 			return "redirect:/company/add";
 		}
 		
-		companyService.saveCompany(addCompanyDto);
+		HashMap<String, String> result = companyService.saveCompany(addCompanyDto);
+		
+		if (result.get("status").equals("error")) {
+			redirectAttributes.addFlashAttribute("status", result.get("status"));
+			redirectAttributes.addFlashAttribute("message", result.get("message"));
+			redirectAttributes.addFlashAttribute("addCompanyDto", addCompanyDto);
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.addCompanyDto", bindingResult);
+			return "redirect:/company/add";
+		}
+		redirectAttributes.addFlashAttribute("status", result.get("status"));
+		redirectAttributes.addFlashAttribute("message", result.get("message"));
 		return "redirect:/company/list";
 	}
 	
@@ -96,7 +106,16 @@ public class CompanyController extends BaseController {
 			return "redirect:/company/edit/" + editCompanyDto.getId();
 		}
 		boolean isClientPresent = editCompanyDto.getClientId() != null;
-		companyService.updateCompany(editCompanyDto, isClientPresent, editCompanyDto.getClientId());
+		HashMap<String, String > result = companyService.updateCompany(editCompanyDto, isClientPresent, editCompanyDto.getClientId());
+		if(result.get("status").equals("error")){
+			redirectAttributes.addFlashAttribute("status", result.get("status"));
+			redirectAttributes.addFlashAttribute("message", result.get("message"));
+			redirectAttributes.addFlashAttribute("editCompanyDto", editCompanyDto);
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.editCompanyDto", bindingResult);
+			return "redirect:/company/edit/" + editCompanyDto.getId();
+		}
+		redirectAttributes.addFlashAttribute("status", result.get("status"));
+		redirectAttributes.addFlashAttribute("message", result.get("message"));
 		return "redirect:/company/list";
 	}
 	
@@ -108,7 +127,7 @@ public class CompanyController extends BaseController {
 		HashMap<String, String> result = companyService.removeClient(uuid, uuidCompany);
 		attributes.addFlashAttribute("status", result.get("status"));
 		attributes.addFlashAttribute("message", result.get("message"));
-		return "redirect:/company/list";
+		return "redirect:/company/edit/" + uuidCompany;
 		
 		
 	}

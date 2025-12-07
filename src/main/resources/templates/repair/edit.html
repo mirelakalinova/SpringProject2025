@@ -2,7 +2,7 @@
 	<h1>Редактиран на услуга</h1>
 	<div class="elements">
 
-		<form th:action="@{/repair/edit/{id}(id=${repairDto.id})}" th:method="post" th:object="${repairDto}">
+		<form th:action="@{/repair/edit/{id}(id=${editRepairDto.id})}" th:method="post" th:object="${editRepairDto}">
 
 
 			<div >
@@ -26,7 +26,7 @@
 
 
 					<div class="form-group">
-						<button type="submit">Запази</button>
+						<button  class="submit" type="submit">Запази</button>
 					</div>
 				</div>
 			</div>

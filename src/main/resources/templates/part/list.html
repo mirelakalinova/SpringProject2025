@@ -9,7 +9,6 @@
 	<table class="table table-striped table-hover" th:object="${companies}">
 		<thead class="thead-light">
 		<tr>
-			<td>#</td>
 			<td>Име</td>
 			<td>Цена</td>
 			<td>Редакция</td>
@@ -18,7 +17,6 @@
 		</thead>
 		<tbody>
 		<tr th:each="part : ${parts}">
-			<td th:text="${part.id}">#</td>
 			<td th:text="${part.name}">Име</td>
 			<td th:text="${part.price!= null ?  part.price : '-'}">ЕИК</td>
 			<td>

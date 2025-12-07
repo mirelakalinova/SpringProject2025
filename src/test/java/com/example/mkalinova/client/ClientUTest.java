@@ -1,6 +1,7 @@
 package com.example.mkalinova.client;
 
 import com.example.mkalinova.app.car.data.dto.AddCarDto;
+import com.example.mkalinova.app.car.data.dto.CarDto;
 import com.example.mkalinova.app.car.data.entity.Car;
 import com.example.mkalinova.app.car.repo.CarRepository;
 import com.example.mkalinova.app.car.service.CarServiceImpl;
@@ -77,6 +78,7 @@ public class ClientUTest {
 		clientRepository.save(client);
 		
 		deletedClient = new Client();
+		deletedClient.setId(UUID.randomUUID());
 		deletedClient.setEmail("test2@test.bg");
 		deletedClient.setFirstName("Test");
 		deletedClient.setLastName("Testov");
@@ -429,9 +431,38 @@ public class ClientUTest {
 		editClientDto.setFirstName("Test");
 		editClientDto.setPhone("0896619422");
 		when(clientRepository.findById(editClientDto.getId())).thenReturn(Optional.of(client));
+		List<CarDto> cars = clientService.getCarsByClient(editClientDto.getId());
 		
 		HashMap<String, String> result = clientService.updateClient(editClientDto.getId(), editClientDto);
 		assertEquals("success", result.get("status"));
+		assertNotNull(cars);
+		assertTrue(cars.isEmpty());
+		
+		
+	}
+	
+	@Test
+	@WithMockUser(username = "admin", roles = "ADMIN")
+	void updateClient_WithoutCarAndCompany_ReturnErrorMessage() throws AccessDeniedException {
+		doNothing().when(userService).isUserLogIn();
+		
+		EditClientDto editClientDto = new EditClientDto();
+
+		editClientDto.setId(UUID.randomUUID());
+		editClientDto.setLastName("Test");
+		editClientDto.setFirstName("Test");
+		editClientDto.setPhone("0896619422");
+		System.out.println(deletedClient.getId());
+		when(clientRepository.findById(editClientDto.getId())).thenReturn(Optional.of(client));
+		when(clientRepository.findByPhone(editClientDto.getPhone())).thenReturn(Optional.of(deletedClient));
+		
+		HashMap<String, String> result = clientService.updateClient(editClientDto.getId(), editClientDto);
+		HashMap<String, String> expectedResult = new HashMap<>();
+		expectedResult.put("status","error");
+		
+		expectedResult.put("message", "Клиент с телефон: " + editClientDto.getPhone() + " вече съществува!");
+		assertEquals(expectedResult.get("status"), result.get("status"));
+		assertEquals(expectedResult.get("message"), result.get("message"));
 		
 		
 	}
@@ -703,4 +734,18 @@ public class ClientUTest {
 		verify(userService).isUserLogIn();
 	}
 	
+	@Test
+	void findById_NoSuchResourceException() throws Exception {
+		
+		EditClientDto editClientDto = new EditClientDto();
+		editClientDto.setId(UUID.randomUUID());
+		editClientDto.setLastName("Test");
+		editClientDto.setFirstName("Test");
+		editClientDto.setPhone("0896619422");
+		when(clientRepository.findById(editClientDto.getId())).thenReturn(Optional.empty());
+		
+		assertThrows(NoSuchResourceException.class, () -> {
+			clientService.findClientById(editClientDto.getId(), Client.class);
+		});
+	}
 }

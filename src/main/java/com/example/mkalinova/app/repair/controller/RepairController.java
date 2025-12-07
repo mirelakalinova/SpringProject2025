@@ -1,6 +1,7 @@
 package com.example.mkalinova.app.repair.controller;
 
 import com.example.mkalinova.app.land.Controller.BaseController;
+import com.example.mkalinova.app.parts.data.dto.PartDto;
 import com.example.mkalinova.app.repair.data.dto.EditRepairDto;
 import com.example.mkalinova.app.repair.data.dto.RepairDto;
 import com.example.mkalinova.app.repair.service.RepairService;
@@ -24,7 +25,10 @@ public class RepairController extends BaseController {
 	public RepairController(RepairService service) {
 		this.service = service;
 	}
-	
+	@ModelAttribute("repairDto")
+	public RepairDto repairDto(){
+		return new RepairDto();
+	}
 	
 	@GetMapping("/list")
 	public ModelAndView listService() {
@@ -36,7 +40,7 @@ public class RepairController extends BaseController {
 	
 	
 	@GetMapping("/add")
-	public ModelAndView addRepair(@ModelAttribute RepairDto repairDto) {
+	public ModelAndView addRepair() {
 		return super.view("repair/add");
 	}
 	
@@ -61,24 +65,27 @@ public class RepairController extends BaseController {
 	@GetMapping("/edit/{id}")
 	public ModelAndView editView(@PathVariable UUID id, Model model) {
 		ModelAndView modelAndView = super.view("repair/edit");
-		modelAndView.addObject("repairDto", service.findById(id));
+		if(!model.containsAttribute("editRepairDto")){
+			
+			modelAndView.addObject("editRepairDto", service.findById(id));
+		}
 		
 		return modelAndView;
 	}
 	
 	@PostMapping("/edit/{id}")
-	public String editRepair(@Valid EditRepairDto repairDto,
+	public String editRepair(@Valid EditRepairDto editRepairDto,
 	                         BindingResult bindingResult,
 	                         RedirectAttributes redirectAttributes) throws AccessDeniedException {
-		if (repairDto.getPrice() == null) {
-			repairDto.setPrice(0D);
+		if (editRepairDto.getPrice() == null) {
+			editRepairDto.setPrice(0D);
 		}
 		if (bindingResult.hasErrors()) {
-			redirectAttributes.addFlashAttribute("repairDto", repairDto);
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.repairDto", bindingResult);
-			return "redirect:/repair/edit/" + repairDto.getId();
+			redirectAttributes.addFlashAttribute("editRepairDto", editRepairDto);
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.editRepairDto", bindingResult);
+			return "redirect:/repair/edit/" + editRepairDto.getId();
 		}
-		HashMap<String, String> result = service.editService(repairDto);
+		HashMap<String, String> result = service.editService(editRepairDto);
 		redirectAttributes.addFlashAttribute("status", result.get("status"));
 		redirectAttributes.addFlashAttribute("message", result.get("message"));
 		return "redirect:/repair/list";

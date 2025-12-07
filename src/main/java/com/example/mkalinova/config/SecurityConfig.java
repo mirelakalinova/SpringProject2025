@@ -28,12 +28,17 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(auth -> auth.requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-						.requestMatchers("login").permitAll()
+						.requestMatchers("/user/login").permitAll()
 						.requestMatchers("/error").permitAll()
 						.anyRequest().permitAll())
 				
 				.formLogin(formLogin -> {
-					formLogin.loginPage("/login").usernameParameter("username").passwordParameter("password").defaultSuccessUrl("/", true).failureForwardUrl("/login-error");
+					formLogin
+							.loginPage("/user/login")
+							.usernameParameter("username")
+							.passwordParameter("password")
+							.defaultSuccessUrl("/", true)
+							.failureUrl("/user/login?error");
 				})
 				.logout(logout -> logout.logoutSuccessUrl("/"));
 		http.addFilterBefore(blockedUserFilter(), UsernamePasswordAuthenticationFilter.class);

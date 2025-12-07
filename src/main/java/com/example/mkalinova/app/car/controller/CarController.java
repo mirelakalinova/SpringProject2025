@@ -11,6 +11,7 @@ import com.example.mkalinova.app.client.service.ClientService;
 import com.example.mkalinova.app.land.Controller.BaseController;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import org.springframework.security.access.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +92,13 @@ public class CarController extends BaseController {
 			return "redirect:/car/edit/" + editCarDto.getId();
 		}
 		HashMap<String, String> result = carService.editCar(editCarDto.getId(), editCarDto);
+		if (result.get("status").equals("error")) {
+			redirectAttributes.addFlashAttribute("message", result.get("message"));
+			redirectAttributes.addFlashAttribute("status", result.get("status"));
+			redirectAttributes.addFlashAttribute("editCarDto", editCarDto);
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.editCarDto", bindingResult);
+			return "redirect:/car/edit/" + editCarDto.getId();
+		}
 		return "redirect:/car/list";
 	}
 	

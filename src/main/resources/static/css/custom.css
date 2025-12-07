@@ -142,7 +142,7 @@ button.user-btn {
     padding: 5px 10px;
     border: 1px solid #ccc;
     display: block;
-    margin: 0 auto;
+
     color: white;
 }
 
@@ -363,7 +363,10 @@ select#car {
 }
 
 
-/* error pages */
+dvi.alert.alert-danger {
+    display: block;
+    width: fit-content;
+}
 
 .error-status h1 {
     text-align: center;

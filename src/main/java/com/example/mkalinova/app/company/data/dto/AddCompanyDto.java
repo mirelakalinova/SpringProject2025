@@ -15,7 +15,7 @@ public class AddCompanyDto {
 	
 	@NotNull(message = "ЕИК не трябва да е празно")
 	@Length(min = 9, max = 9, message = "ЕИК номерът трябва да е точно 9 цифри!")
-	@Pattern(regexp = "^[0-9]{9}$")
+	@Pattern(regexp = "^[0-9]{9}$", message = "ЕИК номерът трябва да е точно 9 цифри!")
 	private String uic;
 	
 	@NotBlank(message = "Моля въведете адрес")

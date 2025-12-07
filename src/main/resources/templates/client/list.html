@@ -1,61 +1,64 @@
 <div class="container"
 ><h1>Списък с клиенти</h1>
-<!--    todo -> check is necessary to be in section-->
-<section class="clients" xmlns:th="http://www.w3.org/1999/xhtml">
-    <div th:if="${message}"  th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"><p th:text="${message}" style="white-space: pre-line;"></p></div>
-    <div class="add-user-btn">
-        <a th:href="@{/client/add}">Добави клиент</a>
-    </div>
-    <div class="table-responsive">
-    <table class=" table table-striped table-hover" >
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>Име</th>
-            <th>Телефон</th>
-            <th>Email</th>
-            <th>Автомобили</th>
-            <th>Фирми</th>
-            <th>Редакция</th>
-            <th>Изтрий</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="client : ${clients}">
-            <td th:text="${client.id}"></td>
-            <td th:text="${client.firstName}  + ' ' +  ${client.lastName}"></td>
-            <td th:text="${client.phone}"></td>
-            <td th:text="${client.email}"></td>
-            <td>
-                <ul  class="list-unstyled">
-                    <li th:each="car : ${client.cars}"><strong><span th:text="${car.registrationNumber}">Няма коли..</span></strong></li>
-                </ul>
-            </td>
-            <td>
-                <ul  class="list-unstyled">
-                    <li th:each="company : ${client.companies}"><strong th:text="${company.name}">Няма фирми..</strong></li>
-                </ul>
-            </td>
-            <td>
-                <form th:action="@{/client/edit/{id}(id=${client.id})}" th:method="GET">
+	<!--    todo -> check is necessary to be in section-->
+	<section class="clients" xmlns:th="http://www.w3.org/1999/xhtml">
+		<div th:if="${message}" th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"><p
+				th:text="${message}" style="white-space: pre-line;"></p></div>
+		<div class="add-user-btn">
+			<a th:href="@{/client/add}">Добави клиент</a>
+		</div>
+		<div class="table-responsive">
+			<table class=" table table-striped table-hover">
+				<thead>
+				<tr>
 
-                    <button type="submit" class="user-edit-btn user-btn">
-                        <i class="fa-solid fa-square-pen"></i>
-                    </button>
-                </form>
-            </td>
-            <td>
-                <form th:action="@{/client/delete/{id}(id=${client.id})}" th:method="post">
-                    <button type="submit" class="user-delete-btn user-btn">
-                        <i class="fa-solid fa-trash-arrow-up"></i>
-                    </button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+					<th>Име</th>
+					<th>Телефон</th>
+					<th>Email</th>
+					<th>Автомобили</th>
+					<th>Фирми</th>
+					<th>Редакция</th>
+					<th>Изтрий</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:each="client : ${clients}">
 
-    </div>
-</section>
+					<td th:text="${client.firstName}  + ' ' +  ${client.lastName}"></td>
+					<td th:text="${client.phone}"></td>
+					<td th:text="${client.email}"></td>
+					<td>
+						<ul class="list-unstyled">
+							<li th:each="car : ${client.cars}"><strong><span th:text="${car.registrationNumber}">Няма коли..</span></strong>
+							</li>
+						</ul>
+					</td>
+					<td>
+						<ul class="list-unstyled">
+							<li th:each="company : ${client.companies}"><strong th:text="${company.name}">Няма
+								фирми..</strong></li>
+						</ul>
+					</td>
+					<td>
+						<form th:action="@{/client/edit/{id}(id=${client.id})}" th:method="GET">
+
+							<button type="submit" class="user-edit-btn user-btn">
+								<i class="fa-solid fa-square-pen"></i>
+							</button>
+						</form>
+					</td>
+					<td>
+						<form th:action="@{/client/delete/{id}(id=${client.id})}" th:method="post">
+							<button type="submit" class="user-delete-btn user-btn">
+								<i class="fa-solid fa-trash-arrow-up"></i>
+							</button>
+						</form>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+
+		</div>
+	</section>
 
 </div>

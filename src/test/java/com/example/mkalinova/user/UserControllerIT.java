@@ -97,7 +97,7 @@ public class UserControllerIT {
 	
 	@Test
 	@WithMockUser(username = "admin", roles = {"ADMIN"})
-	public void addUserSucces() throws Exception {
+	public void addUserSuccess() throws Exception {
 		mockMvc.perform(post("/user/add")
 						.param("firstName", "Test")
 						.param("lastName", "Test")
@@ -107,7 +107,7 @@ public class UserControllerIT {
 						.param("role", "EDITOR")
 						.with(csrf()))
 				.andExpect(status().is3xxRedirection())
-				.andExpect(redirectedUrl("/user/add"));
+				.andExpect(redirectedUrl("/user/list"));
 		
 		User user = userRepository.findByUsername("test_editor");
 		assertNotNull(user);

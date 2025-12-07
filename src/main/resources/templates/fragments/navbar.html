@@ -6,8 +6,8 @@
 	<ul class="list-unstyled components">
 
 
-		<li th:classappend="${currentPath.startsWith('/??') ? ' active' : ''}"><a href="#" ><i class="fa-solid fa-square-poll-horizontal dashboard-first-icon"></i>Табло</a></li>
-		<li th:classappend="${currentPath.startsWith('/order') ? ' active' : ''}">
+		<li th:classappend="${currentPath != null and currentPath.startsWith('/dashboard') ? ' active' : ''}"><a href="/dashboard" ><i class="fa-solid fa-square-poll-horizontal dashboard-first-icon"></i>Табло</a></li>
+		<li th:classappend="${currentPath != null and currentPath.startsWith('/order') ? ' active' : ''}">
 			<a href="#orderSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
 					class="fa-solid fa-clipboard-list"></i>Поръчки<i class="fa-solid fa-chevron-down"></i></a>
 			<ul class="collapse list-unstyled" id="orderSubmenu">
@@ -20,7 +20,7 @@
 
 			</ul>
 		</li>
-		<li th:classappend="${currentPath.startsWith('/car') ? ' active' : ''}">
+		<li th:classappend="${currentPath != null and currentPath.startsWith('/car') ? ' active' : ''}">
 			<a href="#carSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
 					class="fa-solid fa-car"></i>Автомобили<i class="fa-solid fa-chevron-down"></i></a>
 			<ul class="collapse list-unstyled" id="carSubmenu">
@@ -33,7 +33,7 @@
 
 			</ul>
 		</li>
-		<li th:classappend="${currentPath.startsWith('/client') ? ' active' : ''}">
+		<li th:classappend="${currentPath != null and currentPath.startsWith('/client') ? ' active' : ''}">
 			<a href="#clientSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
 					class="fa-solid fa-people-group"></i>Клиенти<i class="fa-solid fa-chevron-down"></i></a>
 			<ul class="collapse list-unstyled" id="clientSubmenu">
@@ -47,12 +47,12 @@
 			</ul>
 		</li>
 
-		<li th:classappend="${currentPath.startsWith('/company') ? ' active' : ''}">
+		<li th:classappend="${currentPath != null and currentPath.startsWith('/company') ? ' active' : ''}">
 			<a href="#companySubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
 					class="fa-solid fa-building"></i>Фирми<i class="fa-solid fa-chevron-down"></i></a>
 			<ul class="collapse list-unstyled" id="companySubmenu">
 				<li>
-					<a th:href="@{/company/add}">Добави клиент</a>
+					<a th:href="@{/company/add}">Добави фирма</a>
 				</li>
 				<li>
 					<a th:href="@{/company/list}">Списък</a>
@@ -61,7 +61,7 @@
 			</ul>
 		</li>
 
-		<li th:classappend="${currentPath.startsWith('/repair') ? ' active' : ''}">
+		<li th:classappend="${currentPath != null and currentPath.startsWith('/repair') ? ' active' : ''}">
 			<a href="#serviceSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
 					class="fa-solid fa-screwdriver-wrench"></i>Услуги<i class="fa-solid fa-chevron-down"></i></a>
 			<ul class="collapse list-unstyled" id="serviceSubmenu">
@@ -76,7 +76,7 @@
 		</li>
 
 
-		<li th:classappend="${currentPath.startsWith('/part') ? ' active' : ''}">
+		<li th:classappend="${currentPath != null and currentPath.startsWith('/part') ? ' active' : ''}">
 			<a href="#partSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
 					class="fa-solid fa-gear"></i>Части<i class="fa-solid fa-chevron-down"></i></a>
 			<ul class="collapse list-unstyled" id="partSubmenu">
@@ -91,7 +91,7 @@
 		</li>
 
 
-		<li th:classappend="${currentPath.startsWith('/api') ? ' active' : ''}">
+		<li th:classappend="${currentPath != null and currentPath.startsWith('/api') ? ' active' : ''}">
 			<a href="#apiSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
 					class="fa-solid fa-list-ul"></i>Марки<i class="fa-solid fa-chevron-down"></i></a>
 			<ul class="collapse list-unstyled" id="apiSubmenu">
@@ -105,7 +105,7 @@
 			</ul>
 		</li>
 
-		<li th:classappend="${currentPath.startsWith('/user') ? ' active' : ''}">
+		<li th:classappend="${currentPath != null and currentPath.startsWith('/user') ? ' active' : ''}">
 			<a href="#userSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
 					class="fa-solid fa-user"></i>Потребители<i class="fa-solid fa-chevron-down"></i></a>
 			<ul class="collapse list-unstyled" id="userSubmenu">

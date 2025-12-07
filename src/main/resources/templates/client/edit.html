@@ -12,20 +12,20 @@
 				<h2 class="subheading">Данни за клиента</h2>
 				<div class="form-group">
 					<label for="firstName">Име</label>
-					<input id="firstName" name="firstName" type="text" th:value="${client.firstName}"
+					<input id="firstName" th:field="${client.firstName}" type="text" th:value="${client.firstName}"
 						   class="form-control">
 				</div>
 				<div class="form-group">
 					<label for="lastName">фамилия</label>
-					<input id="lastName" name="lastName" type="text" th:value="${client.lastName}"
+					<input id="lastName" th:field="*{lastName}" type="text" th:value="*{lastName}"
 						   class="form-control"></div>
 				<div class="form-group">
 					<label for="phone">Телефон</label>
-					<input id="phone" name="phone" type="text" th:value="${client.phone}" class="form-control">
+					<input id="phone" th:field="*{phone}" type="text" th:value="*{phone}" class="form-control">
 				</div>
 				<div class="form-group">
 					<label for="email">email</label>
-					<input id="email" name="email" type="text" th:value="${client.email}" class="form-control">
+					<input id="email" th:field="*{email}" type="text" th:value="*{email}" class="form-control">
 				</div>
 				<div class="form-group">
 
@@ -58,7 +58,7 @@
 					</div>
 
 				</div>
-				<button type="submit" class="save">Запази</button>
+				<button  type="submit" class="submit">Запази</button>
 			</form>
 			<hr>
 

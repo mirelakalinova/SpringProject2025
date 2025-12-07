@@ -514,7 +514,6 @@ public class ClientControllerIT {
 		
 		mockMvc.perform(post("/client/remove-car/{id}", carId).param("clientId", String.valueOf(clientId)).with(csrf())).andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/client/edit/" + clientId)).andExpect(flash().attribute("status", "success")).andExpect(flash().attributeExists("message"));
 		
-		// Проверка в базата дали car вече не е свързан с клиента
 		Optional<Car> optCar = carRepository.findById(carId);
 		assertTrue(optCar.isPresent());
 		assertNull(optCar.get().getClient());
@@ -540,6 +539,41 @@ public class ClientControllerIT {
 	}
 	
 	@Test
+	@WithMockUser(username = "admin", roles = {"ADMIN"})
+	public void editClient_ReturnErrorMessage() throws Exception {
+		
+		mockMvc.perform(put("/client/edit/{id}", clientFirst.getId())
+						.param("firstName", "Test")
+						.param("lastName", "Testov")
+						.param("email", "projects45@gmail.com")
+						.param("phone", clientSecond.getPhone())
+						.with(csrf()))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/client/edit/" + clientFirst.getId()))
+				.andExpect(flash().attribute("status", "error"))
+				.andExpect(flash().attributeExists("client"))
+				.andExpect(flash().attributeExists("message"));
+		
+	}
+	
+	@Test
+	@WithMockUser(username = "admin", roles = {"ADMIN"})
+	public void editClient_ReturnSuccessMessage() throws Exception {
+		
+		mockMvc.perform(put("/client/edit/{id}", clientFirst.getId())
+						.param("firstName", "Test")
+						.param("lastName", "Testov")
+						.param("email", "projects45@gmail.com")
+						.param("phone", clientFirst.getPhone())
+						.with(csrf()))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/client/list"))
+				.andExpect(flash().attribute("status", "success"))
+				.andExpect(flash().attributeExists("message"));
+		
+	}
+	
+	@Test
 	@WithAnonymousUser
 	public void editClient_AccessDenied() throws Exception {
 		mockMvc.perform(put("/client/edit/{id}", clientFirst.getId()).param("firstName", "Test").param("lastName", "Testov").param("email", "projects45@gmail.com").param("phone", "0898819465").with(csrf())).andExpect(status().isForbidden());
@@ -553,8 +587,24 @@ public class ClientControllerIT {
 		clientSecond.setDeletedAt(LocalDateTime.now());
 		clientRepository.save(clientSecond);
 		
-		mockMvc.perform(get("/client/fetch/clients").contentType(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk()).andExpect(jsonPath("$.clients").isArray()).andExpect(jsonPath("$.clients.length()").value(1)).andExpect(jsonPath("$.clients[0].firstName").value("Test"));
+		mockMvc.perform(get("/client/fetch/clients")
+				.contentType(MediaType.TEXT_HTML)
+				.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.clients")
+						.isArray())
+				.andExpect(jsonPath("$.clients.length()")
+						.value(1))
+				.andExpect(jsonPath("$.clients[0].firstName")
+						.value("Test"))
+				.andExpect(jsonPath("$.clients[0].lastName")
+						.value("Test"))
+				.andExpect(jsonPath("$.clients[0].phone")
+						.value("0896619422"))
+				.andExpect(jsonPath("$.clients[0].email")
+						.value("projects@zashev.com"));
 		
+	
 	}
 	
 	@Test

@@ -5,6 +5,7 @@ import com.example.mkalinova.app.parts.data.dto.EditPartDto;
 import com.example.mkalinova.app.parts.data.dto.PartDto;
 import com.example.mkalinova.app.parts.service.PartService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,7 +26,10 @@ public class PartController extends BaseController {
 		this.partService = partService;
 	}
 	
-	
+	@ModelAttribute("partDto")
+	public PartDto partDto(){
+		return new PartDto();
+	}
 	@GetMapping("/list")
 	public ModelAndView listPart() {
 		ModelAndView modelAndView = super.view("part/list");
@@ -36,7 +40,7 @@ public class PartController extends BaseController {
 	
 	
 	@GetMapping("/add")
-	public ModelAndView addPart(@ModelAttribute PartDto partDto) {
+	public ModelAndView addPart() {
 		return super.view("part/add");
 	}
 	
@@ -62,27 +66,27 @@ public class PartController extends BaseController {
 	public ModelAndView editView(@PathVariable String id, Model model) {
 		UUID uuid = UUID.fromString(id);
 		ModelAndView modelAndView = super.view("part/edit");
-		if (!model.containsAttribute("partDto")) {
+		if (!model.containsAttribute("editPartDto")) {
 			
-			modelAndView.addObject("partDto", partService.findById(uuid));
+			modelAndView.addObject("editPartDto", partService.findById(uuid));
 		}
 		
 		return modelAndView;
 	}
 	
 	@PostMapping("/edit/{id}")
-	public String editPart(@Valid EditPartDto partDto,
+	public String editPart(@Valid EditPartDto editPartDto,
 	                       BindingResult bindingResult,
 	                       RedirectAttributes redirectAttributes) throws AccessDeniedException {
-		if (partDto.getPrice() == null) {
-			partDto.setPrice(0D);
+		if (editPartDto.getPrice() == null) {
+			editPartDto.setPrice(0D);
 		}
 		if (bindingResult.hasErrors()) {
-			redirectAttributes.addFlashAttribute("partDto", partDto);
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.partDto", bindingResult);
-			return "redirect:/part/edit/" + partDto.getId();
+			redirectAttributes.addFlashAttribute("editPartDto", editPartDto);
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.editPartDto", bindingResult);
+			return "redirect:/part/edit/" + editPartDto.getId();
 		}
-		HashMap<String, String> result = partService.editPart(partDto);
+		HashMap<String, String> result = partService.editPart(editPartDto);
 		redirectAttributes.addFlashAttribute("status", result.get("status"));
 		redirectAttributes.addFlashAttribute("message", result.get("message"));
 		return "redirect:/part/list";
