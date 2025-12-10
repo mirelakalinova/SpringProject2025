@@ -198,7 +198,6 @@ public class ClientControllerIT {
 		mockMvc.perform(post("/client/add")
 						
 						.param("firstName", "Test").param("lastName", "Testov").param("email", "projects23@gmail.com").param("phone", "0898819422")
-						//Car
 						.param("registrationNumber", "CB25K").param("cube", String.valueOf(1200)).param("year", String.valueOf(2020)).param("hp", String.valueOf(120)).param("make", "Audi").param("model", "tt").param("kw", String.valueOf(120)).param("vin", "1HGBH41JXMN109177")
 						
 						
@@ -278,7 +277,7 @@ public class ClientControllerIT {
 		mockMvc.perform(post("/client/add")
 						
 						.param("firstName", "Test").param("lastName", "Testov").param("email", "projects@gmail.com").param("phone", "0898819422")
-						//Car
+				
 						.param("registrationNumber", "CB2125KO").param("cube", String.valueOf(1200)).param("year", String.valueOf(2020)).param("hp", String.valueOf(120)).param("make", "Audi").param("model", "tt").param("kw", String.valueOf(120)).param("vin", "1HGBH41JXMN109177").param("checked", String.valueOf(true)).param("name", "Audi").param("uic", "201799236").param("vatNumber", "BG201799236").param("address", "1HGBH41JXMN109177").param("accountablePerson", "Test test")
 						
 						

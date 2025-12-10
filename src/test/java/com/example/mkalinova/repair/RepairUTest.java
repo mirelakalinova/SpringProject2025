@@ -232,7 +232,7 @@ public class RepairUTest {
 			this.service.editService(dto);
 		});
 		
-		//verify(repository).findById(dto.getId());
+
 		verify(repository, never()).save(repairFirst);
 		Optional<Repair> optService = repository.findByName(dto.getName());
 		assertFalse(optService.isPresent());

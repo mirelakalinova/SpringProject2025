@@ -25,8 +25,8 @@ public class ObjectUtils {
 							return false;
 						}
 					} else if (!field.getType().isPrimitive()) {
-						// За всички други обекти
-						return false; // поле не е null
+			
+						return false;
 					} else if (field.getType().isPrimitive()) {
 						
 						if (field.getType() == boolean.class && (boolean) value) {

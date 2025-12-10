@@ -1,6 +1,5 @@
 <div class="container align-content-center home"
      xmlns:th="http://www.w3.org/1999/xhtml">
-    <!-- todo ако може да се взема от някакви настройки -->
     <h1>Добави фирма</h1>
     <div class="alert alert-danger" th:text="${message}" th:if="${message}" style="white-space: pre-line;"></div>
     <form th:action="@{/company/add}" th:method="POST"
