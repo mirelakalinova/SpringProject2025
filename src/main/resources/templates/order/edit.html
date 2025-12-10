@@ -385,9 +385,9 @@
 
 </div>
 <p class="info-text">Последна дата на обновяване:
-	<span th:text="${dto.editedAt != null ? #temporals.format(dto.deletedAt, 'dd-MM-yyyy') : #temporals.format(dto.date, 'dd-MM-yyyy')}"></span>
+	<span th:text="${dto.editedAt != null ? #temporals.format(dto.createdAt, 'dd-MM-yyyy') : #temporals.format(dto.createdAt, 'dd-MM-yyyy')}"></span>
 	<br>
-	<span th:text="${dto.editedAt != null ? #temporals.format(dto.deletedAt, 'HH:MM') : #temporals.format(dto.date, 'HH:MM')}"></span>
+	<span th:text="${dto.editedAt != null ? #temporals.format(dto.editedAt, 'HH:MM') : #temporals.format(dto.editedAt, 'HH:MM')}"></span>
 
 </p>
 <div class="d-none" th:object="${dto}">

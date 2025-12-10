@@ -27,7 +27,7 @@ public class EditOrderDto {
 	@NotNull
 	private double total;
 	private String note;
-	private LocalDateTime date;
+	private LocalDateTime createdAt;
 	private LocalDateTime editedAt;
 	@NotNull
 	private Car car;
@@ -115,12 +115,12 @@ public class EditOrderDto {
 		this.car = car;
 	}
 	
-	public LocalDateTime getDate() {
-		return date;
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	}
 	
-	public void setDate(LocalDateTime date) {
-		this.date = date;
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 	
 	public LocalDateTime getEditedAt() {

@@ -183,7 +183,7 @@ public class UserServiceUTest {
 	
 	@Test
 	void getAllUsers() {
-		// Подготовка на тестови данни
+
 		User user1 = new User();
 		user1.setRole(UsersRole.ADMIN);
 		User user2 = new User();

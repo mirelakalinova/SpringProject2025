@@ -52,6 +52,7 @@ Only ADMIN can delete data and block/unblock users
   - PORT
   - REDIS_HOST
   - REDIS_PORT
+  - API_BASE
 
 ### Default credentials
   - username: dorel-auto

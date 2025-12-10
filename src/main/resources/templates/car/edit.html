@@ -5,11 +5,6 @@
 
 	<div class="row row-view">
 		<div class="col-lg-6 elements">
-
-
-
-
-
 				<div th:if="${message}" th:text="${message}" style="white-space: pre-line;"
 					 th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"></div>
 				<form th:method="POST"
@@ -76,7 +71,6 @@
 									   placeholder="Започнете да пишете за модела..."
 									   autocomplete="off">
 
-								<!-- Падащо меню за модели (ще се показва винаги, без да е нужно да се въвеждат букви) -->
 								<ul v-if="filteredModels.length > 0" class="dropdown-menu" id="model-list">
 									<li v-for="model in filteredModels" :key="model.id"
 										@mousedown.prevent="selectModel(model)">

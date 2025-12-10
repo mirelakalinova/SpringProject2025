@@ -1,6 +1,5 @@
 <div class="container"
 ><h1>Списък с клиенти</h1>
-	<!--    todo -> check is necessary to be in section-->
 	<section class="clients" xmlns:th="http://www.w3.org/1999/xhtml">
 		<div th:if="${message}" th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"><p
 				th:text="${message}" style="white-space: pre-line;"></p></div>

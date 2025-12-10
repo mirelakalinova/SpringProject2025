@@ -1,4 +1,4 @@
-package com.example.mkalinova.app.exception; // коригирано име
+package com.example.mkalinova.app.exception;
 
 import com.example.mkalinova.app.land.Controller.BaseController;
 import jakarta.servlet.http.HttpServletRequest;
