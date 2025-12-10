@@ -31,15 +31,15 @@
 		<tr th:each="order : ${orderList}">
 
 			<td>
-				<i class="fa-solid fa-calendar-days"></i><span th:text="${#temporals.format(order.date, 'dd-MM-yyyy')}"></span>
+				<i class="fa-solid fa-calendar-days"></i><span th:text="${#temporals.format(order.createdAt, 'dd-MM-yyyy')}"></span>
 				<br/>
 				<i class="fa-solid fa-clock"></i>
-				<span th:text="${#temporals.format(order.date, 'HH:mm')}"></span>
+				<span th:text="${#temporals.format(order.createdAt, 'HH:mm')}"></span>
 			</td>
 			<td ><strong th:text="${order.car.registrationNumber}"> </strong></td>
 
-			<td th:text="${order.client.firstName}  + ' ' +  ${order.client.lastName}"></td>
-			<td th:text="${order.client.phone}"></td>
+			<td th:text="${order.client?.firstName ?: '-' }  + ' ' +  ${order.client?.lastName ?: '-'}"></td>
+			<td th:text="${order.client?.phone?: '-'}"></td>
 
 			<td>
 				<ul class="list-unstyled list-group list-group-flush">
@@ -53,10 +53,10 @@
 					<li class="list-group-item" th:each="item : ${order.repairsList}" ><span th:text="${item.repair.name}"></span></li>
 				</ul>
 			</td>
-			<!--            todo -->
+
 			<td th:text="${#numbers.formatDecimal(order.discount, 1, 'NONE', 2, 'POINT')}"></td>
 			<td th:text="${#numbers.formatDecimal(order.total, 1, 'NONE', 2, 'POINT')}"></td>
-			<td th:text="${order.company.name != null ? order.company.name : '-'}"></td>
+			<td><span th:text="${order.company?.name ?: '-'}"> </span></td>
 
 			<td th:text="${order.note}"></td>
 			<td>

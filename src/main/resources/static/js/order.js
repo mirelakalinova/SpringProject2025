@@ -37,7 +37,7 @@ new Vue({
                 await this.$nextTick();
 
                 // ако имаме dtoCarVal > 0, селектираме я и извикваме handler
-                if (dtoCarVal && Number(dtoCarVal) > 0) {
+                if (dtoCarVal ) {
                     //                    console.log('Found dtoCar:', dtoCarVal);
                     // 1) селектираме select (ако ползваш select2 - сетни и trigger)
                     const $selCar = $('#order-car');
@@ -50,7 +50,7 @@ new Vue({
                 }
                 //                console.log("dtoClientVal fetchCars =====>>>>>");
                 //                console.log(dtoClientVal );
-                if (dtoClientVal && Number(dtoClientVal) > 0) {
+                if (dtoClientVal) {
                     //                    console.log('Found dtoClientVal:', dtoClientVal);
                     // 1) селектираме select (ако ползваш select2 - сетни и trigger)
                     const $selClient = $('#order-client');
@@ -64,7 +64,7 @@ new Vue({
                     // 3) извикваме обработчика на Vue
                     await this.handleClientChange(dtoClientVal);
 
-                    if (dtoCompanyVal && Number(dtoCompanyVal) > 0) {
+                    if (dtoCompanyVal ) {
                         console.log('========================');
                         console.log('Found dtoCompanyVal:', dtoCompanyVal);
                         // 1) селектираме select (ако ползваш select2 - сетни и trigger)
@@ -592,6 +592,53 @@ function makeDiscount(){
     }
 
 }
+
+
+$('#order-car').on('select2:unselecting select2:clear', function(e) {
+    ['order-client','order-car', 'order-company'].forEach(id => {
+        $('#' + id).val(null).trigger('change');
+    });
+
+    const vue = document.getElementById('order').__vue__;
+    if (vue) {
+        vue.selectedCar = null;
+        vue.selectedClient = null;
+        vue.selectedCompany = null;
+        vue.selectedCarData = null;
+        vue.selectedClientData = null;
+        vue.selectedCompanyData = null;
+        vue.enableClientDropdown = false;
+        vue.enableCompanyDropdown = false;
+
+    }
+});
+
+$('#order-client').on('select2:unselecting select2:clear', function(e) {
+    ['order-client', 'order-company'].forEach(id => {
+        $('#' + id).val(null).trigger('change');
+    });
+
+    const vue = document.getElementById('order').__vue__;
+    if (vue) {
+
+        vue.selectedClient = null;
+        vue.selectedCompany = null;
+        vue.selectedClientData = null;
+        vue.selectedCompanyData = null;
+        vue.enableCompanyDropdown = false;
+
+    }
+});
+
+
+$('#partSelect').on('select2:unselecting select2:clear', function(e) {
+    $('#price-part').val('').trigger('change');
+    });
+$('#repair').on('select2:unselecting select2:clear', function(e) {
+    $('#price-repair').val('').trigger('change');
+});
+
+
 
 //
 //$('form').on('submit', function(e){
