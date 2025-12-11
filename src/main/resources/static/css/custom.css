@@ -45,6 +45,7 @@ form.logout{
     flex-direction: row;
     align-items: center;
     margin-right: 120px;
+    gap:5px;
 
 }
 .form-control:focus {
@@ -141,8 +142,9 @@ button {
     border-radius: 10px;
 }
 .add-user-btn a:hover {
-    background-color: #dc3545bd;
+    background-color: #d42d2fba;
     transition: 0.5s;
+    color: white;
 }
 
 button.user-btn {
@@ -193,7 +195,8 @@ button.user-btn {
     transition:0.2s;
 }
 .home-login a:hover {
-    opacity:0.9;
+    color: white;
+    background: #d42d2fba;
 }
 
 
@@ -405,7 +408,7 @@ dvi.alert.alert-danger {
 .order{
 
     max-width: 100%;
-    padding: 20px 150px;
+    padding: 20px 50px;
 
 }
 
@@ -544,8 +547,11 @@ span.select2.select2-container.select2-container--default.select2-container--foc
 
 span.select2-selection.select2-selection--single.select2-selection--clearable {
     height: 38px;
-}
 
+}
+tr.form-repair td:first-child {
+    width: 40%;
+}
 .select2-container--default .select2-selection--single .select2-selection__clear {
     cursor: pointer;
     float: right;
@@ -629,6 +635,14 @@ p.info-text {
 
 }
 
+.client-data p {
+    color: #1d244a;
+}
+
+.client-data span {
+    font-weight: 600;
+}
+
 @media(max-width:1800px){
     .order {
         max-width: 100%;
@@ -654,15 +668,17 @@ p.info-text {
     }
 }
 
-@media(max-width:1300px){
+@media(max-width:1366px){
+
+
 
     .row.row-view {
         display: flex;
         gap: 20px;
         flex-wrap: nowrap;
         flex-direction: column;
-    }
 
+    }
     .col-lg-6.elements-add-repair {
         background-color: #e9e9e9;
         padding: 15px 10px;
@@ -670,25 +686,21 @@ p.info-text {
         width: 100%;
     }
 
-    .choose-data {
-        width: 100%;
+    .app-select-form {
+        display: flex;
+        flex-direction: row;
     }
 
-    .col-lg-6.elements-add-repair {
-        background-color: #e9e9e9;
-        padding: 15px 10px;
-        border-radius: 15px;
-        width: 40%;
-    }
 }
 
 
-@media(max-width:600){
+@media(max-width:600px){
     .row.row-view {
         flex-wrap: wrap;
     }
 
     .app-select-form {
+        display: flex;
         flex-direction: column;
     }
 
@@ -700,7 +712,7 @@ p.info-text {
         font-size: 12px;
     }
     .order {
-    
+
         font-size: 12px;
     }
 
