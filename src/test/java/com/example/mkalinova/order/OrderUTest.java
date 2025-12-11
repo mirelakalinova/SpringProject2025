@@ -195,7 +195,7 @@ public class OrderUTest {
 		doNothing().when(userService).isUserLogIn();
 		
 		when(modelMapper.map(dto, Order.class)).thenReturn(new Order());
-		when(carService.getById(dto.getCar(), Car.class)).thenReturn(null);
+		when(carService.getById(dto.getCarId(), Car.class)).thenReturn(null);
 		
 		HashMap<String, String> result = service.saveOrder(dto);
 		
@@ -214,9 +214,9 @@ public class OrderUTest {
 		doNothing().when(userService).isUserLogIn();
 		
 		when(modelMapper.map(dto, Order.class)).thenReturn(new Order());
-		when(carService.getById(dto.getCar(), Car.class)).thenReturn(car);
-		when(clientService.getById(dto.getClient())).thenReturn(Optional.of(client));
-		when(companyService.getById(dto.getCompany(), Company.class)).thenReturn(null);
+		when(carService.getById(dto.getCarId(), Car.class)).thenReturn(car);
+		when(clientService.getById(dto.getClientId())).thenReturn(Optional.of(client));
+		when(companyService.getById(dto.getCompanyId(), Company.class)).thenReturn(null);
 		
 		HashMap<String, String> result = service.saveOrder(dto);
 		
@@ -228,9 +228,9 @@ public class OrderUTest {
 	
 	private AddOrderDto getAddOrderDto(UUID car, UUID client, UUID company) {
 		AddOrderDto dto = new AddOrderDto();
-		dto.setCar(car);
-		dto.setClient(client);
-		dto.setCompany(company);
+		dto.setCarId(car);
+		dto.setClientId(client);
+		dto.setCompanyId(company);
 		dto.setDiscount(20);
 		dto.setSubtotal(120);
 		dto.setTotal(140);
@@ -260,8 +260,8 @@ public class OrderUTest {
 		doNothing().when(userService).isUserLogIn();
 		
 		when(modelMapper.map(dto, Order.class)).thenReturn(new Order());
-		when(carService.getById(dto.getCar(), Car.class)).thenReturn(car);
-		when(clientService.getById(dto.getClient())).thenReturn(Optional.empty());
+		when(carService.getById(dto.getCarId(), Car.class)).thenReturn(car);
+		when(clientService.getById(dto.getClientId())).thenReturn(Optional.empty());
 		
 		
 		HashMap<String, String> result = service.saveOrder(dto);
@@ -283,8 +283,8 @@ public class OrderUTest {
 		
 		when(modelMapper.map(dto, Order.class)).thenReturn(new Order());
 		when(carService.getById(car.getId(), Car.class)).thenReturn(car);
-		when(clientService.getById(dto.getClient())).thenReturn(Optional.of(client));
-		when(companyService.getById(dto.getCompany(), Company.class)).thenReturn(company);
+		when(clientService.getById(dto.getClientId())).thenReturn(Optional.of(client));
+		when(companyService.getById(dto.getCompanyId(), Company.class)).thenReturn(company);
 		
 		HashMap<String, String> result = service.saveOrder(dto);
 		
@@ -367,14 +367,15 @@ public class OrderUTest {
 		newCompany.setId(companyId);
 		
 		EditOrderDto dto = new EditOrderDto();
-		dto.setCar(newCar);
-		dto.setClient(newClient);
-		dto.setCompany(newCompany);
+		dto.setCarId(newCar.getId());
+		dto.setClientId(newClient.getId());
+		dto.setCompanyId(newCompany.getId());
 		dto.setParts(List.of(new AddOrderPartDto()));
 		dto.setRepairs(List.of(new AddOrderRepairDto()));
 		
 		
 		when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+		when(modelMapper.map(dto, Order.class)).thenReturn(order);
 		when(carService.getById(carId, Car.class)).thenReturn(newCar);
 		when(clientService.getById(clientId)).thenReturn(Optional.of(newClient));
 		when(companyService.getById(companyId, Company.class)).thenReturn(newCompany);
@@ -384,7 +385,7 @@ public class OrderUTest {
 		
 		
 		assertEquals("success", result.get("status"));
-		assertEquals("Успешно добавен ремонт!", result.get("message"));
+		assertEquals("Успешно обновен ремонт!", result.get("message"));
 		verify(orderPartService, atLeastOnce()).saveOrderPart(any(), any());
 		verify(orderRepairService, atLeastOnce()).saveOrderRepair(any(), any());
 		verify(orderRepository).save(order);

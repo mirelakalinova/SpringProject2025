@@ -14,17 +14,14 @@ import com.example.mkalinova.app.parts.service.PartService;
 import com.example.mkalinova.app.repair.service.RepairService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import org.springframework.security.access.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -54,6 +51,11 @@ public class OrderController extends BaseController {
 		this.orderPartService = orderPartService;
 	}
 	
+	@ModelAttribute("addCarDto")
+	public AddOrderDto addOrderDto() {
+		return new AddOrderDto();
+	}
+	
 	@GetMapping("/add")
 	public ModelAndView addOrder(Model model) throws JsonProcessingException {
 		
@@ -66,9 +68,9 @@ public class OrderController extends BaseController {
 		AddOrderDto dto = (AddOrderDto) model.asMap().get("orderDto");
 		if (dto != null) {
 			modelAndView.addObject("dto", dto);
-			modelAndView.addObject("dtoCar", dto.getCar());
-			modelAndView.addObject("dtoClient", dto.getClient());
-			modelAndView.addObject("dtoCompany", dto.getCompany());
+			modelAndView.addObject("dtoCar", dto.getCarId());
+			modelAndView.addObject("dtoClient", dto.getClientId());
+			modelAndView.addObject("dtoCompany", dto.getCompanyId());
 			modelAndView.addObject("dtoParts", dto.getParts());
 			modelAndView.addObject("dtoRepairs", dto.getRepairs());
 			modelAndView.addObject("dtoSubtotal", dto.getSubtotal());
@@ -95,9 +97,13 @@ public class OrderController extends BaseController {
 		
 		HashMap<String, String> result = orderService.saveOrder(orderDto);
 		if (result.get("status").equals("error")) {
+			redirectAttributes.addFlashAttribute("message", result.get("message"));
 			redirectAttributes.addFlashAttribute("orderDto", orderDto);
 		}
-		return "redirect:/order/add";
+		
+		redirectAttributes.addFlashAttribute("status", result.get("status"));
+		redirectAttributes.addFlashAttribute("message", result.get("message"));
+		return "redirect:/order/list";
 		
 	}
 	
@@ -106,7 +112,8 @@ public class OrderController extends BaseController {
 		ModelAndView modelAndView = super.view("order/list");
 		List<OrderListDto> orderList = orderService.getAllOrders();
 		modelAndView.addObject("orderList", orderList);
-
+		modelAndView.addObject("heading", "Списък с поръчки");
+		
 		return modelAndView;
 	}
 	
@@ -122,30 +129,33 @@ public class OrderController extends BaseController {
 	}
 	
 	@GetMapping("/edit/{id}")
-	public ModelAndView editOrderView(@PathVariable String id, EditOrderDto editOrderDto) {
+	public ModelAndView editOrderView(@PathVariable String id, Model model) {
 		UUID uuid = UUID.fromString(id);
 		ModelAndView modelAndView = super.view("order/edit");
-		modelAndView.addObject("dto", orderService.getOrderById(uuid));
-		modelAndView.addObject("partList", orderPartService.findAllByOrderId(uuid));
-		modelAndView.addObject("repairList", orderRepairService.findAllByOrderId(uuid));
-		modelAndView.addObject("parts", partService.getAllPartsByDeletedAtNull());
-		modelAndView.addObject("repairs", repairService.getAllServicesByDeletedAtNull());
+		if (!model.containsAttribute("dto")) {
+			
+			modelAndView.addObject("dto", orderService.getOrderById(uuid));
+			modelAndView.addObject("partList", orderPartService.findAllByOrderId(uuid));
+			modelAndView.addObject("repairList", orderRepairService.findAllByOrderId(uuid));
+			modelAndView.addObject("parts", partService.getAllPartsByDeletedAtNull());
+			modelAndView.addObject("repairs", repairService.getAllServicesByDeletedAtNull());
+		}
 		return modelAndView;
 		
 	}
 	
 	@PostMapping("/edit/{id}")
 	public String editOrder(@PathVariable String id,
-	                        @Valid EditOrderDto editOrderDto,
+	                        @Valid EditOrderDto dto,
 	                        BindingResult bindingResult,
 	                        RedirectAttributes redirectAttributes) throws AccessDeniedException {
 		UUID uuid = UUID.fromString(id);
 		if (bindingResult.hasErrors()) {
-			redirectAttributes.addFlashAttribute("editOrderDto", editOrderDto);
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.editOrderDto", bindingResult);
+			redirectAttributes.addFlashAttribute("dto", dto);
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.dto", bindingResult);
 			return "redirect:/order/edit/" + id;
 		}
-		HashMap<String, String> result = orderService.editOrder(uuid, editOrderDto);
+		HashMap<String, String> result = orderService.editOrder(uuid, dto);
 		redirectAttributes.addFlashAttribute("status", result.get("status"));
 		redirectAttributes.addFlashAttribute("message", result.get("message"));
 		return "redirect:/order/list";

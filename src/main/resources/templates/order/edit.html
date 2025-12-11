@@ -1,9 +1,16 @@
 <div class="container align-content-center order" xmlns:th="http://www.w3.org/1999/xhtml">
 	<div th:if="${message}" th:text="${message}" style="white-space: pre-line;"
 		 th:class="'alert ' + (${status} == 'success' ? 'alert-success' : 'alert-danger')"></div>
-	<form th:action="@{/order/edit/{id}(id=${editOrderDto.id})}" th:method="post" th:object="${editOrderDto}">
-		<h1>Редакция Ремонт #<span th:text="${id}"></span></h1>
 
+	<form th:action="@{/order/edit/{id}(id=${dto.id})}" th:method="post" th:object="${dto}">
+
+		<h1>Редакция Ремонт #<span th:text="${id}"></span></h1>
+		<div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+			<ul>
+				<li th:each="err : ${#fields.errors('*')}"
+					th:text="${err}"></li>
+			</ul>
+		</div>
 		<div id="order">
 			<div class="row row-view">
 				<div class="col-lg-6 elements-add-repair">
@@ -273,6 +280,12 @@
 						</table>
 
 					</div>
+					<h4>Забележка</h4>
+					<div class="order-note">
+						<label for="note"> Забележка</label>
+						<textarea id="note" th:field="*{note}" class="form-control"
+								  th:value="${note}"></textarea>
+					</div>
 				</div>
 
 				<div class="col-lg-6 elements-add-repair">
@@ -380,6 +393,38 @@
 			<button type="submit" value="Запиши">Запиши</button>
 			<!--         <button type="submit" value="Изпрати">Принтирай</button>-->
 		</div>
+		<div class="d-none" th:object="${dto}">
+
+			<input type="hidden" id="dtoCar" th:field="${dto.carId}" th:value="${dto.carId}">
+			<input type="hidden" id="dtoClient" th:field="${dto.clientId}" th:value="${dto.clientId}">
+
+			<input type="hidden" id="dtoCompany"  th:field="${dto.companyId}" th:value="${dto.companyId != null ? dto.companyId : ''}">c
+			<ul class="d-none" id="dtoParts">
+				<li th:each="p : ${partList}"
+					th:value="${p.id}"
+					th:text="${p.name}"
+					th:data-price="${p.price}"
+					th:data-quantity="${p.quantity}"
+				></li>
+			</ul>
+			<ul class="d-none" id="dtoRepairs">
+				<li th:each="r : ${repairList}"
+					th:value="${r.id}"
+					th:text="${r.name}"
+					th:data-price="${r.price}"
+					th:data-quantity="${r.quantity}"
+				></li>
+			</ul>
+			<input type="hidden" id="dtoSubtotal" th:value="${dto.subtotal}">
+			<input type="hidden" id="dtoTax" th:value="${dto.tax}">
+			<input type="hidden" id="dtoDiscount" th:value="${dto.discount}">
+			<input type="hidden" id="dtoDiscountAmount" th:value="${dto.discountAmount}">
+			<input type="hidden" id="dtoDiscountPercent" th:value="${dto.discountPercent}">
+			<input type="hidden" id="dtoTotal" th:value="${dto.total}">
+			<input type="hidden" id="dtoNote" th:value="${dto.note}">
+			<input type="hidden" id="createdAt" th:field="*{createdAt}" th:value="${dto.createdAt}">
+
+		</div>
 	</form>
 
 
@@ -390,34 +435,7 @@
 	<span th:text="${dto.editedAt != null ? #temporals.format(dto.editedAt, 'HH:MM') : #temporals.format(dto.editedAt, 'HH:MM')}"></span>
 
 </p>
-<div class="d-none" th:object="${dto}">
 
-	<input type="hidden" id="dtoCar" th:value="${dto.car.id}">
-	<input type="hidden" id="dtoClient" th:value="${dto.client.id}">
-	<input type="hidden" id="dtoCompany" th:value="${dto.company.id}">c
-	<ul class="d-none" id="dtoParts">
-		<li th:each="p : ${partList}"
-			th:value="${p.id}"
-			th:text="${p.name}"
-			th:data-price="${p.price}"
-			th:data-quantity="${p.quantity}"
-		></li>
-	</ul>
-	<ul class="d-none" id="dtoRepairs">
-		<li th:each="r : ${repairList}"
-			th:value="${r.id}"
-			th:text="${r.name}"
-			th:data-price="${r.price}"
-			th:data-quantity="${r.quantity}"
-		></li>
-	</ul>
-	<input type="hidden" id="dtoSubtotal" th:value="${dto.subtotal}">
-	<input type="hidden" id="dtoTax" th:value="${dto.tax}">
-	<input type="hidden" id="dtoDiscount" th:value="${dto.discount}">
-	<input type="hidden" id="dtoTotal" th:value="${dto.total}">
-	<input type="hidden" id="dtoNote" th:value="${dto.note}">
-
-</div>
 
 
 

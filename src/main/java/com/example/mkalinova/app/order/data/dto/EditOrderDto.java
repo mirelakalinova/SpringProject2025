@@ -29,13 +29,13 @@ public class EditOrderDto {
 	private String note;
 	private LocalDateTime createdAt;
 	private LocalDateTime editedAt;
-	@NotNull
-	private Car car;
-	private Client client;
-	private Company company;
+	@NotNull(message = "Моля, добавете автомобил!")
+	private UUID carId;
+	private UUID clientId;
+	private UUID companyId;
 	private List<AddOrderPartDto> parts;
-	@NotNull
-	@NotEmpty
+	@NotNull(message = "Добавете услуга!")
+	@NotEmpty(message = "Добавете услуга!")
 	private List<AddOrderRepairDto> repairs;
 	
 	public EditOrderDto() {
@@ -107,12 +107,28 @@ public class EditOrderDto {
 		this.note = note;
 	}
 	
-	public Car getCar() {
-		return car;
+	public UUID getCarId() {
+		return carId;
 	}
 	
-	public void setCar(Car car) {
-		this.car = car;
+	public void setCarId(UUID carId) {
+		this.carId = carId;
+	}
+	
+	public UUID getClientId() {
+		return clientId;
+	}
+	
+	public void setClientId(UUID clientId) {
+		this.clientId = clientId;
+	}
+	
+	public UUID getCompanyId() {
+		return companyId;
+	}
+	
+	public void setCompanyId(UUID companyId) {
+		this.companyId = companyId;
 	}
 	
 	public LocalDateTime getCreatedAt() {
@@ -131,21 +147,6 @@ public class EditOrderDto {
 		this.editedAt = editedAt;
 	}
 	
-	public Client getClient() {
-		return client;
-	}
-	
-	public void setClient(Client client) {
-		this.client = client;
-	}
-	
-	public Company getCompany() {
-		return company;
-	}
-	
-	public void setCompany(Company company) {
-		this.company = company;
-	}
 	
 	public List<AddOrderPartDto> getParts() {
 		return parts;

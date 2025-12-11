@@ -192,10 +192,27 @@ a.article:hover {
     min-height: 100vh;
     transition: all 0.3s;
 }
+@media (max-width: 1536px) {
 
+    #sidebar {
+        min-width: 210px;
+        max-width: 250px;
+        color: #fff;
+        transition: all 0.3s;
+        height: 100vh;
+        font-size: 13px;
+    }
 
+    .dropdown-toggle i:last-child {
+        font-size: 17px;
+        width: 25px;
+        position: absolute;
+        right: 13px;
+        top: 10px;
+    }
+}
 
-@media (max-width: 768px) {
+@media (max-width: 1280px) {
     #sidebar {
         margin-left: -250px;
     }
