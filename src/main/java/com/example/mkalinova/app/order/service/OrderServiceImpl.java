@@ -128,7 +128,7 @@ public class OrderServiceImpl implements OrderService {
 			orderRepairService.findAllByOrderId(id).forEach(r -> o.getRepairsList().add(r));
 		});
 		log.info("Successfully get all orders...");
-		return listDto;
+		return listDto.stream().sorted(Comparator.comparing(OrderListDto::getCreatedAt).reversed()).toList();
 	}
 	
 	@Override
@@ -268,10 +268,10 @@ public class OrderServiceImpl implements OrderService {
 	
 	@Override
 	public List<OrderListDto> getOrders(int count) {
-		List<OrderListDto> dashboardOrderList = this.getAllOrders().stream()
-				.sorted(Comparator.comparing(OrderListDto::getCreatedAt))
+		log.info("Attempt to get last 10 orders...");
+		return this.getAllOrders().stream()
+				.sorted(Comparator.comparing(OrderListDto::getCreatedAt).reversed())
 				.limit(count)
 				.toList();
-		return dashboardOrderList;
 	}
 }

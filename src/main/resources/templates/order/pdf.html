@@ -189,7 +189,7 @@
 			<td class="right" th:text="${part.quantity != null ? part.quantity : 1}"></td>
 
 			<td class="right"
-				th:text="${(part.quantity != null ? part.quantity : 1) * (part.price != null ? part.price : 0) }">
+				th:text="${#numbers.formatDecimal((part.quantity != null ? part.quantity : 1) * (part.price != null ? part.price : 0) , 1, 'NONE', 2, 'POINT')}">
 			</td>
 		</tr>
 		</tbody>
@@ -222,7 +222,8 @@
 				th:text="${#numbers.formatDecimal(repair.price != null ? repair.price : 0, 2, 'COMMA', 2, 'POINT')}"></td>
 			<td class="right" th:text="${repair.quantity != null ? repair.quantity : 1}"></td>
 			<td class="right"
-				th:text="${(repair.quantity != null ? repair.quantity : 1) * (repair.price != null ? repair.price : 0)}">
+				th:text="${#numbers.formatDecimal((repair.quantity != null ? repair.quantity : 1) * (repair.price != null ? repair.price : 0), 1, 'NONE', 2, 'POINT')}">
+<!--				th:text="${#numbers.formatDecimal((part.quantity != null ? part.quantity : 1) * (part.price != null ? part.price : 0) , 2, 'COMMA', 2, 'POINT')}">-->
 			</td>
 		</tr>
 		</tbody>

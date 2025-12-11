@@ -28,7 +28,7 @@
 			<tr th:each="repair : ${repairs}">
 
 				<td th:text="${repair.name}">Име</td>
-				<td th:text="${repair.price!= null ?  repair.price : '-'}">ЕИК</td>
+				<td th:text="${#numbers.formatDecimal(repair.price!= null ?  repair.price : '-', 1, 'NONE', 2, 'POINT')}"></td>
 				<td sec:authorize="isAuthenticated()">
 					<form th:action="@{/repair/edit/{id}(id=${repair.id})}" th:method="get">
 
