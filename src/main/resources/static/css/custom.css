@@ -39,6 +39,14 @@ a.nav-link:hover {
     margin-top: 100px;
 }
 
+form.logout{
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 120px;
+
+}
 .form-control:focus {
     color: var(--bs-body-color);
     background-color: var(--bs-body-bg);
@@ -443,6 +451,29 @@ div#order {
     text-align: center;
 }
 
+.note {
+    visibility: visible;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 5px 8px;
+    border-radius: 4px;
+    position: absolute;
+    z-index: 1;
+    bottom: 60%;
+    left: 12%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+
+td i:hover + .note {
+    visibility: visible;
+    opacity: 1;
+}
+
 .table-data {
     min-height: 230px;
     background: white;
@@ -533,7 +564,8 @@ span.select2-selection.select2-selection--single.select2-selection--clearable {
 }
 
 .container.order-container {
-    max-width: 90%;
+    max-width: 100%;
+    padding: 0 15px;
 }
 
 table thead tr th{
@@ -613,7 +645,16 @@ p.info-text {
     }
 }
 
-@media(max-width:1300){
+
+@media(max-width:1536px){
+
+    form.logout{
+        margin-right: 60px;
+
+    }
+}
+
+@media(max-width:1300px){
 
     .row.row-view {
         display: flex;
@@ -640,7 +681,6 @@ p.info-text {
         width: 40%;
     }
 }
-
 
 
 @media(max-width:600){

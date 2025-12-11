@@ -28,12 +28,12 @@ public class AddOrderDto {
 	private String note;
 	
 	@NotNull
-	private UUID car;
-	private UUID client;
-	private UUID company;
+	private UUID carId;
+	private UUID clientId;
+	private UUID companyId;
 	private List<AddOrderPartDto> parts;
 	@NotNull
-	@NotEmpty
+	@NotEmpty(message = "Моля, въведете услуга!")
 	private List<AddOrderRepairDto> repairs;
 	
 	public AddOrderDto() {
@@ -98,28 +98,28 @@ public class AddOrderDto {
 		this.note = note;
 	}
 	
-	public UUID getCar() {
-		return car;
+	public UUID getCarId() {
+		return carId;
 	}
 	
-	public void setCar(UUID car) {
-		this.car = car;
+	public void setCarId(UUID carId) {
+		this.carId = carId;
 	}
 	
-	public UUID getClient() {
-		return client;
+	public UUID getClientId() {
+		return clientId;
 	}
 	
-	public void setClient(UUID client) {
-		this.client = client;
+	public void setClientId(UUID clientId) {
+		this.clientId = clientId;
 	}
 	
-	public UUID getCompany() {
-		return company;
+	public UUID getCompanyId() {
+		return companyId;
 	}
 	
-	public void setCompany(UUID company) {
-		this.company = company;
+	public void setCompanyId(UUID companyId) {
+		this.companyId = companyId;
 	}
 	
 	public List<AddOrderPartDto> getParts() {

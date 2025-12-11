@@ -24,4 +24,6 @@ public interface OrderService {
 	
 	EditOrderDto getOrderById(UUID id);
 	int cleanOrder(LocalDateTime date);
+	
+	List<OrderListDto> getOrders(int count);
 }

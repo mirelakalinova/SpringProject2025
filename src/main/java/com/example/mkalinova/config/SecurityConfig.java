@@ -37,7 +37,7 @@ public class SecurityConfig {
 							.loginPage("/user/login")
 							.usernameParameter("username")
 							.passwordParameter("password")
-							.defaultSuccessUrl("/", true)
+							.defaultSuccessUrl("/dashboard", true)
 							.failureUrl("/user/login?error");
 				})
 				.logout(logout -> logout.logoutSuccessUrl("/"));

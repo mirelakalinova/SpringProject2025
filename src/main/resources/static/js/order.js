@@ -83,7 +83,13 @@ new Vue({
             this.selectedCarData = found;
 
             const hidden = document.getElementById('car');
+            const dtoCar = document.getElementById('dtoCar');
+            const dtoClient = document.getElementById('dtoClient');
+            const dtoCompany = document.getElementById('dtoCompany');
             if (hidden) hidden.value = found.id;
+            if (dtoCar) dtoCar.value = found.id;
+            if (dtoClient) dtoClient.value = null;
+            if (dtoCompany) dtoCompany.value = null;
             this.selectedClient =  await this.fetchClientsForCar(id);
         },
 
@@ -129,7 +135,11 @@ new Vue({
 
 
             const hidden = document.getElementById('client');
+            const dtoClient = document.getElementById('dtoClient');
+            const dtoCompany = document.getElementById('dtoCompany');
             if (hidden) hidden.value = id;
+            if (dtoClient) dtoClient.value = id;
+            if (dtoCompany) dtoCompany.value = null;
             this.selectedCompany =  await this.fetchCompaniesForClient(id);
 
         },
@@ -167,7 +177,9 @@ new Vue({
             this.selectedCompanyData = found;
 
             const hidden = document.getElementById('company');
+            const dtoCompany = document.getElementById('dtoCompany');
             if (hidden) hidden.value = found.id;
+            if (dtoCompany) dtoCompany.value = found.id;
 
         }
     },
@@ -397,6 +409,10 @@ function updateTableTotals(){
     let sumWithoutTax = parseFloat(totalSum - totalSum*0.20).toFixed(2)  || 0 ;
     let tax = parseFloat(totalSum*0.20).toFixed(2)   || 0 ;
     $('#discount').val(parseFloat(discount).toFixed(2));
+    $('#dtoSubtotal').val(sumWithoutTax);
+    $('#dtoTax').val(tax);
+    $('#dtoDiscount').val(parseFloat(discount).toFixed(2));
+    $('#dtoTotal').val(totalSum);
 
     totalSumField.val(totalSum);
     sumWithoutTaxField.val(sumWithoutTax);
@@ -426,20 +442,28 @@ function makeDiscount(){
             text: 'Моля, изберете само една.'
         });
         $('#discount-percent').val(0);
+        $('#dtoDiscount').val(0);
+        $('#discount-percent').val(0);
+        $('#dtoDiscountPercent').val(0);
         $('#discount-amount').val(0);
+        $('#dtoDiscountAmount').val(0);
         return;
     }
     if(discountAmount>0){
 
         $('#discount-perc').val(0);
         $('#discount-sum').val(discountAmount);
+        $('#dtoDiscountAmount').val(discountAmount);
         $('#discount-percent').val(0);
+        $('#dtoDiscountPercent').val(0);
         $('#discount-amount').val(0);
         updateTableTotals();
     } else if (discountPercent >0 ){
 
         $('#discount-perc').val(discountPercent);
+        $('#dtoDiscountPercent').val(discountPercent);
         $('#discount-sum').val(0);
+        $('#dtoDiscountAmount').val(0);
         $('#discount-percent').val(0);
         $('#discount-amount').val(0);
         updateTableTotals();
@@ -449,7 +473,7 @@ function makeDiscount(){
 
 
 $('#order-car').on('select2:unselecting select2:clear', function(e) {
-    ['order-client','order-car', 'order-company'].forEach(id => {
+    ['order-client','order-car', 'order-company', 'dtoCar', 'dtoClient', 'dtoCompany'].forEach(id => {
         $('#' + id).val(null).trigger('change');
     });
 
@@ -468,7 +492,7 @@ $('#order-car').on('select2:unselecting select2:clear', function(e) {
 });
 
 $('#order-client').on('select2:unselecting select2:clear', function(e) {
-    ['order-client', 'order-company'].forEach(id => {
+    ['order-client', 'order-company', 'dtoClient', 'dtoCompany'].forEach(id => {
         $('#' + id).val(null).trigger('change');
     });
 
@@ -484,7 +508,22 @@ $('#order-client').on('select2:unselecting select2:clear', function(e) {
     }
 });
 
+$('#order-company').on('select2:unselecting select2:clear', function(e) {
+    [ 'order-company', 'dtoCompany'].forEach(id => {
+        $('#' + id).val(null).trigger('change');
+    });
 
+    const vue = document.getElementById('order').__vue__;
+    if (vue) {
+
+        vue.selectedClient = null;
+        vue.selectedCompany = null;
+        vue.selectedClientData = null;
+        vue.selectedCompanyData = null;
+        vue.enableCompanyDropdown = false;
+
+    }
+});
 $('#partSelect').on('select2:unselecting select2:clear', function(e) {
     $('#price-part').val('').trigger('change');
     });
