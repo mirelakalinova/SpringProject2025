@@ -391,8 +391,10 @@
 
 				</div>
 			</div>
+			<div class="btn-group">
 			<button type="submit" class="submit" value="Запиши">Запиши</button>
-			<!--         <button type="submit" value="Изпрати">Принтирай</button>-->
+			<a th:href="@{/order/pdf/{id}(id=${dto.id})}" class="print">Принтирай</a>
+			</div>
 		</div>
 		<div class="d-none" th:object="${dto}">
 

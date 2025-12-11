@@ -7,13 +7,18 @@ import com.example.mkalinova.app.land.Controller.BaseController;
 import com.example.mkalinova.app.order.data.dto.AddOrderDto;
 import com.example.mkalinova.app.order.data.dto.EditOrderDto;
 import com.example.mkalinova.app.order.data.dto.OrderListDto;
+import com.example.mkalinova.app.order.data.entity.Order;
 import com.example.mkalinova.app.order.service.OrderService;
+import com.example.mkalinova.app.order.service.PdfService;
 import com.example.mkalinova.app.orderPart.service.OrderPartService;
 import com.example.mkalinova.app.orderRepair.service.OrderRepairService;
 import com.example.mkalinova.app.parts.service.PartService;
 import com.example.mkalinova.app.repair.service.RepairService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,9 +43,9 @@ public class OrderController extends BaseController {
 	private final OrderService orderService;
 	private final OrderRepairService orderRepairService;
 	private final OrderPartService orderPartService;
+	private final PdfService pdfService;
 	
-	
-	public OrderController(CarService carService, CompanyService companyService, ClientService clientService, PartService partService, RepairService repairService, OrderService orderService, OrderRepairService orderRepairService, OrderPartService orderPartService) {
+	public OrderController(CarService carService, CompanyService companyService, ClientService clientService, PartService partService, RepairService repairService, OrderService orderService, OrderRepairService orderRepairService, OrderPartService orderPartService, PdfService pdfService) {
 		this.carService = carService;
 		this.companyService = companyService;
 		this.clientService = clientService;
@@ -49,6 +54,7 @@ public class OrderController extends BaseController {
 		this.orderService = orderService;
 		this.orderRepairService = orderRepairService;
 		this.orderPartService = orderPartService;
+		this.pdfService = pdfService;
 	}
 	
 	@ModelAttribute("addCarDto")
@@ -159,5 +165,16 @@ public class OrderController extends BaseController {
 		redirectAttributes.addFlashAttribute("status", result.get("status"));
 		redirectAttributes.addFlashAttribute("message", result.get("message"));
 		return "redirect:/order/list";
+	}
+	
+	@GetMapping("/pdf/{id}")
+	@ResponseBody
+	public ResponseEntity<byte[]> downloadPdf(@PathVariable UUID id) throws Exception {
+		byte[] pdfBytes = pdfService.generateOrderPdf(id);
+		
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=order-" + id + ".pdf")
+				.contentType(MediaType.APPLICATION_PDF)
+				.body(pdfBytes);
 	}
 }

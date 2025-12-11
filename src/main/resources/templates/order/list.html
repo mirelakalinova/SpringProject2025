@@ -8,69 +8,88 @@
 	</div>
 
 	<div class="table-responsive">
-	<table class="table table-striped table-hover">
-		<thead>
-		<tr>
+		<table class="table table-striped table-hover">
+			<thead>
+			<tr>
 
-			<th>Дата</th>
-			<th>Автомобил</th>
-			<th>Клиент</th>
-			<th>Телефон</th>
-			<th>Услуги</th>
-			<th>Сума</th>
-			<th>Фирма</th>
-			<th colspan="2">Действие</th>
-			<th>Бележка</th>
-
-
-		</tr>
-		</thead>
-		<tbody>
-		<tr th:each="order : ${orderList}">
-
-			<td>
-				<i class="fa-solid fa-calendar-days"></i><span th:text="${#temporals.format(order.createdAt, 'dd-MM-yyyy')}"></span>
-				<br/>
-				<i class="fa-solid fa-clock"></i>
-				<span th:text="${#temporals.format(order.createdAt, 'HH:mm')}"></span>
-			</td>
-			<td ><strong th:text="${order.car.registrationNumber}"> </strong></td>
-
-			<td th:text="${order.client?.firstName ?: '-' }  + ' ' +  ${order.client?.lastName ?: '-'}"></td>
-			<td th:text="${order.client?.phone?: '-'}"></td>
+				<th>Дата</th>
+				<th>Автомобил</th>
+				<th>Клиент</th>
+				<th>Телефон</th>
+				<th>Услуги</th>
+				<th>Сума</th>
+				<th>Фирма</th>
+				<th colspan="2">Действие</th>
+				<th>PDF</th>
+				<th><i class="fa fa-info-circle" aria-hidden="true"></i></th>
 
 
-			<td>
-				<ul class="list-unstyled list-group list-group-flush">
+			</tr>
+			</thead>
+			<tbody>
+			<tr th:each="order : ${orderList}">
 
-					<li class="list-group-item" th:each="item : ${order.repairsList}" ><span th:text="${item.repair.name}"></span></li>
-				</ul>
-			</td>
-			<td th:text="${#numbers.formatDecimal(order.total, 1, 'NONE', 2, 'POINT')}"></td>
-			<td><span th:text="${order.company?.name ?: '-'}"> </span></td>
+				<td>
+					<i class="fa-solid fa-calendar-days"></i><span
+						th:text="${#temporals.format(order.createdAt, 'dd-MM-yyyy')}"></span>
+					<br/>
+					<i class="fa-solid fa-clock"></i>
+					<span th:text="${#temporals.format(order.createdAt, 'HH:mm')}"></span>
+				</td>
+				<td><strong th:text="${order.car.registrationNumber}"> </strong></td>
+
+				<td th:text="${order.client?.firstName ?: '-' }  + ' ' +  ${order.client?.lastName ?: '-'}"></td>
+				<td th:text="${order.client?.phone?: '-'}"></td>
 
 
-			<td class="td-buttons">
-				<form th:action="@{/order/edit/{id}(id=${order.id})}" th:method="get">
+				<td>
+					<ul class="list-unstyled list-group list-group-flush">
 
-					<button type="submit" class="user-edit-btn user-btn">
+						<li class="list-group-item" th:each="item : ${order.repairsList}"><span
+								th:text="${item.repair.name}"></span></li>
+					</ul>
+				</td>
+				<td th:text="${#numbers.formatDecimal(order.total, 1, 'NONE', 2, 'POINT')}"></td>
+				<td><span th:text="${order.company?.name ?: '-'}"> </span></td>
 
-						<i class="fa-solid fa-square-pen"></i>
-					</button>
-				</form>
 
-			</td>
-			<td><form th:action="@{/order/delete/{id}(id=${order.id})}" th:method="post">
+				<td class="td-buttons">
+					<form th:action="@{/order/edit/{id}(id=${order.id})}" th:method="get">
 
-				<button type="submit"
-						class="user-delete-btn user-btn" th:attr="data-name=${order.id}">
-					<i class="fa-solid fa-trash-arrow-up"></i>
-				</button>
-			</form></td>
-			<td style="position:relative"><i class="fa fa-info-circle" aria-hidden="true"></i><span class="note" th:text="${order.note}">Lorem ipsum dolor sit amet</span></td>
-		</tr>
-		</tbody>
-	</table>
+						<button type="submit" class="user-edit-btn user-btn">
+
+							<i class="fa-solid fa-square-pen"></i>
+						</button>
+					</form>
+
+				</td>
+				<td>
+					<form th:action="@{/order/delete/{id}(id=${order.id})}" th:method="post">
+
+						<button type="submit"
+								class="user-delete-btn user-btn" th:attr="data-name=${order.id}">
+							<i class="fa-solid fa-trash-arrow-up"></i>
+						</button>
+					</form>
+				</td>
+
+				</td>
+				<td style="position:relative">
+
+					<a th:href="@{/order/pdf/{id}(id=${order.id})}">
+						<i class="fa fa-arrow-circle-down" aria-hidden="true"></i>
+
+					</a>
+
+				<td style="position:relative">
+				<i th:if="${order.note != null}" class="fa fa-info-circle" aria-hidden="true"></i>
+				<span class="note"
+																										th:if="${order.note != null}"
+																										th:text="${order.note}"></span>
+				</td>
+			</tr>
+			</tbody>
+		</table>
 	</div>
 
 </div>
