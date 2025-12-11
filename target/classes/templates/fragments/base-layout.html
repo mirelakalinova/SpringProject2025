@@ -16,15 +16,15 @@
 				<i class="fas fa-align-left"></i>
 
 			</button>
-			<button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<button class="btn btn-dark d-inline-block d-lg-none ml-auto d-none" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<i class="fas fa-align-justify"></i>
 			</button>
 
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="nav navbar-nav ml-auto">
 					<li sec:authorize="isAuthenticated()"	>
-						<form th:action="@{/logout}" th:method="POST">
-							<input  type="submit" value="Logout" class="nav-link"/></form>
+						<form th:action="@{/logout}" th:method="POST" class="logout">
+							<input  type="submit" value="Logout" class="nav-link"/><i class="fa fa-sign-out" aria-hidden="true"></i></form>
 					</li>
 				</ul>
 			</div>
@@ -52,7 +52,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-<!-- Добави SweetAlert CDN линкове в секцията <head> -->
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js" ></script>

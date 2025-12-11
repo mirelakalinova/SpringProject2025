@@ -212,7 +212,7 @@ a.article:hover {
     }
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1024px) {
     #sidebar {
         margin-left: -250px;
     }

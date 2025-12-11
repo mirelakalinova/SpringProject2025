@@ -290,19 +290,20 @@
 				</div>
 
 				<div class="col-lg-6 elements-add-repair">
-					<h3>Поръчка</h3>
+					<h3>Поръчка за автомобил: <span v-if="selectedCarData">{{ selectedCarData.registrationNumber }}</span></h3>
 					<hr>
 					<div class="row">
 						<div class="col-lg-6">
 							<h6>Получател</h6>
-							<div v-if="!selectedCompanyData && selectedClientData">
+							<hr>
+							<div v-if="!selectedCompanyData && selectedClientData" class="client-data">
 								<p>Име на клиент: <span>{{ selectedClientData.firstName }} {{ selectedClientData.lastName }}  </span>
 								</p>
 								<p>Телефон: <span>{{ selectedClientData.phone }} </span></p>
 
 							</div>
-							<div v-if="selectedCompanyData">
-								<hr>
+							<div v-if="selectedCompanyData" class="client-data">
+
 								<p><span>{{ selectedCompanyData.name }} </span></p>
 								<p>Адрес: <span>{{ selectedCompanyData.address }}</span></p>
 								<p>ЕИК: <span>{{ selectedCompanyData.uic }}</span></p>
@@ -311,8 +312,9 @@
 							</div>
 
 						</div>
-						<div class="col-lg-6">
+						<div class="col-lg-6 client-data">
 							<h6>Предоставил услугата</h6>
+							<hr>
 							<p><span> Дорела Ауто ЕООД</span></p>
 							<p><span>0896619422</span></p>
 							<p><span>201799256</span></p>
