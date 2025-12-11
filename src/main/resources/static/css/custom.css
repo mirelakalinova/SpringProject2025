@@ -643,6 +643,29 @@ p.info-text {
     font-weight: 600;
 }
 
+i.fa.fa-arrow-circle-down {
+    font-size: 31px;
+    color: #48B8D0;
+}
+
+a.print {
+    display: block;
+    text-align: center;
+    padding: 10px 40px;
+    background-color: #48B8D0;
+    width: 200px;
+    height: 47px;
+    border-radius: 5px;
+    color:#fff;
+}
+
+.btn-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
 @media(max-width:1800px){
     .order {
         max-width: 100%;
@@ -714,6 +737,13 @@ p.info-text {
     .order {
 
         font-size: 12px;
+    }
+
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
     }
 
 }
