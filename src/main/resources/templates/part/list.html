@@ -18,7 +18,7 @@
 		<tbody>
 		<tr th:each="part : ${parts}">
 			<td th:text="${part.name}">Име</td>
-			<td th:text="${part.price!= null ?  part.price : '-'}">ЕИК</td>
+			<td th:text="${#numbers.formatDecimal(part.price!= null ?  part.price : '-', 1, 'NONE', 2, 'POINT')}"></td>
 			<td>
 				<form th:action="@{/part/edit/{id}(id=${part.id})}" th:method="get">
 

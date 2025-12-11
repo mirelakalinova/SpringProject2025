@@ -4,7 +4,7 @@
 
 	<form th:action="@{/order/edit/{id}(id=${dto.id})}" th:method="post" th:object="${dto}">
 
-		<h1>Редакция Ремонт #<span th:text="${id}"></span></h1>
+		<h1>Редакция Ремонт #<span th:text="${#strings.substring(id.toString(), 0, 8)}"></span></h1>
 		<div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
 			<ul>
 				<li th:each="err : ${#fields.errors('*')}"
@@ -108,7 +108,7 @@
 								<th scope="col" colspan="1">Брой</th>
 								<th scope="col" colspan="1">Цена</th>
 								<th scope="col" colspan="1">Действие</th>
-								<th scope="col" colspan="1">Нов</th>
+
 
 							</tr>
 							</thead>
@@ -153,14 +153,6 @@
 									</button>
 								</td>
 
-								<td colspan="1">
-									<button
-											class="circle-btn"
-											type="button"
-											data-view-type="part"
-											id="add-part-modal">+
-									</button>
-								</td>
 							</tr>
 
 
@@ -178,7 +170,7 @@
 								<th scope="col">Брой</th>
 								<th scope="col">Цена</th>
 								<th scope="col">Действие</th>
-								<th scope="col">Нов</th>
+
 
 							</tr>
 							</thead>
@@ -231,11 +223,6 @@
 									</button>
 								</td>
 
-								<td>
-									<button class="circle-btn"
-											data-view-type="service">+
-									</button>
-								</td>
 							</tr>
 
 

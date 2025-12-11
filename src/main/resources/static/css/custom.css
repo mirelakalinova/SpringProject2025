@@ -455,7 +455,7 @@ div#order {
 }
 
 .note {
-    visibility: visible;
+    visibility: hidden;
     background-color: #333;
     color: #fff;
     text-align: center;
